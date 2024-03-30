@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectsoftware.HelloController">
+   <children>
+      <ImageView fitHeight="543.0" fitWidth="736.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../photo/img_11.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="m2" layoutX="41.0" layoutY="86.0" mnemonicParsing="false" onAction="#viewevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="m3" layoutX="41.0" layoutY="146.0" mnemonicParsing="false" onAction="#addevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="m4" layoutX="41.0" layoutY="206.0" mnemonicParsing="false" onAction="#deleteevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="m5" layoutX="41.0" layoutY="264.0" mnemonicParsing="false" onAction="#reportevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
+      <ScrollPane layoutX="232.0" layoutY="86.0" prefHeight="259.0" prefWidth="461.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="eventtable" prefHeight="259.0" prefWidth="461.0">
+                    <columns>
+                        <TableColumn fx:id="e1" prefWidth="75.0" text="Reservation-ID" />
+                        <TableColumn fx:id="e2" prefWidth="75.0" text="User-ID" />
+                      <TableColumn fx:id="e3" prefWidth="75.0" text="Hall-id" />
+                      <TableColumn fx:id="e4" prefWidth="75.0" text="Date" />
+                        <TableColumn fx:id="e5" prefWidth="75.0" text="Start-time" />
+                        <TableColumn fx:id="e6" prefWidth="75.0" text="End-Time" />
+                        <TableColumn fx:id="e7" prefWidth="75.0" text="Total-price" />
+                        <TableColumn fx:id="e8" prefWidth="75.0" text="service-ID" />
+                        <TableColumn fx:id="e9" prefWidth="75.0" text="State" />
+                    </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <Button fx:id="m1" layoutX="694.0" layoutY="4.0" mnemonicParsing="false" onAction="#ogog" prefHeight="39.0" prefWidth="37.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="servicee" layoutX="41.0" layoutY="312.0" mnemonicParsing="false" onAction="#adminservice" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
+   </children>
+</AnchorPane>
