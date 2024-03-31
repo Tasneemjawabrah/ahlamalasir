@@ -79,7 +79,7 @@ import javafx.embed.swing.SwingFXUtils;
 public class HelloController  {
 
     static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
-
+static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
     @FXML
     public TextField gmailLogIn;
@@ -121,7 +121,7 @@ public class HelloController  {
 
         String query = "SELECT * FROM software.users WHERE email = ? AND password = ?";
 
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, emailInput);
@@ -180,7 +180,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
     }
 
@@ -266,7 +266,7 @@ public class HelloController  {
         OutputStream output;
         try {
             DriverManager.deregisterDriver(new org.postgresql.Driver());
-            conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             input = new FileInputStream(new File("Flower_Landscape.jrxml"));
             jd = JRXmlLoader.load(input);
             jr = JasperCompileManager.compileReport(jd);
@@ -413,12 +413,10 @@ public class HelloController  {
     }
 
     private void initializeTimeSpinners() {
-        // Initialize the first spinner
         SpinnerValueFactory<LocalTime> valueFactory1 = createTimeSpinnerValueFactory();
         timeSpinner.setValueFactory(valueFactory1);
         timeSpinner.setEditable(true);
 
-        // Initialize the second spinner
         SpinnerValueFactory<LocalTime> valueFactory2 = createTimeSpinnerValueFactory();
         timeSpinner1.setValueFactory(valueFactory2);
         timeSpinner1.setEditable(true);
@@ -488,16 +486,13 @@ public class HelloController  {
 
     @FXML
     private void select(ActionEvent event) {
-        // Your database connection parameters
 
-        String jdbcUrl = "jdbc:postgresql://localhost:5432/postgres";
-        String username = "postgres";
-        String password = "1482003";
 
-        // SQL query to retrieve data for the selected hall
+
+
         String query = "SELECT capacity, location, priceperhour FROM software.halls WHERE hallname = 'Rose'";
 
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -506,7 +501,6 @@ public class HelloController  {
                 String location = resultSet.getString("location");
                 double price = resultSet.getDouble("priceperhour");
 
-                // Set the values in text fields
                 capacityy.setText(String.valueOf(capacity));
                 locationn.setText(location);
                 pricee.setText(String.valueOf(price));
@@ -516,14 +510,14 @@ public class HelloController  {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception based on your application's needs
+            e.printStackTrace();
         }
     }
 
     @FXML
     void bookHall(ActionEvent event) {
         LocalDate selectedDate = dat.getValue();
-        String startTimeStr = choicetime.getValue(); // Retrieve start time from the ChoiceBox
+        String startTimeStr = choicetime.getValue();
 
         if (selectedDate == null || startTimeStr == null) {
             showAlert("Please select date and start time.");
@@ -535,21 +529,13 @@ public class HelloController  {
             showAlert("Please enter the hall name.");
             return;
         }
-        LocalTime startTime = LocalTime.parse(startTimeStr); // Parse the start time string to LocalTime
-
-        // Calculate the end time to be 2 hours after the start time
+        LocalTime startTime = LocalTime.parse(startTimeStr);
         LocalTime endTime = startTime.plusHours(2);
 
-        // int hallId = getHallId(); // Assuming hallId 2 for demonstration
+        long durationHours = 2;
 
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
 
-        // Calculate the duration of the booking in hours
-        long durationHours = 2; // Hardcoded duration of 2 hours
-
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
-                "postgres", "1482003")) {
-
-            // Retrieve the user's ID based on email and password
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
 
             if (userId == -1) {
@@ -562,19 +548,15 @@ public class HelloController  {
                 return;
             }
 
-            // Check if the hall is already booked for the selected date and time
             if (!isHallAvailable(selectedDate, startTime, endTime, hallId, connection)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
 
-            // Retrieve the price per hour for the selected hall
+
             BigDecimal pricePerHour = getPricePerHour(hallId, connection);
 
-            // Calculate the total price for the reservation
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
-
-            // Insert the reservation into the database
             insertReservation(userId, hallId, selectedDate, startTime, endTime, totalPrice, connection);
 
             showAlert("Wait owner to accept your reservation.");
@@ -614,7 +596,7 @@ public class HelloController  {
         String sql = "SELECT COUNT(*) FROM software.new_table_name WHERE hallid = ? AND date = ? AND "
                 + "((starttime <= ? AND endtime >= ?) OR (starttime <= ? AND endtime >= ?) AND state != 'deleted')";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, hallId); // Hall ID is 2
+            statement.setInt(1, hallId);
             statement.setDate(2, java.sql.Date.valueOf(date));
             statement.setTime(3, java.sql.Time.valueOf(startTime));
             statement.setTime(4, java.sql.Time.valueOf(startTime));
@@ -647,7 +629,7 @@ public class HelloController  {
             statement.setTime(4, java.sql.Time.valueOf(startTime));
             statement.setTime(5, java.sql.Time.valueOf(endTime));
             statement.setBigDecimal(6, totalPrice);
-            statement.setString(7, "wait"); // Set the initial state to 'wait'
+            statement.setString(7, "wait");
             statement.executeUpdate();
         }
     }
@@ -691,23 +673,18 @@ public class HelloController  {
         updateTotalPrice(email, password, additionalPrice);
     }
 
-    // Method to update the total price in the reservations table
 
     private void updateTotalPrice(String email, String password, double additionalPrice) {
-        String jdbcUrl = "jdbc:postgresql://localhost:5432/postgres";
-        String username = "postgres";
-        String paassword = "1482003";
 
         String getUserSql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
         String getReservationsSql = "SELECT reservationid FROM software.reservations WHERE userid = ?";
         String updateReservationSql = "UPDATE software.reservations SET totalprice = totalprice + ? WHERE reservationid = ?";
 
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, paassword);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement getUserStatement = connection.prepareStatement(getUserSql);
              PreparedStatement getReservationsStatement = connection.prepareStatement(getReservationsSql);
              PreparedStatement updateReservationStatement = connection.prepareStatement(updateReservationSql)) {
 
-            // Retrieve the user ID based on email and password
             getUserStatement.setString(1, email);
             getUserStatement.setString(2, password);
             ResultSet userResultSet = getUserStatement.executeQuery();
@@ -715,14 +692,12 @@ public class HelloController  {
             if (userResultSet.next()) {
                 int userId = userResultSet.getInt("userid");
 
-                // Retrieve reservations for the user
                 getReservationsStatement.setInt(1, userId);
                 ResultSet reservationsResultSet = getReservationsStatement.executeQuery();
 
                 while (reservationsResultSet.next()) {
                     int reservationId = reservationsResultSet.getInt("reservationid");
 
-                    // Update the total price for each reservation
                     updateReservationStatement.setDouble(1, additionalPrice);
                     updateReservationStatement.setInt(2, reservationId);
 
@@ -756,7 +731,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
     }
 
@@ -788,15 +763,10 @@ public class HelloController  {
             return;
         }
 
-        // Database connection parameters
-        String jdbcUrl = "jdbc:postgresql://localhost:5432/postgres";
-        String username = "postgres";
-        String password = "1482003";
 
-        // SQL query to check if the email and code exist in the users table
         String query = "SELECT userid FROM software.users WHERE email = ? AND code = ?";
 
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, email);
@@ -805,13 +775,12 @@ public class HelloController  {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
-                // Email and code exist, enable password reset fields
+
                 newpass.setDisable(false);
                 vernewpass.setDisable(false);
                 reset.setDisable(false);
                 showAlert("Enter a new password please.");
             } else {
-                // Email or code is incorrect
                 showAlert("Invalid email or code. Please try again.");
             }
 
@@ -833,15 +802,9 @@ public class HelloController  {
 
         String email = emmmail.getText();
 
-        // Database connection parameters
-        String jdbcUrl = "jdbc:postgresql://localhost:5432/postgres";
-        String username = "postgres";
-        String password = "1482003";
-
-        // SQL query to update the password for the user
         String updateQuery = "UPDATE software.users SET password = ? WHERE email = ?";
 
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
 
             preparedStatement.setString(1, newPassword);
@@ -851,12 +814,10 @@ public class HelloController  {
 
             if (rowsAffected > 0) {
                 showAlert("Password reset successfully.");
-                // Clear fields after successful reset
                 emmmail.clear();
                 yourcode.clear();
                 newpass.clear();
                 vernewpass.clear();
-                // Disable password reset fields
                 newpass.setDisable(true);
                 vernewpass.setDisable(true);
                 reset.setDisable(true);
@@ -888,20 +849,15 @@ public class HelloController  {
 
     @FXML
     void searchButtonClicked(ActionEvent event) {
-        // Display alert to enter budget
         showAlert("Please enter your budget.");
 
-        // Reset percentages
         hallPercentage = 0;
         servicePercentage = 0;
-
-        // Clear text field
         budgetTextField.clear();
     }
 
     @FXML
     void confirmBudget(ActionEvent event) {
-        // Validate budget input
         try {
             budget = Double.parseDouble(budgetTextField.getText());
             if (budget <= 0) {
@@ -913,16 +869,13 @@ public class HelloController  {
             return;
         }
 
-        // Prompt user to specify percentage allocation
         showAlert("Please specify the percentage allocation for halls and services.");
 
-        // Clear text field
         budgetTextField.clear();
     }
 
     @FXML
     void confirmPercentage(ActionEvent event) {
-        // Validate percentage input
         try {
             String[] percentages = budgetTextField.getText().split(",");
             if (percentages.length != 2) {
@@ -938,7 +891,6 @@ public class HelloController  {
                 return;
             }
 
-            // Fetch halls and services based on budget and percentages
             fetchHallsAndServices();
 
         } catch (NumberFormatException e) {
@@ -948,14 +900,12 @@ public class HelloController  {
     }
 
     private void fetchHallsAndServices() {
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
-                "postgres", "1482003")) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
 
             List<String> availableHalls = fetchHalls(connection);
             List<String> availableServices = fetchServices(connection);
             List<String> availablePackages = fetchPackages(connection);
 
-            // Display available options
             StringBuilder message = new StringBuilder("Available options:\n");
             message.append("Halls:\n");
             for (String hall : availableHalls) {
@@ -1064,7 +1014,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
 
     }
@@ -1083,7 +1033,6 @@ public class HelloController  {
             stage.show();
         } catch (IOException e) {
             System.out.println("11");
-            // Log the exception
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
     }
@@ -1097,7 +1046,6 @@ public class HelloController  {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            // Log the exception
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
 
@@ -1113,7 +1061,6 @@ public class HelloController  {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            // Log the exception
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
 
@@ -1148,7 +1095,6 @@ public class HelloController  {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            // Log the exception
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
 
@@ -1164,22 +1110,20 @@ public class HelloController  {
     private TableView<Hall> hallTableView = new TableView<>();
 
     @FXML
-    private TableColumn<Hall, Integer> hallidd; // Specify the types for the TableColumn
+    private TableColumn<Hall, Integer> hallidd;
 
     @FXML
-    private TableColumn<Hall, String> hallnamee; // Specify the types for the TableColumn
+    private TableColumn<Hall, String> hallnamee;
 
     @FXML
-    private TableColumn<Hall, Integer> capacityyy; // Specify the types for the TableColumn
+    private TableColumn<Hall, Integer> capacityyy;
 
     @FXML
-    private TableColumn<Hall, String> locationnn; // Specify the types for the TableColumn
-
+    private TableColumn<Hall, String> locationnn;
     @FXML
-    private TableColumn<Hall, Double> priceperhourr; // Specify the types for the TableColumn
-    @FXML
+    private TableColumn<Hall, Double> priceperhourr;
     private TableColumn<Hall, Integer> USERID;
-    // Initialize method or constructor where you set up the TableView
+
 
 
     @FXML
@@ -1194,7 +1138,6 @@ public class HelloController  {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            // Log the exception
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
 
@@ -1212,14 +1155,13 @@ public class HelloController  {
 
         Hall selectedHall = hallTableView.getSelectionModel().getSelectedItem();
         if (selectedHall != null) {
-            try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                 String sql = "DELETE FROM software.halls WHERE hallid = ?";
                 PreparedStatement statement = conn.prepareStatement(sql);
                 statement.setInt(1, selectedHall.getHallId());
                 int rowsDeleted = statement.executeUpdate();
                 if (rowsDeleted > 0) {
                     System.out.println("Row deleted successfully.");
-                    // Remove the selected row from the TableView
                     hallTableView.getItems().remove(selectedHall);
                 }
                 statement.close();
@@ -1234,24 +1176,20 @@ public class HelloController  {
 
     @FXML
     public void viewhalls(ActionEvent event) {
-        // Ensure hallTableView is not null before proceeding
         if (hallTableView == null) {
             System.err.println("hallTableView is not initialized!");
             return;
         }
 
-        // Set cell value factories for each column
         hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
         hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
         capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
         priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
         locationnn.setCellValueFactory(new PropertyValueFactory<>("location"));
-        USERID.setCellValueFactory(new PropertyValueFactory<>("userId")); // Assuming you have a USERID column
-
-        // Clear existing items in the table
+        USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
         hallTableView.getItems().clear();
 
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String sql = "SELECT * FROM software.halls";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
@@ -1269,7 +1207,6 @@ public class HelloController  {
                 halls.add(hall);
             }
 
-            // Print halls list for debugging
             for (Hall hall : halls) {
                 System.out.println("Hall ID: " + hall.getHallId());
                 System.out.println("Hall Name: " + hall.getHallName());
@@ -1280,7 +1217,6 @@ public class HelloController  {
                 System.out.println("---------------------------------");
             }
 
-            // Add items to the table
             hallTableView.setItems(halls);
 
             resultSet.close();
@@ -1324,13 +1260,11 @@ public class HelloController  {
     @FXML
     void editadmininfo(ActionEvent event) {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            // Create the SQL query to update user information
             String sql = "UPDATE software.users SET firstname=?, lastname=?, username=?, password=?, email=?, code=? WHERE userid=?";
 
-            // Prepare the statement
+
             PreparedStatement statement = connection.prepareStatement(sql);
 
-            // Set the parameters for the prepared statement
             statement.setString(1, fntxt.getText());
             statement.setString(2, lntxt.getText());
             statement.setString(3, userntxt.getText());
@@ -1339,7 +1273,6 @@ public class HelloController  {
             statement.setString(6, codetxt.getText());
             statement.setInt(7, Integer.parseInt(idtxt.getText()));
 
-            // Execute the update statement
             int rowsUpdated = statement.executeUpdate();
 
             if (rowsUpdated > 0) {
@@ -1378,12 +1311,11 @@ public class HelloController  {
                 ImageIO.write(bufferedImage, "png", outputStream);
                 InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
-                Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+                Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
                 String sql = "UPDATE software.users SET photo = ? WHERE email = ? AND password = ? ";
                 PreparedStatement statement = conn.prepareStatement(sql);
 
-                // Set the photo parameter
                 statement.setBinaryStream(1, inputStream);
                 statement.setString(2, email);
                 statement.setString(3, password);
@@ -1420,16 +1352,13 @@ public class HelloController  {
         );
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
-            // Load the image
             Image image = new Image(selectedFile.toURI().toString());
 
-            // Set the image to the ImageView
             pictureImageView.setImage(image);
 
-            // Resize the image to fit the size of the ImageView
             pictureImageView.setPreserveRatio(true);
-            pictureImageView.setFitWidth(305); // Set the width of the ImageView
-            pictureImageView.setFitHeight(255); // Set the height of the ImageView
+            pictureImageView.setFitWidth(305);
+            pictureImageView.setFitHeight(255);
         }
     }
 
@@ -1440,7 +1369,7 @@ public class HelloController  {
         String password = UserCredentials.getPassword();
 
         try {
-            Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             String sql = "SELECT * FROM software.users WHERE email = ? AND password = ? ";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, email);
@@ -1452,10 +1381,10 @@ public class HelloController  {
                 String firstName = result.getString("firstname");
                 String lastName = result.getString("lastname");
                 String username = result.getString("username");
-                String userEmail = result.getString("email"); // Retrieve email from the database
-                String userPassword = result.getString("password"); // Retrieve password from the database
+                String userEmail = result.getString("email");
+                String userPassword = result.getString("password");
                 String userCode = result.getString("code");
-                byte[] imageData = result.getBytes("photo"); // Retrieve image data from the database
+                byte[] imageData = result.getBytes("photo");
 
                 idtxt.setText(String.valueOf(userId));
                 fntxt.setText(firstName);
@@ -1511,7 +1440,7 @@ public class HelloController  {
         int capacity = Integer.parseInt(txet2.getText());
         double pricePerHour = Double.parseDouble(txet3.getText());
         String location = txet4.getText();
-        int userId = Integer.parseInt(text5.getText()); // Retrieve userId from text5
+        int userId = Integer.parseInt(text5.getText());
 
         if (hallName.isEmpty() || location.isEmpty()) {
             showAlert("Hall name and location cannot be empty.");
@@ -1565,11 +1494,11 @@ public class HelloController  {
              PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
-                return resultSet.next(); // If resultSet.next() returns true, userId exists
+                return resultSet.next();
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; // Return false in case of SQL exception
+            return false;
         }
     }
 
@@ -1695,18 +1624,18 @@ public class HelloController  {
     public void initialize() {
 
         tableeee.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) { // Check if it's a single click
-                // Get the selected row
+            if (event.getClickCount() == 1) {
+
                 packge selectedPackage = tableeee.getSelectionModel().getSelectedItem();
 
-                // Set the values of selected package to TextFields
+
                 if (selectedPackage != null) {
                     pid.setText(String.valueOf(selectedPackage.getPackageId()));
                     pname.setText(selectedPackage.getPackageName());
                     des.setText(selectedPackage.getDescription());
                     price.setText(String.valueOf(selectedPackage.getPrice()));
                     mguest.setText(String.valueOf(selectedPackage.getMaxGuests()));
-                    // Join includesArray into a single string and set it to innc TextField
+
                     innc.setText(String.join(",", selectedPackage.getIncludes()));
                 }
             }
@@ -1717,20 +1646,17 @@ public class HelloController  {
         populateEventChoiceBox();
         r9.setItems(FXCollections.observableArrayList("16:00:00", "20:00:00", "18:00:00", "22:00:00", "24:00:00"));
 
-        // Set the default value for ChoiceBox r9 (optional)
         r9.getSelectionModel().selectFirst();
 
-        // Set the values for ChoiceBox r10
         r10.setItems(FXCollections.observableArrayList("16:00:00", "20:00:00", "18:00:00", "22:00:00", "24:00:00"));
 
-        // Set the default value for ChoiceBox r10 (optional)
         r10.getSelectionModel().selectFirst();
 
 
         choicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND hallid = ?");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1743,17 +1669,17 @@ public class HelloController  {
 
                 if (item.isBefore(LocalDate.now())) {
                     setDisable(true);
-                    setStyle("-fx-background-color: #ffc0cb;"); // Past dates
+                    setStyle("-fx-background-color: #ffc0cb;");
                 } else {
                     setDisable(false);
                     int reservedCount = getReservedCount(item);
                     if (reservedCount == 3) {
-                        setStyle("-fx-background-color: #ff0000;"); // All times reserved
+                        setStyle("-fx-background-color: #ff0000;");
                         setOnMouseClicked(event -> showAlert("All time slots are reserved for this day."));
                     } else if (reservedCount > 0) {
-                        setStyle("-fx-background-color: #ffff00;"); // Some times reserved
+                        setStyle("-fx-background-color: #ffff00;");
                     } else {
-                        setStyle("-fx-background-color: #00ff00;"); // All times available
+                        setStyle("-fx-background-color: #00ff00;");
                     }
                 }
             }
@@ -1763,7 +1689,7 @@ public class HelloController  {
         servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             checkReservationStatementt = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1776,17 +1702,17 @@ public class HelloController  {
 
                 if (item.isBefore(LocalDate.now())) {
                     setDisable(true);
-                    setStyle("-fx-background-color: #ffc0cb;"); // Past dates
+                    setStyle("-fx-background-color: #ffc0cb;");
                 } else {
                     setDisable(false);
                     int reservedCountt = getReservedCountt(item);
                     if (reservedCountt == 3) {
-                        setStyle("-fx-background-color: #ff0000;"); // All times reserved
+                        setStyle("-fx-background-color: #ff0000;");
                         setOnMouseClicked(event -> showAlert("All time slots are reserved for this day."));
                     } else if (reservedCountt > 0) {
-                        setStyle("-fx-background-color: #ffff00;"); // Some times reserved
+                        setStyle("-fx-background-color: #ffff00;");
                     } else {
-                        setStyle("-fx-background-color: #00ff00;"); // All times available
+                        setStyle("-fx-background-color: #00ff00;");
                     }
                 }
             }
@@ -1794,7 +1720,7 @@ public class HelloController  {
         packagetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             checkReservationStatementtt = connection.prepareStatement("SELECT COUNT(*) FROM software.wedding_packages WHERE date = ? AND starttime = ? AND package_id = ?");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1807,17 +1733,17 @@ public class HelloController  {
 
                 if (item.isBefore(LocalDate.now())) {
                     setDisable(true);
-                    setStyle("-fx-background-color: #ffc0cb;"); // Past dates
+                    setStyle("-fx-background-color: #ffc0cb;");
                 } else {
                     setDisable(false);
                     int reservedCountt = getReservedCounttt(item);
                     if (reservedCountt == 3) {
-                        setStyle("-fx-background-color: #ff0000;"); // All times reserved
+                        setStyle("-fx-background-color: #ff0000;");
                         setOnMouseClicked(event -> showAlert("All time slots are reserved for this day."));
                     } else if (reservedCountt > 0) {
-                        setStyle("-fx-background-color: #ffff00;"); // Some times reserved
+                        setStyle("-fx-background-color: #ffff00;");
                     } else {
-                        setStyle("-fx-background-color: #00ff00;"); // All times available
+                        setStyle("-fx-background-color: #00ff00;");
                     }
                 }
             }
@@ -1829,7 +1755,7 @@ public class HelloController  {
             for (String time : choicetime.getItems()) {
                 checkReservationStatement.setDate(1, Date.valueOf(date));
                 checkReservationStatement.setTime(2, Time.valueOf(time));
-                checkReservationStatement.setInt(3, getHallId()); // Hall ID is 2
+                checkReservationStatement.setInt(3, getHallId());
                 ResultSet resultSet = checkReservationStatement.executeQuery();
                 resultSet.next();
                 int count = resultSet.getInt(1);
@@ -1848,7 +1774,7 @@ public class HelloController  {
             for (String time : packagetime.getItems()) {
                 checkReservationStatementtt.setDate(1, Date.valueOf(date));
                 checkReservationStatementtt.setTime(2, Time.valueOf(time));
-                checkReservationStatementtt.setInt(3, getHallIdd()); // Hall ID is 2
+                checkReservationStatementtt.setInt(3, getHallIdd());
                 ResultSet resultSet = checkReservationStatementtt.executeQuery();
                 resultSet.next();
                 int count = resultSet.getInt(1);
@@ -1863,8 +1789,7 @@ public class HelloController  {
     }
 
     private int getHallId() {
-        // Replace this with your logic to retrieve hall id based on hall name from text field
-        String hallName = newhallname.getText(); // Assuming newhallname is the TextField
+        String hallName = newhallname.getText();
         int hallId = 0;
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?");
@@ -1879,8 +1804,8 @@ public class HelloController  {
         return hallId;
     }
     private int getHallIdd() {
-        // Replace this with your logic to retrieve hall id based on hall name from text field
-        String hallName = mn1.getText(); // Assuming newhallname is the TextField
+
+        String hallName = mn1.getText();
         int hallId = 0;
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT package_id FROM software.wedding_packages WHERE package_name = ?");
@@ -1906,12 +1831,12 @@ public class HelloController  {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             checkReservationStatement = connection.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND hallid = ?");
 
             checkReservationStatement.setDate(1, Date.valueOf(selectedDate));
-            checkReservationStatement.setInt(2, getHallId()); // Hall ID is 2
+            checkReservationStatement.setInt(2, getHallId());
 
 
             ResultSet resultSet = checkReservationStatement.executeQuery();
@@ -1993,7 +1918,7 @@ public class HelloController  {
 
     @FXML
     void logoutserviceprovider(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
@@ -2026,11 +1951,9 @@ public class HelloController  {
                         cc7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         cc8.setCellValueFactory(new PropertyValueFactory<>("state"));
 
-                        // Create a new ArrayList and add all items from tabelnotification.getItems()
                         ArrayList<new_reservation> items = new ArrayList<>(tabelnotification.getItems());
-                        // Clear the items in tabelnotification
+
                         tabelnotification.getItems().clear();
-                        // Add all reservations to tabelnotification
                         tabelnotification.getItems().addAll(reservations);
                     }
                 }
@@ -2046,7 +1969,7 @@ public class HelloController  {
     void accept(ActionEvent event) {
         ObservableList<new_reservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
 
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String sql = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, "accepted");
@@ -2070,7 +1993,7 @@ public class HelloController  {
     void deleteres(ActionEvent event) {
         ObservableList<new_reservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
 
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             String sql = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, "rejected");
@@ -2129,7 +2052,7 @@ public class HelloController  {
 
     @FXML
     void viewstate(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
@@ -2140,7 +2063,7 @@ public class HelloController  {
                         "LEFT JOIN software.services s ON r.serviceid = s.serviceid " +
                         "WHERE r.userid = ?";
                 try (PreparedStatement statement = conn.prepareStatement(query)) {
-                    statement.setInt(1, userId); // Using the userId obtained directly
+                    statement.setInt(1, userId);
                     try (ResultSet resultSet = statement.executeQuery()) {
                         ArrayList<ReservationInfo> reservations = new ArrayList<>();
                         while (resultSet.next()) {
@@ -2166,10 +2089,8 @@ public class HelloController  {
                         col9.setCellValueFactory(new PropertyValueFactory<>("state"));
 
 
-                        // Clear existing data in the TableView
                         confirmtabel.getItems().clear();
 
-                        // Populate TableView
                         confirmtabel.getItems().addAll(reservations);
                     }
                 }
@@ -2184,7 +2105,7 @@ public class HelloController  {
 
     @FXML
     void confirnation(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             ReservationInfo selectedReservation = confirmtabel.getSelectionModel().getSelectedItem();
             if (selectedReservation != null && selectedReservation.getState().equals("accepted")) {
                 int hallId = getHallId(selectedReservation.getHallName(), conn);
@@ -2247,12 +2168,12 @@ public class HelloController  {
 
     @FXML
     void deletestate(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             ReservationInfo selectedReservation = confirmtabel.getSelectionModel().getSelectedItem();
             if (selectedReservation != null) {
                 if (selectedReservation.getState().equals("deleted")) {
                     showAlert("This reservation is already deleted.");
-                    return; // Exit the method if reservation is already deleted
+                    return;
                 }
                 if (selectedReservation.getState().equals("wait")) {
                     String query = "DELETE FROM software.new_table_name WHERE reservationid = ?";
@@ -2278,17 +2199,15 @@ public class HelloController  {
 
                     Optional<ButtonType> result = alert.showAndWait();
                     if (result.isPresent() && result.get() == okButton) {
-                        double newPrice = selectedReservation.getTotalPrice() * 0.1; // 10% deduction
+                        double newPrice = selectedReservation.getTotalPrice() * 0.1;
                         String insertQuery = "INSERT INTO software.reservations (reservationid, userid, hallid, date, starttime, endtime, totalprice, serviceid, state) " +
                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                         try (PreparedStatement insertStatement = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
-                            // Retrieve userId from userName
+
                             int userId = getUserIdFromUserName(selectedReservation.getUserName(), conn);
 
-                            // Get hallId from hallName
                             int hallId = getHallIdFromHallName(selectedReservation.getHallName(), conn);
                             int reservationId = selectedReservation.getReservationId();
-                            // Set values in prepared statement
                             insertStatement.setInt(1, reservationId);
                             insertStatement.setInt(2, userId);
                             insertStatement.setInt(3, hallId);
@@ -2297,13 +2216,11 @@ public class HelloController  {
                             insertStatement.setTime(6, selectedReservation.getEndTime());
                             insertStatement.setDouble(7, newPrice);
                             insertStatement.setInt(8, selectedReservation.getServiceId());
-                            insertStatement.setString(9, "deleted"); // Assuming this state indicates deletion
+                            insertStatement.setString(9, "deleted");
 
-                            // Execute the query
                             int rowsInserted = insertStatement.executeUpdate();
                             if (rowsInserted > 0) {
                                 showAlert("Reservation deleted. New price: " + newPrice);
-                                // Update status to "deleted" in new_table_name
                                 String updateQuery = "UPDATE software.new_table_name SET state = 'deleted' WHERE reservationid = ?";
                                 try (PreparedStatement updateStatement = conn.prepareStatement(updateQuery)) {
                                     updateStatement.setInt(1, reservationId);
@@ -2337,22 +2254,19 @@ public class HelloController  {
     }
 
     private int getHallIdFromHallName(String hallName, Connection conn) throws SQLException {
-        int hallId = -1; // Initialize hallId to -1 (default value)
+        int hallId = -1;
         String query = "SELECT hallid FROM software.halls WHERE hallname = ?";
 
-        // Try-with-resources block to handle resources automatically
         try (PreparedStatement statement = conn.prepareStatement(query)) {
-            statement.setString(1, hallName); // Set the hallName parameter
+            statement.setString(1, hallName);
 
-            // Execute the query and obtain the result set
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    // If data is found, extract and store the hallId
                     hallId = resultSet.getInt("hallid");
                 }
             }
         }
-        return hallId; // Return the hallId
+        return hallId;
     }
 
     public void newreserve(javafx.event.ActionEvent actionEvent) {
@@ -2372,10 +2286,8 @@ public class HelloController  {
         newcapacity.setText(String.valueOf(selectedHall.getCapacity()));
         newprice.setText(String.valueOf(selectedHall.getPrice()));
         newlocation.setText(selectedHall.getLocation());
-
-        // Retrieve and display image
         Image imageData = selectedHall.getImage();
-        hallImageView.setImage(imageData); // Assuming hallImageLabel is an ImageView
+        hallImageView.setImage(imageData);
     }
 
 
@@ -2417,10 +2329,8 @@ public class HelloController  {
         lb8.setText(String.valueOf(selectedHall.getDescription()));
         lb9.setText(String.valueOf(selectedHall.getServiceName()));
 
-
-        // Retrieve and display image
         Image imageData = selectedHall.getImage();
-        serviceimage.setImage(imageData); // Assuming hallImageLabel is an ImageView
+        serviceimage.setImage(imageData);
     }
 
     @FXML
@@ -2453,12 +2363,12 @@ public class HelloController  {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             checkReservationStatementtt = connection.prepareStatement("SELECT DISTINCT starttime FROM software.wedding_packages WHERE date = ? AND package_id = ?");
 
             checkReservationStatementtt.setDate(1, Date.valueOf(selectedDate));
-            checkReservationStatementtt.setInt(2, getHallIdd()); // Hall ID is 2
+            checkReservationStatementtt.setInt(2, getHallIdd());
 
 
             ResultSet resultSet = checkReservationStatementtt.executeQuery();
@@ -2485,7 +2395,7 @@ public class HelloController  {
     @FXML
     void reserpackageeee(ActionEvent event) {
         LocalDate selectedDate = datereservatiooon.getValue();
-        String startTimeStr = packagetime.getValue(); // Retrieve start time from the ChoiceBox
+        String startTimeStr = packagetime.getValue();
 
         if (selectedDate == null || startTimeStr == null) {
             showAlert("Please select date and start time.");
@@ -2497,21 +2407,14 @@ public class HelloController  {
             showAlert("Please enter the hall name.");
             return;
         }
-        LocalTime startTime = LocalTime.parse(startTimeStr); // Parse the start time string to LocalTime
+        LocalTime startTime = LocalTime.parse(startTimeStr);
 
-        // Calculate the end time to be 2 hours after the start time
         LocalTime endTime = startTime.plusHours(2);
 
-        // int hallId = getHallId(); // Assuming hallId 2 for demonstration
+        long durationHours = 2;
 
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
 
-        // Calculate the duration of the booking in hours
-        long durationHours = 2; // Hardcoded duration of 2 hours
-
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
-                "postgres", "1482003")) {
-
-            // Retrieve the user's ID based on email and password
             int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
 
             if (userId == -1) {
@@ -2524,19 +2427,15 @@ public class HelloController  {
                 return;
             }
 
-            // Check if the hall is already booked for the selected date and time
             if (!isHallAvailablee(selectedDate, startTime, endTime, hallId, connection)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
 
-            // Retrieve the price per hour for the selected hall
             BigDecimal pricePerHour = getPricePerHourr(hallId, connection);
 
-            // Calculate the total price for the reservation
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
 
-            // Insert the reservation into the database
             insertReservationn(userId, hallId, selectedDate, startTime, endTime, totalPrice, connection);
 
             showAlert("Wait owner to accept your reservation.");
@@ -2562,7 +2461,7 @@ public class HelloController  {
             for (String time : servicetime.getItems()) {
                 checkReservationStatementt.setDate(1, Date.valueOf(date));
                 checkReservationStatementt.setTime(2, Time.valueOf(time));
-                checkReservationStatementt.setInt(3, getser()); // Hall ID is 2
+                checkReservationStatementt.setInt(3, getser());
                 ResultSet resultSet = checkReservationStatementt.executeQuery();
                 resultSet.next();
                 int count = resultSet.getInt(1);
@@ -2577,8 +2476,7 @@ public class HelloController  {
     }
 
     private int getser() {
-        // Replace this with your logic to retrieve hall id based on hall name from text field
-        String hallName = lb9.getText(); // Assuming newhallname is the TextField
+        String hallName = lb9.getText();
         int hallId = 0;
         try {
             PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?");
@@ -2604,12 +2502,12 @@ public class HelloController  {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
             checkReservationStatementt = connection.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND serviceid = ?");
 
             checkReservationStatementt.setDate(1, Date.valueOf(selectedDate));
-            checkReservationStatementt.setInt(2, getHallId()); // Hall ID is 2
+            checkReservationStatementt.setInt(2, getHallId());
 
 
             ResultSet resultSet = checkReservationStatementt.executeQuery();
@@ -2636,8 +2534,7 @@ public class HelloController  {
     @FXML
     void resser(ActionEvent event) {
         LocalDate selectedDate = datereservation.getValue();
-        String startTimeStr = servicetime.getValue(); // Retrieve start time from the ChoiceBox
-
+        String startTimeStr = servicetime.getValue();
         if (selectedDate == null || startTimeStr == null) {
             showAlert("Please select date and start time.");
             return;
@@ -2648,21 +2545,14 @@ public class HelloController  {
             showAlert("Please enter the hall name.");
             return;
         }
-        LocalTime startTime = LocalTime.parse(startTimeStr); // Parse the start time string to LocalTime
+        LocalTime startTime = LocalTime.parse(startTimeStr);
 
-        // Calculate the end time to be 2 hours after the start time
         LocalTime endTime = startTime.plusHours(2);
 
-        // int hallId = getHallId(); // Assuming hallId 2 for demonstration
+        long durationHours = 2;
 
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
 
-        // Calculate the duration of the booking in hours
-        long durationHours = 2; // Hardcoded duration of 2 hours
-
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres",
-                "postgres", "1482003")) {
-
-            // Retrieve the user's ID based on email and password
             int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
 
             if (userId == -1) {
@@ -2675,19 +2565,15 @@ public class HelloController  {
                 return;
             }
 
-            // Check if the hall is already booked for the selected date and time
             if (!isHallAvailablee(selectedDate, startTime, endTime, hallId, connection)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
 
-            // Retrieve the price per hour for the selected hall
             BigDecimal pricePerHour = getPricePerHourr(hallId, connection);
 
-            // Calculate the total price for the reservation
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
 
-            // Insert the reservation into the database
             insertReservationn(userId, hallId, selectedDate, startTime, endTime, totalPrice, connection);
 
             showAlert("Wait owner to accept your reservation.");
@@ -2727,7 +2613,7 @@ public class HelloController  {
         String sql = "SELECT COUNT(*) FROM software.new_table_name WHERE serviceid = ? AND date = ? AND "
                 + "((starttime <= ? AND endtime >= ?) OR (starttime <= ? AND endtime >= ?))";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, hallId); // Hall ID is 2
+            statement.setInt(1, hallId);
             statement.setDate(2, java.sql.Date.valueOf(date));
             statement.setTime(3, java.sql.Time.valueOf(startTime));
             statement.setTime(4, java.sql.Time.valueOf(startTime));
@@ -2760,7 +2646,7 @@ public class HelloController  {
             statement.setTime(4, java.sql.Time.valueOf(startTime));
             statement.setTime(5, java.sql.Time.valueOf(endTime));
             statement.setBigDecimal(6, totalPrice);
-            statement.setString(7, "wait"); // Set the initial state to 'wait'
+            statement.setString(7, "wait");
             statement.executeUpdate();
         }
     }
@@ -2771,17 +2657,13 @@ public class HelloController  {
 
     private ObservableList<new_reservation> reservationsData = FXCollections.observableArrayList();
 
-    // Initialize method and other methods here...
-
-    // Search method
     @FXML
     void soso(KeyEvent event) {
         String searchText = jtxt1.getText().toLowerCase();
 
-        // Create a filtered list to hold the matching reservations
         ObservableList<new_reservation> filteredList = FXCollections.observableArrayList();
 
-        // Iterate over the existing reservations and add the ones that match the search text to the filtered list
+
         for (new_reservation reservation : tabelnotification.getItems()) {
             if (String.valueOf(reservation.getHallId()).toLowerCase().contains(searchText) ||
                     reservation.getState().toLowerCase().contains(searchText) ||
@@ -2792,7 +2674,6 @@ public class HelloController  {
             }
         }
 
-        // Clear the TableView and add the filtered list to display in the TableView
         tabelnotification.getItems().clear();
         tabelnotification.getItems().addAll(filteredList);
     }
@@ -2878,21 +2759,19 @@ public class HelloController  {
 
     @FXML
     void buttonview(ActionEvent event) {
-        // Ensure feedbackTable is not null before proceeding
+
         if (feedbacktable == null) {
             System.err.println("feedbackTable is not initialized!");
             return;
         }
 
-        // Set cell value factories for each column
         FeedbackColumn.setCellValueFactory(new PropertyValueFactory<>("feedback"));
         Userid.setCellValueFactory(new PropertyValueFactory<>("userId"));
 
-        // Clear existing items in the table
         feedbacktable.getItems().clear();
 
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
-            String sql = "SELECT userid, feedback FROM software.new_table_name WHERE feedback IS NOT NULL"; // Modify SQL query to only select rows where feedback is not null
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            String sql = "SELECT userid, feedback FROM software.new_table_name WHERE feedback IS NOT NULL";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
 
@@ -2901,21 +2780,18 @@ public class HelloController  {
                 String feedback = resultSet.getString("feedback");
                 int userId = resultSet.getInt("userid");
 
-                // Add row to the table only if feedback is not null
                 if (feedback != null) {
                     FeedbackEntry feedbackEntry = new FeedbackEntry(userId, feedback);
                     feedbackList.add(feedbackEntry);
                 }
             }
-
-            // Print feedback entries for debugging
             for (FeedbackEntry entry : feedbackList) {
                 System.out.println("User ID: " + entry.getUserId());
                 System.out.println("Feedback: " + entry.getFeedback());
                 System.out.println("---------------------------------");
             }
 
-            // Add items to the table
+
             feedbacktable.setItems(feedbackList);
 
             resultSet.close();
@@ -2974,23 +2850,19 @@ public class HelloController  {
 
     @FXML
     void sendclick(ActionEvent event) {
-        String feedback = textareaaa.getText(); // Get the feedback entered by the user
-
+        String feedback = textareaaa.getText();
         try {
-            // Establish a connection to the database
-            try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                 int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
-                // Prepare the SQL query to insert feedback into the database
                 String query = "INSERT INTO software.new_table_name (userid, feedback) VALUES (?, ?)";
                 PreparedStatement statement = connection.prepareStatement(query);
-                statement.setInt(1, userId); // Set the user ID
-                statement.setString(2, feedback); // Set the feedback
-                statement.executeUpdate(); // Execute the query to insert feedback
+                statement.setInt(1, userId);
+                statement.setString(2, feedback);
+                statement.executeUpdate();
 
-                // Close the database connection
                 connection.close();
 
-                // Show an alert indicating successful feedback submission
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Success");
                 alert.setHeaderText(null);
@@ -2999,8 +2871,7 @@ public class HelloController  {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle database error here...
-            // Show an alert indicating failure to save feedback
+
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Error");
             alert.setHeaderText(null);
@@ -3028,7 +2899,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
     }
 
@@ -3052,11 +2923,9 @@ public class HelloController  {
 
     @FXML
     void viewsertable(ActionEvent event) {
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        String user = "postgres";
-        String password = "1482003";
-        try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            // Get the user id
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+
             int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
             ObservableList<Services> servicesList = FXCollections.observableArrayList();
             String servicesQuery = "SELECT * FROM software.services WHERE userid = ?";
@@ -3131,12 +3000,9 @@ public class HelloController  {
 
     @FXML
     void handleRowSelect(MouseEvent event) {
-        // Get the selected row index
-        int selectedIndex = serviceviewtable.getSelectionModel().getSelectedIndex();
 
-        // Make sure a row is selected
+        int selectedIndex = serviceviewtable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            // Get the values from the selected row and update the text fields
             Object value2 = colm2.getCellData(selectedIndex);
             Object value3 = colm3.getCellData(selectedIndex);
             Object value5 = colm4.getCellData(selectedIndex);
@@ -3144,7 +3010,6 @@ public class HelloController  {
 
             sernametxt.setText(value2 != null ? value2.toString() : "");
             serdes.setText(value3 != null ? value3.toString() : "");
-            // Assuming colm4 is for price, if it's not, replace it with the correct column
             serpricetxt.setText(value5 != null ? value5.toString() : "");
             seridtxt.setText(value6 != null ? value6.toString() : "");
         }
@@ -3191,37 +3056,33 @@ public class HelloController  {
     @FXML
     void addserr(ActionEvent event) {
         String description = serdes.getText();
-
-        // Check if description is "hall" or "service"
         if (description.equalsIgnoreCase("hall")) {
             saveToHallsTable();
         } else if (description.equalsIgnoreCase("service")) {
             saveToServicesTable();
         } else {
-            // Handle invalid description
+         showAlert("Handle invalid description");
         }
 
     }
 
     private void saveToHallsTable() {
-        // Create a TextInputDialog to ask the user for capacity
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Enter Capacity");
         dialog.setHeaderText(null);
         dialog.setContentText("Please enter the capacity:");
 
-        // Show the dialog and wait for user input
         dialog.showAndWait().ifPresent(capacity -> {
-            try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
                 int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
                 String sql = "INSERT INTO software.halls (hallname, capacity, priceperhour, location, userid, image) VALUES (?, ?, ?, ?, ?, ?)";
                 PreparedStatement statement = conn.prepareStatement(sql);
                 statement.setString(1, sernametxt.getText());
-                statement.setInt(2, Integer.parseInt(capacity)); // Use user input for capacity
+                statement.setInt(2, Integer.parseInt(capacity));
                 statement.setBigDecimal(3, new BigDecimal(serpricetxt.getText()));
                 statement.setString(4, seridtxt.getText());
-                statement.setInt(5, userId); // Get user ID from UserCredentials class
-                statement.setBytes(6, getImageBytes()); // Get image bytes (Method to be implemented)
+                statement.setInt(5, userId);
+                statement.setBytes(6, getImageBytes());
                 statement.executeUpdate();
                 showAlert(" Service added successfully");
 
@@ -3229,43 +3090,41 @@ public class HelloController  {
                 statement.close();
             } catch (SQLException e) {
                 showAlert("enter image for service please");
-                // Handle SQL exception
+
             }
         });
 
     }
 
-    // Method to save data to services table
     private void saveToServicesTable() {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
             String sql = "INSERT INTO software.services (servicename, description, price, userid, location,image) VALUES (?,?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, sernametxt.getText());
             statement.setString(2, serdes.getText());
             statement.setBigDecimal(3, new BigDecimal(serpricetxt.getText()));
-            statement.setInt(4, userId); // Get user ID from UserCredentials class
+            statement.setInt(4, userId);
             statement.setString(5, seridtxt.getText());
-            statement.setBytes(6, getImageBytes()); // Get image bytes (Method to be implemented)
+            statement.setBytes(6, getImageBytes());
             statement.executeUpdate();
 
             statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle SQL exception
+
         }
     }
 
-    // Method to get image bytes
     private byte[] getImageBytes() {
         byte[] imageData = null;
         try {
-            Image image = imageView.getImage(); // Get the image from the ImageView
+            Image image = imageView.getImage();
             if (image != null) {
-                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null); // Convert JavaFX Image to BufferedImage
+                BufferedImage bufferedImage = SwingFXUtils.fromFXImage(image, null);
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                ImageIO.write(bufferedImage, "png", outputStream); // Write the BufferedImage as PNG to the ByteArrayOutputStream
-                imageData = outputStream.toByteArray(); // Convert ByteArrayOutputStream to byte array
+                ImageIO.write(bufferedImage, "png", outputStream);
+                imageData = outputStream.toByteArray();
                 outputStream.close();
             }
 
@@ -3299,7 +3158,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
 
     }
@@ -3308,24 +3167,19 @@ public class HelloController  {
     @FXML
     private ImageView imageView;
 
-    // Event handler for upload button
     @FXML
     void uploadserp(ActionEvent event) {
-        // Create a FileChooser instance
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Image File");
 
-        // Set filters to show only image files
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        // Show open dialog to let user choose an image file
         File selectedFile = fileChooser.showOpenDialog(s1.getScene().getWindow());
 
-        // If user selects a file
         if (selectedFile != null) {
             try {
-                // Read the selected image file and set it to ImageView
                 Image image = new Image(new FileInputStream(selectedFile));
                 imageView.setImage(image);
             } catch (IOException e) {
@@ -3395,7 +3249,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
 
     }
@@ -3403,12 +3257,12 @@ public class HelloController  {
 
     @FXML
     void deleteevents(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             Reservation selectedReservation = eventtable.getSelectionModel().getSelectedItem();
             if (selectedReservation != null) {
                 if (selectedReservation.getState().equals("deleted")) {
                     showAlert("This reservation is already deleted.");
-                    return; // Exit the method if reservation is already deleted
+                    return;
                 }
                 int reservationId = selectedReservation.getReservationId();
                 if (selectedReservation.getState().equals("accepted")) {
@@ -3418,7 +3272,7 @@ public class HelloController  {
                         int rowsUpdated = updateStatement.executeUpdate();
                         if (rowsUpdated > 0) {
                             showAlert("Reservation successfully deleted.");
-                            updateStateInNewTableName(conn, reservationId, "deleted"); // Update state in new_table_name table
+                            updateStateInNewTableName(conn, reservationId, "deleted");
                         } else {
                             showAlert("Failed to update reservation state.");
                         }
@@ -3430,7 +3284,7 @@ public class HelloController  {
                         int rowsDeleted = deleteStatement.executeUpdate();
                         if (rowsDeleted > 0) {
                             showAlert("Reservation successfully deleted.");
-                            updateStateInNewTableName(conn, reservationId, "deleted"); // Update state in new_table_name table
+                            updateStateInNewTableName(conn, reservationId, "deleted");
                         } else {
                             showAlert("Failed to delete reservation.");
                         }
@@ -3445,7 +3299,6 @@ public class HelloController  {
         }
     }
 
-    // Helper method to update state in new_table_name table
     private void updateStateInNewTableName(Connection conn, int reservationId, String state) throws SQLException {
         String updateQuery = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
         try (PreparedStatement updateStatement = conn.prepareStatement(updateQuery)) {
@@ -3469,7 +3322,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
 
 
@@ -3489,7 +3342,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
 
 
@@ -3497,7 +3350,7 @@ public class HelloController  {
 
     @FXML
     void viewevents(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
@@ -3540,11 +3393,8 @@ public class HelloController  {
                     e8.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
                     e9.setCellValueFactory(new PropertyValueFactory<>("state"));
 
-
-                    // Clear existing data in the TableView
                     eventtable.getItems().clear();
 
-                    // Populate TableView
                     eventtable.getItems().addAll(reservationsList);
 
                 }
@@ -3574,7 +3424,7 @@ public class HelloController  {
 
 
         } catch (IOException e) {
-            logger.log(null, " An error occurred while opening a new window:");
+            logger.log(null, ERROR_WINDOW);
         }
 
     }
@@ -3598,7 +3448,7 @@ public class HelloController  {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            // Log the exception
+
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
 
@@ -3617,7 +3467,7 @@ public class HelloController  {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            // Log the exception
+
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
 
@@ -3662,7 +3512,7 @@ public class HelloController  {
 
     @FXML
     void showshow(ActionEvent event) {
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
 
 
             ObservableList<Reservation> reservationsList = FXCollections.observableArrayList();
@@ -3694,10 +3544,8 @@ public class HelloController  {
                     cc99.setCellValueFactory(new PropertyValueFactory<>("state"));
 
 
-                    // Clear existing data in the TableView
                     adminviewstable.getItems().clear();
 
-                    // Populate TableView
                     adminviewstable.getItems().addAll(reservationsList);
                 }
             }
@@ -3758,7 +3606,6 @@ public class HelloController  {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            // Log the exception
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
 
@@ -3777,7 +3624,7 @@ public class HelloController  {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            // Log the exception
+
             logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
         }
 
@@ -3787,21 +3634,19 @@ public class HelloController  {
     void shoereport(ActionEvent event) {
         populateHallReport();
 
-        // Logic for populating the servicereport table
         populateServiceReport();
     }
 
     private void populateHallReport() {
-        // Hall report population logic goes here
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
-                // Query to fetch data from the halls table for the logged-in user
+
                 String sql = "SELECT h.hallname, h.priceperhour, COUNT(r.reservationid) AS num_reservations, SUM(r.totalprice) AS total_price " +
                         "FROM software.halls h " +
                         "LEFT JOIN software.reservations r ON h.hallid = r.hallid " +
-                        "WHERE h.userid = ? " + // Filter by userId
+                        "WHERE h.userid = ? " +
                         "GROUP BY h.hallname, h.priceperhour";
                 try (PreparedStatement statement = conn.prepareStatement(sql)) {
                     statement.setInt(1, userId);
@@ -3816,13 +3661,11 @@ public class HelloController  {
                             hallData.add(new HallReportData(hallName, pricePerHour, numberOfReservations, totalPrice));
                         }
 
-                        // Set cell value factories for the columns
                         hnr.setCellValueFactory(new PropertyValueFactory<>("hallName"));
                         phr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
                         tphr.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         numberhr.setCellValueFactory(new PropertyValueFactory<>("numberOfReservations"));
 
-                        // Set the items of the hallreport table
                         hallreport.setItems(hallData);
                     }
                 }
@@ -3835,16 +3678,16 @@ public class HelloController  {
     }
 
     private void populateServiceReport() {
-        // Service report population logic goes here
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
-                // Query to fetch data from the services table for the logged-in user
+
                 String sql = "SELECT s.servicename, s.price, COUNT(r.reservationid) AS num_reservations, SUM(r.totalprice) AS total_price " +
                         "FROM software.services s " +
                         "LEFT JOIN software.reservations r ON s.serviceid = r.serviceid " +
-                        "WHERE s.userid = ? " + // Filter by userId
+                        "WHERE s.userid = ? " +
                         "GROUP BY s.servicename, s.price";
                 try (PreparedStatement statement = conn.prepareStatement(sql)) {
                     statement.setInt(1, userId);
@@ -3859,13 +3702,11 @@ public class HelloController  {
                             serviceData.add(new HallReportData(serviceName, price, numberOfReservations, totalPrice));
                         }
 
-                        // Set cell value factories for the columns
                         snr.setCellValueFactory(new PropertyValueFactory<>("hallName"));
                         psr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
                         tpsr.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         numbersrr.setCellValueFactory(new PropertyValueFactory<>("numberOfReservations"));
 
-                        // Set the items of the servicereport table
                         servicereport.setItems(serviceData);
                     }
                 }
@@ -3883,10 +3724,8 @@ public class HelloController  {
     private Button callccuulTE;
 
     private Connection getConnection() throws Exception {
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        String username = "postgres";
-        String password = "1482003";
-        return DriverManager.getConnection(url, username, password);
+
+        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
     }
 
     @FXML
@@ -3899,17 +3738,14 @@ public class HelloController  {
                 return;
             }
 
-            // Extracting month and year from the date string
             String[] parts = dateString.split("-");
             int year = Integer.parseInt(parts[0]);
             int month = Integer.parseInt(parts[1]);
 
-            // Establishing a database connection
+
             try (Connection conn = getConnection()) {
-                // Getting the user ID
                 int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
-                // Query to calculate the total price for reservations
                 String hallsQuery = "SELECT SUM(r.totalprice) " +
                         "FROM software.reservations r " +
                         "INNER JOIN software.halls h ON r.hallid = h.hallid " +
@@ -3929,7 +3765,6 @@ public class HelloController  {
                 hallsStmt.close();
                 hallsRs.close();
 
-                // Query to calculate the total price for reservations from the services table
                 String servicesQuery = "SELECT SUM(r.totalprice) " +
                         "FROM software.reservations r " +
                         "INNER JOIN software.services s ON r.serviceid = s.serviceid " +
@@ -3949,7 +3784,7 @@ public class HelloController  {
                 servicesStmt.close();
                 servicesRs.close();
 
-                // Calculate the total price from both halls and services
+
                 double totalPrice = hallsTotalPrice + servicesTotalPrice;
                 reportlabel.setText("" + totalPrice);
             }
@@ -4019,17 +3854,15 @@ public class HelloController  {
 
     @FXML
     void uploadimageevents(ActionEvent event) {
-        // Allow the user to select an image file
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Image");
         selectedFile = fileChooser.showOpenDialog(x1.getScene().getWindow());
 
-        // Display the selected image in ImageView
         if (selectedFile != null) {
             javafx.scene.image.Image image = new javafx.scene.image.Image(selectedFile.toURI().toString());
             eventsimage.setImage(image);
 
-            // Convert the selected image to byte array
             try (FileInputStream fis = new FileInputStream(selectedFile)) {
                 imageBytes = fis.readAllBytes();
             } catch (Exception e) {
@@ -4042,35 +3875,28 @@ public class HelloController  {
     @FXML
     void populateHallChoiceBox() {
         try (Connection conn = getConnection()) {
-            // Clear existing items
+
             r8.getItems().clear();
 
-            // Prepare SQL statement to fetch hallid and hallname based on userId
             String sql = "SELECT hallid, hallname FROM software.halls WHERE userid = ?";
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setInt(1, userId);
 
-            // Execute query
             ResultSet resultSet = statement.executeQuery();
 
-            // Create a list to store hallid-hallname pairs
             List<String> hallList = new ArrayList<>();
 
-            // Populate choice box with hallid-hallname pairs
             while (resultSet.next()) {
                 int hallId = resultSet.getInt("hallid");
                 String hallName = resultSet.getString("hallname");
                 hallList.add(hallId + "-" + hallName);
             }
 
-            // Add hallid-hallname pairs to the choice box
             r8.getItems().addAll(hallList);
 
-            // Add event handler to the choice box to update hall names based on user ID when clicked
             r8.setOnAction(event -> {
-                // Get the selected item and set it as the value of the choice box
                 String selectedHall = r8.getValue();
                 if (selectedHall != null) {
                     r8.setValue(selectedHall);
@@ -4079,7 +3905,7 @@ public class HelloController  {
 
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle exception
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -4088,43 +3914,38 @@ public class HelloController  {
 
     @FXML
     void saveevents(ActionEvent event) {
-        // Get values from UI elements
+
         String eventName = r1.getText();
         String eventLocation = r3.getText();
         String eventDescription = r4.getText();
 
-        // Check if a hall is selected
         String selectedHall = r8.getValue();
         if (selectedHall != null) {
-            // Split the selected item in the choice box to get hallid
+
             int hallId = Integer.parseInt(selectedHall.split("-")[0]);
 
             try (Connection conn = getConnection()) {
-                // Prepare SQL statement to insert data into events table
+
                 String eventSql = "INSERT INTO software.events (event_name, event_date, description, location, hallid, organizer_id, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-                // Prepare SQL statement to insert data into reservations table
                 String reservationSql = "INSERT INTO software.reservations (userid, hallid, date, starttime, endtime, totalprice, state, eventsid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
                 int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
                 PreparedStatement eventStatement = conn.prepareStatement(eventSql, Statement.RETURN_GENERATED_KEYS);
                 PreparedStatement reservationStatement = conn.prepareStatement(reservationSql);
 
-                // Set values for the events table
                 eventStatement.setString(1, eventName);
                 eventStatement.setDate(2, Date.valueOf(r2.getText()));
                 eventStatement.setString(3, eventDescription);
                 eventStatement.setString(4, eventLocation);
                 eventStatement.setInt(5, hallId);
                 eventStatement.setInt(6, userId);
-                // Assuming imageToByteArray() method exists and returns byte[] for image
+
                 byte[] imageData = imageToByteArray(eventsimage.getImage());
                 eventStatement.setBytes(7, imageData);
 
-                // Execute event SQL
                 int eventRowsInserted = eventStatement.executeUpdate();
 
-                // Get the generated eventid
                 int eventId = 0;
                 ResultSet generatedKeys = eventStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
@@ -4132,7 +3953,7 @@ public class HelloController  {
                 }
 
                 if (eventRowsInserted > 0 && eventId != 0) {
-                    // Set values for the reservations table
+
                     reservationStatement.setInt(1, userId);
                     reservationStatement.setInt(2, hallId);
                     reservationStatement.setDate(3, Date.valueOf(r2.getText()));
@@ -4142,22 +3963,21 @@ public class HelloController  {
                     reservationStatement.setString(7, "accepted");
                     reservationStatement.setInt(8, eventId);
 
-                    // Execute reservation SQL
                     int reservationRowsInserted = reservationStatement.executeUpdate();
                     if (reservationRowsInserted > 0) {
                         showAlert("Reservation saved successfully!");
-                        // Clear fields or show success message
+
                     }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
-                // Handle exception
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         } else {
             showAlert("Please select a hall.");
-            // You may want to show a message to the user indicating that they need to select a hall
+
         }
     }
 
@@ -4167,14 +3987,13 @@ public class HelloController  {
     }
 
     private void showTicketDialog() {
-        // Create controls for ticket input
+
         TextField ticketTypeField = new TextField();
         TextField priceField = new TextField();
         TextField availableQuantityField = new TextField();
         DatePicker startDatePicker = new DatePicker();
         DatePicker endDatePicker = new DatePicker();
 
-        // Create layout for dialog content
         GridPane ticketDialogGrid = new GridPane();
         ticketDialogGrid.addRow(0, new javafx.scene.control.Label("Ticket Type:"), ticketTypeField);
         ticketDialogGrid.addRow(1, new javafx.scene.control.Label("Price:"), priceField);
@@ -4182,57 +4001,50 @@ public class HelloController  {
         ticketDialogGrid.addRow(3, new javafx.scene.control.Label("Start Date:"), startDatePicker);
         ticketDialogGrid.addRow(4, new javafx.scene.control.Label("End Date:"), endDatePicker);
 
-        // Create dialog
         Alert ticketDialog = new Alert(Alert.AlertType.NONE);
         ticketDialog.setTitle("Add Ticket");
         ticketDialog.setHeaderText("Enter Ticket Details");
         ticketDialog.getDialogPane().setContent(ticketDialogGrid);
 
-        // Add buttons
         ButtonType saveButtonType = new ButtonType("Save");
         ButtonType closeButtonType = new ButtonType("Close", ButtonBar.ButtonData.CANCEL_CLOSE);
         ticketDialog.getButtonTypes().addAll(saveButtonType, closeButtonType);
 
-        // Handle button actions
         Stage stage = (Stage) ticketDialog.getDialogPane().getScene().getWindow();
         Button saveButton = (Button) ticketDialog.getDialogPane().lookupButton(saveButtonType);
         Button closeButton = (Button) ticketDialog.getDialogPane().lookupButton(closeButtonType);
         saveButton.addEventFilter(ActionEvent.ACTION, e -> {
-            e.consume(); // Consume the event to prevent dialog from closing
-            String eventname = r1.getText(); // Retrieve event ID
+            e.consume();
+            String eventname = r1.getText();
             saveTicketToDatabase(ticketTypeField.getText(), priceField.getText(), availableQuantityField.getText(), startDatePicker.getValue(), endDatePicker.getValue(), eventname);
-            ticketDialog.close(); // Close the dialog after saving
+            ticketDialog.close();
         });
-        closeButton.addEventFilter(ActionEvent.ACTION, e -> ticketDialog.close()); // Close the dialog without saving
+        closeButton.addEventFilter(ActionEvent.ACTION, e -> ticketDialog.close());
 
-        // Show dialog
         ticketDialog.showAndWait();
     }
 
 
     private void saveTicketToDatabase(String ticketType, String price, String availableQuantity, LocalDate startDate, LocalDate endDate, String eventId) {
-        // Database connection
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        String username = "postgres";
-        String password = "1482003";
-        try (Connection connection = DriverManager.getConnection(url, username, password)) {
-            // SQL query to insert ticket data
+
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+
             String sql = "INSERT INTO software.tickets (ticket_type, price, available_quantity, start_date, end_date, event_name) " +
                     "VALUES (?, ?, ?, ?, ?, ?)";
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                // Set parameters
+
                 statement.setString(1, ticketType);
                 statement.setBigDecimal(2, new BigDecimal(price));
                 statement.setInt(3, Integer.parseInt(availableQuantity));
                 statement.setDate(4, Date.valueOf(startDate));
                 statement.setDate(5, Date.valueOf(endDate));
                 statement.setString(6, eventId);
-                // Execute query
+
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle database error
+
         }
     }
 
@@ -4243,15 +4055,13 @@ public class HelloController  {
         try {
             primaryStage.setTitle("Ticket Management");
 
-            // Create UI controls
+
             Button addButton = new Button("Add Ticket");
             addButton.setOnAction(this::cancleevents);
 
-            // Layout
             GridPane root = new GridPane();
             root.add(addButton, 0, 0);
 
-            // Scene
             Scene scene = new Scene(root, 300, 200);
             primaryStage.setScene(scene);
             primaryStage.show();
@@ -4306,7 +4116,7 @@ public class HelloController  {
 
     @FXML
     void eventsshow(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003")) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
 
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
@@ -4317,7 +4127,7 @@ public class HelloController  {
                         "WHERE h.userid = ?";
 
                 try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                    statement.setInt(1, userId); // Using the userId obtained directly
+                    statement.setInt(1, userId);
                     try (ResultSet resultSet = statement.executeQuery()) {
                         ArrayList<Event> reservations = new ArrayList<>();
                         while (resultSet.next()) {
@@ -4328,10 +4138,10 @@ public class HelloController  {
                             String description = resultSet.getString("description");
                             int organizerId = resultSet.getInt("organizer_id");
                             Timestamp creationDate = resultSet.getTimestamp("creation_date");
-                            //  byte[] image = resultSet.getBytes("image");
+
                             int hallId = resultSet.getInt("hallid");
 
-                            // Create Event object and add it to the TableView
+
                             reservations.add(new Event(eventId, eventName, eventDate, location, description, organizerId, creationDate, hallId));
 
                         }
@@ -4342,14 +4152,14 @@ public class HelloController  {
                         eventsdate.setCellValueFactory(new PropertyValueFactory<>("eventDate"));
                         eventorgid.setCellValueFactory(new PropertyValueFactory<>("organizerId"));
                         creationdate.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
-                        //  eventsimage.setCellValueFactory(new PropertyValueFactory<>("image"));
+
                         eventhallid.setCellValueFactory(new PropertyValueFactory<>("hallId"));
 
 
-                        // Clear existing data in the TableView
+
                         eventsviewtable.getItems().clear();
 
-                        // Populate TableView
+
                         eventsviewtable.getItems().addAll(reservations);
                     }
                 }
@@ -4442,7 +4252,7 @@ public class HelloController  {
     void handleEventSelection(MouseEvent event) {
         Event selectedEvent = Eventname.getValue();
         if (selectedEvent != null) {
-            populateTicketChoiceBox(selectedEvent.getEventName()); // Pass event name instead of event ID
+            populateTicketChoiceBox(selectedEvent.getEventName());
         }
     }
 
@@ -4457,7 +4267,7 @@ public class HelloController  {
             while (resultSet.next()) {
                 String ticketType = resultSet.getString("ticket_type");
                 double price = resultSet.getDouble("price");
-                String ticketInfo = ticketType + " - $" + price; // Format ticket information
+                String ticketInfo = ticketType + " - $" + price;
                 tickets.add(ticketInfo);
 
             }
@@ -4593,7 +4403,7 @@ public class HelloController  {
     void getshow(ActionEvent event) {
         ObservableList<packge> data = FXCollections.observableArrayList();
         try {
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             String query = "SELECT * FROM software.wedding_packages";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -4606,7 +4416,7 @@ public class HelloController  {
                 int maxGuests = resultSet.getInt("max_guests");
                 String includes = resultSet.getString("includes");
 
-                // Assuming includes is stored as a comma-separated string in the database
+
                 String[] includesArray = includes.split(",");
 
                 data.add(new packge(packageId, packageName, description, price, maxGuests, includesArray));
@@ -4655,31 +4465,31 @@ public class HelloController  {
     @FXML
     void getppadd(ActionEvent event) {
         try {
-            // Establish database connection
-            Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
 
-            // Prepare insert statement
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
+
             String query = "INSERT INTO software.wedding_packages (package_id, package_name, description, price, max_guests, includes) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
-            // Set values from TextFields
+
             preparedStatement.setInt(1, Integer.parseInt(ppid.getText()));
             preparedStatement.setString(2, ppname.getText());
             preparedStatement.setString(3, ppdesc.getText());
             preparedStatement.setDouble(4, Double.parseDouble(ppprice.getText()));
             preparedStatement.setInt(5, Integer.parseInt(ppmax.getText()));
 
-// Split the string input for includes and convert to array
-            String[] includesArray = ppincludes.getText().split(","); // Assuming the includes are comma-separated
+
+            String[] includesArray = ppincludes.getText().split(",");
             Array array = connection.createArrayOf("text", includesArray);
             preparedStatement.setArray(6, array);
 
-            // Execute the insert statement
+
             int rowsInserted = preparedStatement.executeUpdate();
             showAlert("package added successfully");
 
             if (rowsInserted > 0) {
-                // If insertion was successful, clear the TextFields
+
                 ppid.clear();
                 ppname.clear();
                 ppdesc.clear();
@@ -4688,7 +4498,7 @@ public class HelloController  {
                 ppincludes.clear();
             }
 
-            // Close resources
+
             preparedStatement.close();
             connection.close();
         } catch (SQLException e) {
