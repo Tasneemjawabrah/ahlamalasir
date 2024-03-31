@@ -4,22 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93258a7d-5283-4af9-a5e7-09a63f91b7e3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/DateTimeUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/DateTimeUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/FeedbackEntry.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/FeedbackEntry.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Hall.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Hall.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HallService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HallService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Halls.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Halls.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController2.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/ReservationInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/ReservationInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Reservationinformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Reservationinformation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Services.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/helloControllerService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/helloControllerService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/new_reservation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/new_reservation.java" afterDir="false" />
-    </list>
+    <list default="true" id="93258a7d-5283-4af9-a5e7-09a63f91b7e3" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
