@@ -79,7 +79,7 @@ import javafx.embed.swing.SwingFXUtils;
 public class HelloController  {
 
     static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
-static String ERROR_WINDOW=" An error occurred while opening a new window:";
+static String WINDOW=" An error occurred while opening a new window:";
 
     @FXML
     public TextField gmailLogIn;
@@ -180,7 +180,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null, WINDOW);
         }
     }
 
@@ -275,15 +275,12 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
             frame.getContentPane().add(new JRViewer(jp));
             frame.pack();
             frame.setVisible(true);
-             /*output = new FileOutputStream(new File("sec89.pdf"));
-             JasperExportManager.exportReportToPdfStream(jp, output);
-             output.close();
-             input.close();
-             conn.close();*/
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex.toString());
 
         }
+
     }
 
     @FXML
@@ -568,15 +565,24 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
     private int gettHallId(String hallName, Connection connection) {
         int hallId = 0;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?");
+            statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?");
             statement.setString(1, hallName);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 hallId = resultSet.getInt("hallid");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return hallId;
     }
@@ -731,7 +737,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null,WINDOW);
         }
     }
 
@@ -1014,7 +1020,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null,WINDOW);
         }
 
     }
@@ -1180,7 +1186,6 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
             System.err.println("hallTableView is not initialized!");
             return;
         }
-
         hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
         hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
         capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
@@ -1188,12 +1193,13 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
         locationnn.setCellValueFactory(new PropertyValueFactory<>("location"));
         USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
         hallTableView.getItems().clear();
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
-            String sql = "SELECT * FROM software.halls";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-
+        Connection conn = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            statement = conn.prepareStatement("SELECT * FROM software.halls");
+            resultSet = statement.executeQuery();
             ObservableList<Hall> halls = FXCollections.observableArrayList();
             while (resultSet.next()) {
                 int hallId = resultSet.getInt("hallid");
@@ -1202,11 +1208,9 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
                 double pricePerHour = resultSet.getDouble("priceperhour");
                 String location = resultSet.getString("location");
                 int userId = resultSet.getInt("userid");
-
                 Hall hall = new Hall(hallId, hallName, capacity, pricePerHour, location, userId);
                 halls.add(hall);
             }
-
             for (Hall hall : halls) {
                 System.out.println("Hall ID: " + hall.getHallId());
                 System.out.println("Hall Name: " + hall.getHallName());
@@ -1216,17 +1220,19 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
                 System.out.println("User ID: " + hall.getUserId());
                 System.out.println("---------------------------------");
             }
-
             hallTableView.setItems(halls);
-
-            resultSet.close();
-            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
-
-
     @FXML
     private Button editadmin;
 
@@ -2899,7 +2905,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null, WINDOW);
         }
     }
 
@@ -3158,7 +3164,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null,WINDOW);
         }
 
     }
@@ -3249,7 +3255,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null,WINDOW);
         }
 
     }
@@ -3322,7 +3328,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null, WINDOW);
         }
 
 
@@ -3342,7 +3348,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null, WINDOW);
         }
 
 
@@ -3424,7 +3430,7 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null, ERROR_WINDOW);
+            logger.log(null,WINDOW);
         }
 
     }
@@ -4464,32 +4470,23 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
 
     @FXML
     void getppadd(ActionEvent event) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
         try {
-
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
-
-
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
             String query = "INSERT INTO software.wedding_packages (package_id, package_name, description, price, max_guests, includes) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-
-
+            preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, Integer.parseInt(ppid.getText()));
             preparedStatement.setString(2, ppname.getText());
             preparedStatement.setString(3, ppdesc.getText());
             preparedStatement.setDouble(4, Double.parseDouble(ppprice.getText()));
             preparedStatement.setInt(5, Integer.parseInt(ppmax.getText()));
-
-
             String[] includesArray = ppincludes.getText().split(",");
             Array array = connection.createArrayOf("text", includesArray);
             preparedStatement.setArray(6, array);
-
-
             int rowsInserted = preparedStatement.executeUpdate();
             showAlert("package added successfully");
-
             if (rowsInserted > 0) {
-
                 ppid.clear();
                 ppname.clear();
                 ppdesc.clear();
@@ -4497,14 +4494,16 @@ static String ERROR_WINDOW=" An error occurred while opening a new window:";
                 ppmax.clear();
                 ppincludes.clear();
             }
-
-
-            preparedStatement.close();
-            connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
-}
-
+        } finally {
+            try {
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 
