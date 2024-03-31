@@ -4525,7 +4525,7 @@ static String WINDOW=" An error occurred while opening a new window:";
                 discountedPrice = currentPrice;
             }
 
-            String updateQuery = "UPDATE alasir.wedding_packages SET price = ? WHERE price = ?";
+            String updateQuery = "UPDATE software.wedding_packages SET price = ? WHERE price = ?";
             PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
             updateStatement.setDouble(1, discountedPrice);
             updateStatement.setDouble(2, currentPrice);
