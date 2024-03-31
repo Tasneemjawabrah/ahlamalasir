@@ -14,7 +14,6 @@ public class Reservationinformation {
     private int serviceId;
     private String state;
 
-    // Constructor
     public Reservationinformation(int reservationId, int userId, int hallId, LocalDate date, LocalTime startTime, LocalTime endTime, double totalPrice, int serviceId, String state) {
         this.reservationId = reservationId;
         this.userId = userId;
@@ -27,7 +26,6 @@ public class Reservationinformation {
         this.state = state;
     }
 
-    // Getters
     public int getReservationId() {
         return reservationId;
     }
@@ -69,7 +67,6 @@ public class Reservationinformation {
         this.state = state;
     }
 
-    // Optional: Override toString() for debugging or logging purposes
     @Override
     public String toString() {
         return "ReservationInfo{" +

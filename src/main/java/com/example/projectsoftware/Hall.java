@@ -1,15 +1,11 @@
 package com.example.projectsoftware;
 
 
-import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 
-import java.awt.*;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class Hall {
     public int hallId;

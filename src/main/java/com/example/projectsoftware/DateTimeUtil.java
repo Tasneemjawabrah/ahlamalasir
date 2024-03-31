@@ -8,13 +8,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalTime;
+
 
 public class DateTimeUtil {
 
@@ -33,15 +27,14 @@ public class DateTimeUtil {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
                         int count = resultSet.getInt(1);
-                        return count == 0; // If count is zero, time is available; otherwise, it's not
+                        return count == 0;
                     }
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception properly in your application
+            e.printStackTrace();
         }
 
-        // Return true by default if an error occurs
         return true;
     }
 }

@@ -4400,10 +4400,7 @@ static String WINDOW=" An error occurred while opening a new window:";
 
     }
 
-    @FXML
-    void getdiss(ActionEvent event) {
 
-    }
 
     @FXML
     void getshow(ActionEvent event) {
@@ -4504,6 +4501,44 @@ static String WINDOW=" An error occurred while opening a new window:";
                 e.printStackTrace();
             }
         }
+    }
+
+    @FXML
+    void getdiss(ActionEvent event) {
+        try {
+            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+
+
+            double currentPrice = Double.parseDouble(price.getText());
+
+            double discountedPrice;
+            if (currentPrice >= 5000) {
+                discountedPrice = currentPrice * 0.9;
+                showAlert("Discount applied: 10% off");
+            } else if (currentPrice == 8000) {
+                discountedPrice = currentPrice * 0.8;
+                showAlert("Discount applied: 20% off");
+            } else if (currentPrice < 4000) {
+                showAlert("Cannot apply discount for prices less than 4000.");
+                return;
+            } else {
+                discountedPrice = currentPrice;
+            }
+
+            String updateQuery = "UPDATE alasir.wedding_packages SET price = ? WHERE price = ?";
+            PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+            updateStatement.setDouble(1, discountedPrice);
+            updateStatement.setDouble(2, currentPrice);
+            updateStatement.executeUpdate();
+
+            getshow(event);
+
+            updateStatement.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }
 

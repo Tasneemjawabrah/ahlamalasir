@@ -261,13 +261,12 @@ public class HelloController3 {
 
 
 
-                // You might need to handle image retrieval here if needed
 
                 Services service = new Services(serviceId, serviceName, description, price, userId, new byte[]{imagee});
                 services.add(service);
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception based on your application's needs
+            e.printStackTrace();
         }
 
         return services;
@@ -279,7 +278,6 @@ public class HelloController3 {
         ObservableList<Services> filteredServices = FXCollections.observableArrayList();
 
         for (Services service : allServices) {
-            // Convert the price to String for comparison
             String priceString = String.valueOf(service.getPrice());
             if (service.getServiceName().toLowerCase().contains(query.toLowerCase()) ||
                     priceString.equals(query))
@@ -333,7 +331,6 @@ public class HelloController3 {
 
                     loader.setLocation(getClass().getResource("servicepageee.fxml"));
                     root = loader.load();
-                    // Populate textfields and image label with information from selected hall
                    HelloController controller = loader.getController();
                     controller.populateFieldss(selectedHall);
 
@@ -350,7 +347,7 @@ public class HelloController3 {
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
-                e.printStackTrace(); // Log the exception or provide user feedback
+                e.printStackTrace();
             }
         }
     }
@@ -384,7 +381,6 @@ public class HelloController3 {
 
 
 
-                // You might need to handle image retrieval here if needed
 
                 packge service = new packge(serviceId, serviceName, description, price, userId, new String[]{imagee});
                 services.add(service);

@@ -11,10 +11,9 @@ public class Services  {
     private String description;
     private double price;
     private int userId;
-    private byte[] imageBytes; // Byte array to store image data
+    private byte[] imageBytes;
     String location;
 
-    // Constructor
     public Services(){};
     public Services(int serviceId, String serviceName, String description, double price, int userId, byte[] imageBytes) {
         this.serviceId = serviceId;
@@ -44,10 +43,9 @@ public class Services  {
         this.location=location;
     }
 
-    // Getters and Setters
     @Override
     public String toString() {
-        return getServiceName(); // Or any other meaningful representation
+        return getServiceName();
     }
 
     public byte[] getImageBytes() {
@@ -58,13 +56,12 @@ public class Services  {
         this.imageBytes = imageBytes;
     }
 
-    // Method to convert byte array to JavaFX Image
     public Image getImage() {
         if (imageBytes != null && imageBytes.length > 0) {
             String base64Image = Base64.getEncoder().encodeToString(imageBytes);
             return new Image(new ByteArrayInputStream(Base64.getDecoder().decode(base64Image)));
         }
-        return null; // Return null if imageBytes is empty
+        return null;
     }
     public int getServiceId() {
         return serviceId;

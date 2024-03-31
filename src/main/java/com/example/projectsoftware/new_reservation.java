@@ -1,7 +1,6 @@
 package com.example.projectsoftware;
 
 import java.sql.*;
-import java.util.ArrayList;
 
 public class new_reservation {
     private int reservationId;

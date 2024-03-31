@@ -1,8 +1,7 @@
 package com.example.projectsoftware;
 
 import java.sql.Time;
-import java.time.LocalDate;
-import java.time.LocalTime;
+
 import java.util.Date;
 
 public class ReservationInfo {
@@ -113,7 +112,6 @@ public class ReservationInfo {
 
 
 
-    // Getters
 
 
     public int getUserId() {
@@ -132,7 +130,6 @@ public class ReservationInfo {
 
 
 
-    // Optional: Override toString() for debugging or logging purposes
     @Override
     public String toString() {
         return "ReservationInfo{" +
