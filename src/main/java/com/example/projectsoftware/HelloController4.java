@@ -114,22 +114,30 @@ public class HelloController4 {
     }
 
     private int getHallId() {
-        // Replace this with your logic to retrieve hall id based on hall name from text field
-        String hallName = lb9.getText(); // Assuming newhallname is the TextField
+
+        String hallName = lb9.getText();
         int hallId = 0;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
         try {
-            PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?");
+            statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?");
             statement.setString(1, hallName);
-            ResultSet resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 hallId = resultSet.getInt("serviceid");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return hallId;
     }
-
     public void choisetiameondate(javafx.scene.input.MouseEvent mouseEvent) {
         LocalDate selectedDate = datereservation.getValue();
         if (selectedDate == null) {

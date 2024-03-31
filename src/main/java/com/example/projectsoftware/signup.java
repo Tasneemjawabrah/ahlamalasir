@@ -119,9 +119,8 @@ public class signup  implements Initializable {
         }
     }
 
-    // Method to validate the name input
     public static boolean nameTest(String name) {
-        // For demonstration, let's assume the name must be at least 2 characters long
+
         return name != null && name.trim().length() >= 2;
     }
 
@@ -144,28 +143,34 @@ public class signup  implements Initializable {
 
 
     public static boolean idTest(String id) {
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
-            // Prepare the SQL query
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             String sql = "SELECT COUNT(*) FROM software.users WHERE CAST(userid AS TEXT) = ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(sql);
             statement.setString(1, id);
-
-            ResultSet resultSet = statement.executeQuery();
-
-            // Get the result
-            resultSet.next();
-            int count = resultSet.getInt(1);
-
-            // If count > 0, ID already exists
-            if (count > 0) {
-                return false;
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count > 0) {
+                    return false;
+                }
+                return id.length() > 2;
             }
-
-            // If count == 0, check the length of the ID
-            return id.length() > 2;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return false;
     }
 
 
@@ -177,28 +182,32 @@ public class signup  implements Initializable {
 
 
     private static boolean isEmailAlreadyRegistered(String email) {
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
-            // Prepare the SQL query
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             String sql = "SELECT COUNT(*) FROM software.users WHERE email = ?";
-            PreparedStatement statement = connection.prepareStatement(sql);
+            statement = connection.prepareStatement(sql);
             statement.setString(1, email);
-
-
-            ResultSet resultSet = statement.executeQuery();
-
-            // Get the result
-            resultSet.next();
-            int count = resultSet.getInt(1);
-
-            // If count > 0, email already registered
-            return count > 0;
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                return count > 0;
+            }
         } catch (SQLException e) {
-            // Handle any SQL exceptions
             e.printStackTrace();
-            return false;
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return false;
     }
-
     public static boolean registerWithExistingEmail(String email) {
 
         if (isEmailAlreadyRegistered(email)) {

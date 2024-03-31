@@ -16,21 +16,30 @@ public class HallDAO {
 
     public static String[] getHallsBasedOnBudget(double budget) {
         List<String> hallsList = new ArrayList<>();
-
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try {
+            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
             String sql = "SELECT hallname FROM software.halls WHERE priceperhour <= ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setDouble(1, budget);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 String hallName = resultSet.getString("hallname");
                 hallsList.add(hallName);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
         return hallsList.toArray(new String[0]);
     }
 }
