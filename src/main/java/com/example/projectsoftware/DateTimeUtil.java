@@ -33,9 +33,11 @@ public class DateTimeUtil {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return true;
+   
+    logger.error("An SQL exception occurred: " + e.getMessage());
+   
+}
+return true;
     }
 
     private static String getPasswordFromEnvironment() {
