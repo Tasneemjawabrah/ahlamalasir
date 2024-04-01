@@ -1244,32 +1244,30 @@ public class HelloController {
 
     @FXML
     void editadmininfo(ActionEvent event) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            String sql = "UPDATE software.users SET firstname=?, lastname=?, username=?, password=?, email=?, code=? WHERE userid=?";
-
-
-            PreparedStatement statement = connection.prepareStatement(sql);
-
-            statement.setString(1, fntxt.getText());
-            statement.setString(2, lntxt.getText());
-            statement.setString(3, userntxt.getText());
-            statement.setString(4, passtxt.getText());
-            statement.setString(5, emailltxt.getText());
-            statement.setString(6, codetxt.getText());
-            statement.setInt(7, Integer.parseInt(idtxt.getText()));
-
-            int rowsUpdated = statement.executeUpdate();
-
-            if (rowsUpdated > 0) {
-                showAlert("User information updated successfully!");
-            } else {
-                showAlert("Failed to update user information.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("An error occurred while updating user information: " + e.getMessage());
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = connection.prepareStatement("UPDATE software.users SET firstname=?, lastname=?, username=?, password=?, email=?, code=? WHERE userid=?")) {
+        
+        statement.setString(1, fntxt.getText());
+        statement.setString(2, lntxt.getText());
+        statement.setString(3, userntxt.getText());
+        statement.setString(4, passtxt.getText());
+        statement.setString(5, emailltxt.getText());
+        statement.setString(6, codetxt.getText());
+        statement.setInt(7, Integer.parseInt(idtxt.getText()));
+        
+        int rowsUpdated = statement.executeUpdate();
+        
+        if (rowsUpdated > 0) {
+            showAlert("User information updated successfully!");
+        } else {
+            showAlert("Failed to update user information.");
         }
-
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+        showAlert("An error occurred while updating user information: " + e.getMessage());
+    }
+    
     }
 
     private File selectedImageFile;
@@ -1488,23 +1486,26 @@ public class HelloController {
     }
 
     private void updateImage(int hallId) {
-        if (uploadedImage != null) {
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-                String sql = "UPDATE software.halls SET image = ? WHERE hallid = ?";
-                PreparedStatement statement = conn.prepareStatement(sql);
-                statement.setBytes(1, imageToByteArray(uploadedImage));
-                statement.setInt(2, hallId);
-                int rowsUpdated = statement.executeUpdate();
-                if (rowsUpdated > 0) {
-                    showAlert("Image saved successfully.");
-                } else {
-                    showAlert("Failed to save image.");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                showAlert("Database error: " + e.getMessage());
+       if (uploadedImage != null) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+             PreparedStatement statement = conn.prepareStatement("UPDATE software.halls SET image = ? WHERE hallid = ?")) {
+            
+            statement.setBytes(1, imageToByteArray(uploadedImage));
+            statement.setInt(2, hallId);
+            
+            int rowsUpdated = statement.executeUpdate();
+            
+            if (rowsUpdated > 0) {
+                showAlert("Image saved successfully.");
+            } else {
+                showAlert("Failed to save image.");
             }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Database error: " + e.getMessage());
         }
+    }
     }
 
     private byte[] imageToByteArray(Image image) {
@@ -1775,19 +1776,22 @@ public class HelloController {
     }
 
     private int getHallId() {
-        String hallName = newhallname.getText();
-        int hallId = 0;
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?");
-            statement.setString(1, hallName);
-            ResultSet resultSet = statement.executeQuery();
+    String hallName = newhallname.getText();
+    int hallId = 0;
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?")) {
+        
+        statement.setString(1, hallName);
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 hallId = resultSet.getInt("hallid");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return hallId;
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return hallId;
     }
 
     private int getHallIdd() {
