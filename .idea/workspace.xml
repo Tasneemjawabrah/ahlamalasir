@@ -4,31 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93258a7d-5283-4af9-a5e7-09a63f91b7e3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Event.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Event.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Halls.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Halls.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController4.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/HelloController4.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Reservationinformation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Reservationinformation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Services.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/Services.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/UserCredentials.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/UserCredentials.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/new_reservation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/new_reservation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/packge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/packge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/AddEvents.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/AddEvents.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/Addpackage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/Addpackage.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/PackageAdmin.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/PackageAdmin.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/Profile.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/Profile.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/adminadmin.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/adminadmin.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/custointer.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/custointer.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/eventspage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/eventspage.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/eventsprov.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/eventsprov.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/reportt.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/reportt.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/reservationnoti.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/reservationnoti.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/serviceproviderpage.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/com/example/projectsoftware/serviceproviderpage.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/example/projectsoftware/AcceptanceTest/checkclass.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/example/projectsoftware/AcceptanceTest/checkclass.java" afterDir="false" />
-    </list>
+    <list default="true" id="93258a7d-5283-4af9-a5e7-09a63f91b7e3" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -217,7 +193,7 @@
       <workItem from="1711888801290" duration="3097000" />
       <workItem from="1711894489795" duration="1739000" />
       <workItem from="1711918593901" duration="16195000" />
-      <workItem from="1711978786255" duration="1675000" />
+      <workItem from="1711978786255" duration="2071000" />
     </task>
     <servers />
   </component>
