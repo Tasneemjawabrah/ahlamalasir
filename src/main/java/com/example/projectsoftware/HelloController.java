@@ -4211,26 +4211,20 @@ String eventName = r1.getText();
     private TextField totalpavailability;
 
     private void populateEventChoiceBox() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            String query = "SELECT event_id, event_name, event_date FROM software.events";
-            PreparedStatement statement = conn.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
-
-            ObservableList<Event> events = FXCollections.observableArrayList();
-            while (resultSet.next()) {
-                int eventId = resultSet.getInt("event_id");
-                String eventName = resultSet.getString("event_name");
-                LocalDate eventDate = resultSet.getDate("event_date").toLocalDate();
-                events.add(new Event(eventId, eventName, eventDate));
-            }
-
-            Eventname.setItems(events);
-
-            resultSet.close();
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+       try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = conn.prepareStatement("SELECT event_id, event_name, event_date FROM software.events");
+         ResultSet resultSet = statement.executeQuery()) {
+        ObservableList<Event> events = FXCollections.observableArrayList();
+        while (resultSet.next()) {
+            int eventId = resultSet.getInt("event_id");
+            String eventName = resultSet.getString("event_name");
+            LocalDate eventDate = resultSet.getDate("event_date").toLocalDate();
+            events.add(new Event(eventId, eventName, eventDate));
         }
+        Eventname.setItems(events);
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
     }
 
     @FXML
@@ -4383,13 +4377,11 @@ String eventName = r1.getText();
 
     @FXML
     void getshow(ActionEvent event) {
-        ObservableList<packge> data = FXCollections.observableArrayList();
-        try {
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            String query = "SELECT * FROM software.wedding_packages";
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
+       ObservableList<packge> data = FXCollections.observableArrayList();
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        String query = "SELECT * FROM software.wedding_packages";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
             while (resultSet.next()) {
                 int packageId = resultSet.getInt("package_id");
                 String packageName = resultSet.getString("package_name");
@@ -4397,29 +4389,20 @@ String eventName = r1.getText();
                 double price = resultSet.getDouble("price");
                 int maxGuests = resultSet.getInt("max_guests");
                 String includes = resultSet.getString("includes");
-
-
                 String[] includesArray = includes.split(",");
-
                 data.add(new packge(packageId, packageName, description, price, maxGuests, includesArray));
             }
-
             packageIdColumn.setCellValueFactory(new PropertyValueFactory<>("packageId"));
             pnameecolumn.setCellValueFactory(new PropertyValueFactory<>("packageName"));
             descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
             priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
             maxGuestsColumn.setCellValueFactory(new PropertyValueFactory<>("maxGuests"));
             includesColumn.setCellValueFactory(new PropertyValueFactory<>("includes"));
-
             tableeee.setItems(data);
-
-            resultSet.close();
-            preparedStatement.close();
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
     }
 
 
@@ -4446,12 +4429,9 @@ String eventName = r1.getText();
 
     @FXML
     void getppadd(ActionEvent event) {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            String query = "INSERT INTO software.wedding_packages (package_id, package_name, description, price, max_guests, includes) VALUES (?, ?, ?, ?, ?, ?)";
-            preparedStatement = connection.prepareStatement(query);
+     try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        String query = "INSERT INTO software.wedding_packages (package_id, package_name, description, price, max_guests, includes) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, Integer.parseInt(ppid.getText()));
             preparedStatement.setString(2, ppname.getText());
             preparedStatement.setString(3, ppdesc.getText());
@@ -4470,54 +4450,39 @@ String eventName = r1.getText();
                 ppmax.clear();
                 ppincludes.clear();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (preparedStatement != null) preparedStatement.close();
-                if (connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }  
     }
 
     @FXML
     void getdiss(ActionEvent event) {
-        try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
-
-
-            double currentPrice = Double.parseDouble(price.getText());
-
-            double discountedPrice;
-            if (currentPrice >= 5000) {
-                discountedPrice = currentPrice * 0.9;
-                showAlert("Discount applied: 10% off");
-            } else if (currentPrice == 8000) {
-                discountedPrice = currentPrice * 0.8;
-                showAlert("Discount applied: 20% off");
-            } else if (currentPrice < 4000) {
-                showAlert("Cannot apply discount for prices less than 4000.");
-                return;
-            } else {
-                discountedPrice = currentPrice;
-            }
-
-            String updateQuery = "UPDATE software.wedding_packages SET price = ? WHERE price = ?";
-            PreparedStatement updateStatement = connection.prepareStatement(updateQuery);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        double currentPrice = Double.parseDouble(price.getText());
+        double discountedPrice;
+        if (currentPrice >= 5000) {
+            discountedPrice = currentPrice * 0.9;
+            showAlert("Discount applied: 10% off");
+        } else if (currentPrice == 8000) {
+            discountedPrice = currentPrice * 0.8;
+            showAlert("Discount applied: 20% off");
+        } else if (currentPrice < 4000) {
+            showAlert("Cannot apply discount for prices less than 4000.");
+            return;
+        } else {
+            discountedPrice = currentPrice;
+        }
+        String updateQuery = "UPDATE software.wedding_packages SET price = ? WHERE price = ?";
+        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
             updateStatement.setDouble(1, discountedPrice);
             updateStatement.setDouble(2, currentPrice);
             updateStatement.executeUpdate();
-
-            getshow(event);
-
-            updateStatement.close();
-            connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-
+        getshow(event);
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
     }
 }
 
