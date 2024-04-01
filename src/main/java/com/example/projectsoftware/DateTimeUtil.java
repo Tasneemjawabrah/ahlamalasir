@@ -7,16 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 
 
 public class DateTimeUtil {
- private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
+private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = getPasswordFromEnvironment();
-
     public static boolean isTimeAvailable(String date, String startTimeStr, String endTimeStr) {
         LocalDate targetDate = LocalDate.parse(date);
         LocalTime startTime = LocalTime.parse(startTimeStr);
@@ -34,16 +32,14 @@ public class DateTimeUtil {
                     }
                 }
             }
-        } 
-     catch (SQLException e) {
-       
-        LOGGER.error("Error while checking availability", e);
-      
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
         return true;
     }
-    // Return a default value indicating availability
-    return true;
-    }
+
+
 
     private static String getPasswordFromEnvironment() {
      
