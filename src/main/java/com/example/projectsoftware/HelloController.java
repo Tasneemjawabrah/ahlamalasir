@@ -1,7 +1,6 @@
 package com.example.projectsoftware;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog;
 
@@ -41,7 +40,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 
 import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -49,7 +47,6 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,10 +73,10 @@ import javafx.embed.swing.SwingFXUtils;
 
 
 
-public class HelloController  {
+public class HelloController {
 
     static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
-static String WINDOW=" An error occurred while opening a new window:";
+    static String WINDOW = " An error occurred while opening a new window:";
 
     @FXML
     public TextField gmailLogIn;
@@ -485,8 +482,6 @@ static String WINDOW=" An error occurred while opening a new window:";
     private void select(ActionEvent event) {
 
 
-
-
         String query = "SELECT capacity, location, priceperhour FROM software.halls WHERE hallname = 'Rose'";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
@@ -737,7 +732,7 @@ static String WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null,WINDOW);
+            logger.log(null, WINDOW);
         }
     }
 
@@ -1020,7 +1015,7 @@ static String WINDOW=" An error occurred while opening a new window:";
 
 
         } catch (IOException e) {
-            logger.log(null,WINDOW);
+            logger.log(null, WINDOW);
         }
 
     }
@@ -1131,7 +1126,6 @@ static String WINDOW=" An error occurred while opening a new window:";
     private TableColumn<Hall, Integer> USERID;
 
 
-
     @FXML
     private Button vieeew;
 
@@ -1233,6 +1227,7 @@ static String WINDOW=" An error occurred while opening a new window:";
             }
         }
     }
+
     @FXML
     private Button editadmin;
 
@@ -1626,7 +1621,6 @@ static String WINDOW=" An error occurred while opening a new window:";
     private PreparedStatement checkReservationStatementtt;
 
 
-
     public void initialize() {
 
         tableeee.setOnMouseClicked(event -> {
@@ -1755,6 +1749,7 @@ static String WINDOW=" An error occurred while opening a new window:";
             }
         });
     }
+
     private int getReservedCount(LocalDate date) {
         int reservedCount = 0;
         try {
@@ -1774,6 +1769,7 @@ static String WINDOW=" An error occurred while opening a new window:";
         }
         return reservedCount;
     }
+
     private int getReservedCounttt(LocalDate date) {
         int reservedCount = 0;
         try {
@@ -1809,6 +1805,7 @@ static String WINDOW=" An error occurred while opening a new window:";
         }
         return hallId;
     }
+
     private int getHallIdd() {
 
         String hallName = mn1.getText();
@@ -2343,7 +2340,7 @@ static String WINDOW=" An error occurred while opening a new window:";
     private Button b2000;
 
     @FXML
-    private DatePicker datereservatiooon=new DatePicker();
+    private DatePicker datereservatiooon = new DatePicker();
 
     @FXML
     private TextField mn1;
@@ -2355,7 +2352,7 @@ static String WINDOW=" An error occurred while opening a new window:";
     private TextField mn3;
 
     @FXML
-    private ChoiceBox<String> packagetime=new ChoiceBox<>();
+    private ChoiceBox<String> packagetime = new ChoiceBox<>();
 
     @FXML
     void clicktimepackagechoice(MouseEvent event) {
@@ -3006,18 +3003,30 @@ static String WINDOW=" An error occurred while opening a new window:";
 
     @FXML
     void handleRowSelect(MouseEvent event) {
-
         int selectedIndex = serviceviewtable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
             Object value2 = colm2.getCellData(selectedIndex);
             Object value3 = colm3.getCellData(selectedIndex);
             Object value5 = colm4.getCellData(selectedIndex);
             Object value6 = colm6.getCellData(selectedIndex);
+            Object value7 = colm5.getCellData(selectedIndex);
 
             sernametxt.setText(value2 != null ? value2.toString() : "");
             serdes.setText(value3 != null ? value3.toString() : "");
             serpricetxt.setText(value5 != null ? value5.toString() : "");
             seridtxt.setText(value6 != null ? value6.toString() : "");
+
+            if (value7 instanceof Blob) {
+                Blob blob = (Blob) value7;
+                try {
+                    byte[] imageData = blob.getBytes(1, (int) blob.length());
+                    Image image = new Image(new ByteArrayInputStream(imageData));
+                    imageView.setImage(image);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } else {
+            }
         }
     }
 
@@ -3029,7 +3038,6 @@ static String WINDOW=" An error occurred while opening a new window:";
 
     @FXML
     private TableColumn<Services, String> colm7;
-
 
     @FXML
     private Button s1;
@@ -3067,7 +3075,7 @@ static String WINDOW=" An error occurred while opening a new window:";
         } else if (description.equalsIgnoreCase("service")) {
             saveToServicesTable();
         } else {
-         showAlert("Handle invalid description");
+            showAlert("Handle invalid description");
         }
 
     }
@@ -3090,7 +3098,7 @@ static String WINDOW=" An error occurred while opening a new window:";
                 statement.setInt(5, userId);
                 statement.setBytes(6, getImageBytes());
                 statement.executeUpdate();
-                showAlert(" Service added successfully");
+                showAlert(" halls added successfully");
 
 
                 statement.close();
@@ -3116,6 +3124,7 @@ static String WINDOW=" An error occurred while opening a new window:";
             statement.executeUpdate();
 
             statement.close();
+            showAlert("Service added successfully");
         } catch (SQLException e) {
             e.printStackTrace();
 
@@ -3142,13 +3151,77 @@ static String WINDOW=" An error occurred while opening a new window:";
 
     @FXML
     void deleteserr(ActionEvent event) {
-
     }
 
     @FXML
     void editserr(ActionEvent event) {
+        String serviceName = sernametxt.getText();
+        String description = serdes.getText();
+        String price = serpricetxt.getText();
+        String location = seridtxt.getText();
+        String query;
 
+        if (!serviceName.isEmpty() && !description.isEmpty() && !price.isEmpty() && !location.isEmpty()) {
+            try {
+                connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                if (connection != null) {
+                    int id = getSelectedItemId();
+                    if (id != -1) {
+                        if (description.equalsIgnoreCase("hall")) {
+                            query = "UPDATE software.halls SET hallname = ?, priceperhour = ? WHERE hallid = ?";
+                        } else if (description.equalsIgnoreCase("service")) {
+                            query = "UPDATE software.services SET servicename = ?, price = ? WHERE serviceid = ?";
+                        } else {
+                            showAlert("Invalid description");
+                            return;
+                        }
+
+                        try (PreparedStatement statement = connection.prepareStatement(query)) {
+                            statement.setString(1, serviceName);
+                            statement.setBigDecimal(2, new BigDecimal(price));
+                            statement.setInt(3, id);
+                            int rowsAffected = statement.executeUpdate();
+                            if (rowsAffected > 0) {
+                                showAlert("Data updated successfully");
+                            } else {
+                                showAlert("Failed to update data");
+                            }
+                        }
+                    } else {
+                        showAlert("Please select a row");
+                    }
+                } else {
+                    showAlert("Failed to connect to the database");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert("Error: " + e.getMessage());
+            } finally {
+                try {
+                    if (connection != null) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            showAlert("Please fill in all fields");
+        }
     }
+
+    private int getSelectedItemId() {
+        int selectedIndex = serviceviewtable.getSelectionModel().getSelectedIndex();
+        if (selectedIndex >= 0) {
+            Object value1 = colm1.getCellData(selectedIndex);
+            if (value1 != null) {
+                return Integer.parseInt(value1.toString());
+            }
+        }
+        return -1;
+    }
+
+
 
     @FXML
     void gogo(ActionEvent event) {
@@ -3606,7 +3679,7 @@ static String WINDOW=" An error occurred while opening a new window:";
     @FXML
     void backreport(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("serviceproviderpage.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("eventsprov.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);

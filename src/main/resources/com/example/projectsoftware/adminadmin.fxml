@@ -8,20 +8,19 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectsoftware.HelloController">
    <children>
       <ImageView fitHeight="543.0" fitWidth="736.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../photo/img_13.png" />
+            <Image url="@../../../photo/img_26.png" />
          </image>
       </ImageView>
-      <Button fx:id="showbuttonn" layoutX="296.0" layoutY="334.0" mnemonicParsing="false" onAction="#showshow" prefHeight="31.0" prefWidth="135.0" style="-fx-background-color: transparent;" />
-      <ScrollPane layoutX="112.0" layoutY="94.0" prefHeight="202.0" prefWidth="525.0">
+      <Button fx:id="showbuttonn" layoutX="300.0" layoutY="347.0" mnemonicParsing="false" onAction="#showshow" prefHeight="38.0" prefWidth="135.0" style="-fx-background-color: transparent;" />
+      <ScrollPane layoutX="112.0" layoutY="94.0" prefHeight="218.0" prefWidth="525.0">
          <content>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="adminviewstable" prefHeight="202.0" prefWidth="511.0">
+                  <TableView fx:id="adminviewstable" prefHeight="218.0" prefWidth="525.0">
                      <columns>
                         <TableColumn fx:id="cc11" prefWidth="75.0" text="reservationid" />
                         <TableColumn fx:id="cc22" prefWidth="75.0" text="userid" />
@@ -39,5 +38,6 @@
             </AnchorPane>
          </content>
       </ScrollPane>
+      <Button fx:id="wh" layoutX="700.0" layoutY="17.0" mnemonicParsing="false" onAction="#whwh" prefHeight="32.0" prefWidth="31.0" style="-fx-background-color: transparent;" />
    </children>
 </AnchorPane>

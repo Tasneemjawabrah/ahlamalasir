@@ -3,7 +3,7 @@ package com.example.projectsoftware;
 public class UserCredentials {
     private static String email;
     private static String password;
-    private static int userId; // Add userId field
+    private static int userId;
 
     public static String getEmail() {
         return email;

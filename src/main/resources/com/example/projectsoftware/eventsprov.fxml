@@ -12,13 +12,11 @@
    <children>
       <ImageView fitHeight="543.0" fitWidth="736.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../photo/img_11.png" />
+            <Image url="@../../../photo/eventshow.png" />
          </image>
       </ImageView>
-      <Button fx:id="m2" layoutX="41.0" layoutY="86.0" mnemonicParsing="false" onAction="#viewevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="m3" layoutX="41.0" layoutY="146.0" mnemonicParsing="false" onAction="#addevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="m4" layoutX="41.0" layoutY="206.0" mnemonicParsing="false" onAction="#deleteevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="m5" layoutX="41.0" layoutY="264.0" mnemonicParsing="false" onAction="#reportevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="m2" layoutX="41.0" layoutY="139.0" mnemonicParsing="false" onAction="#viewevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="m5" layoutX="41.0" layoutY="207.0" mnemonicParsing="false" onAction="#reportevents" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
       <ScrollPane layoutX="232.0" layoutY="86.0" prefHeight="259.0" prefWidth="461.0">
         <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
@@ -41,6 +39,5 @@
         </content>
       </ScrollPane>
       <Button fx:id="m1" layoutX="694.0" layoutY="4.0" mnemonicParsing="false" onAction="#ogog" prefHeight="39.0" prefWidth="37.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="servicee" layoutX="41.0" layoutY="312.0" mnemonicParsing="false" onAction="#adminservice" prefHeight="29.0" prefWidth="127.0" style="-fx-background-color: transparent;" />
    </children>
 </AnchorPane>

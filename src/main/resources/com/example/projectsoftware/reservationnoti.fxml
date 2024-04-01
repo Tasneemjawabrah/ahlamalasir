@@ -40,5 +40,6 @@
             </AnchorPane>
         </content>
       </ScrollPane>
+      <Button fx:id="s6" layoutX="693.0" layoutY="14.0" mnemonicParsing="false" onAction="#gogo" prefHeight="33.0" prefWidth="39.0" style="-fx-background-color: transparent;" />
    </children>
 </AnchorPane>

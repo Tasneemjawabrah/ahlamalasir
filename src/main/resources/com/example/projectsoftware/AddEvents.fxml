@@ -11,13 +11,13 @@
    <children>
       <ImageView fitHeight="543.0" fitWidth="736.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../photo/img_15.png" />
+            <Image url="@../../../photo/addeventsti.png" />
          </image>
       </ImageView>
-      <TextField fx:id="r1" layoutX="53.0" layoutY="24.0" prefHeight="31.0" prefWidth="218.0" style="-fx-background-color: transparent;" text="Evant-name" />
-      <TextField fx:id="r2" layoutX="53.0" layoutY="71.0" prefHeight="31.0" prefWidth="218.0" style="-fx-background-color: transparent;" text="Evant-date" />
-      <TextField fx:id="r3" layoutX="53.0" layoutY="118.0" prefHeight="31.0" prefWidth="218.0" style="-fx-background-color: transparent;" text="Location" />
-      <TextField fx:id="r4" layoutX="53.0" layoutY="165.0" prefHeight="31.0" prefWidth="218.0" style="-fx-background-color: transparent;" text="Description" />
+      <TextField fx:id="r1" layoutX="53.0" layoutY="24.0" prefHeight="31.0" prefWidth="218.0" promptText="Evant-name" style="-fx-background-color: transparent;" />
+      <TextField fx:id="r2" layoutX="53.0" layoutY="71.0" prefHeight="31.0" prefWidth="218.0" promptText="Evant-date" style="-fx-background-color: transparent;" />
+      <TextField fx:id="r3" layoutX="53.0" layoutY="118.0" prefHeight="31.0" prefWidth="218.0" promptText="Location" style="-fx-background-color: transparent;" />
+      <TextField fx:id="r4" layoutX="53.0" layoutY="165.0" prefHeight="31.0" prefWidth="218.0" promptText="Description" style="-fx-background-color: transparent;" />
       <Button layoutX="22.0" layoutY="344.0" mnemonicParsing="false" onAction="#saveevents" prefHeight="31.0" prefWidth="125.0" style="-fx-background-color: transparent;" fx:id="x3" />
       <Button layoutX="175.0" layoutY="344.0" mnemonicParsing="false" onAction="#cancleevents" prefHeight="31.0" prefWidth="125.0" style="-fx-background-color: transparent;" fx:id="x2" />
       <Button layoutX="472.0" layoutY="260.0" mnemonicParsing="false" onAction="#uploadimageevents" prefHeight="31.0" prefWidth="125.0" style="-fx-background-color: transparent;" fx:id="x1" />
@@ -25,5 +25,6 @@
       <ChoiceBox fx:id="r8" layoutX="53.0" layoutY="216.0" prefHeight="31.0" prefWidth="218.0" />
       <ChoiceBox fx:id="r9" layoutX="53.0" layoutY="260.0" prefHeight="31.0" prefWidth="218.0" />
       <ChoiceBox fx:id="r10" layoutX="53.0" layoutY="303.0" prefHeight="31.0" prefWidth="218.0" />
+      <Button fx:id="bnbn" layoutX="693.0" layoutY="14.0" mnemonicParsing="false" onAction="#gotoevent" prefHeight="31.0" prefWidth="37.0" style="-fx-background-color: transparent;" />
    </children>
 </AnchorPane>

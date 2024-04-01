@@ -16,6 +16,7 @@ public  class Halls implements HallService {
         private int capacity;
     private byte[] imageBytes;
     private String location;
+    private String state;
 
 
 
@@ -28,6 +29,14 @@ public  class Halls implements HallService {
         this.capacity = capacity;
         this.location = location;
         this.imageBytes = imageBytes;
+    }
+    public Halls(String name, double price, int capacity, String location, byte[] imageBytes , String state) {
+        this.name = name;
+        this.price = price;
+        this.capacity = capacity;
+        this.location = location;
+        this.imageBytes = imageBytes;
+        this.state= state;
     }
 
     public Halls(String name, double price, int capacity) {
@@ -43,6 +52,14 @@ public  class Halls implements HallService {
     public void setLocation(String location) {
         this.location = location;
     }
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public byte[] getImageBytes() {
         return imageBytes;
     }

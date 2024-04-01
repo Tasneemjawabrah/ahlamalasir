@@ -6,7 +6,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectsoftware.HelloController">
    <children>
       <ImageView fitHeight="543.0" fitWidth="736.0" pickOnBounds="true" preserveRatio="true">
@@ -21,5 +20,6 @@
       <TextField fx:id="ppmax" layoutX="473.0" layoutY="197.0" prefHeight="13.0" prefWidth="114.0" style="-fx-background-color: transparent;" />
       <TextField fx:id="ppincludes" layoutX="473.0" layoutY="245.0" prefHeight="13.0" prefWidth="114.0" style="-fx-background-color: transparent;" />
       <Button fx:id="ppadd" layoutX="288.0" layoutY="323.0" mnemonicParsing="false" onAction="#getppadd" prefHeight="39.0" prefWidth="130.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="users" layoutX="697.0" layoutY="14.0" mnemonicParsing="false" onAction="#adminusers" prefHeight="39.0" prefWidth="33.0" style="-fx-background-color: transparent;" />
    </children>
 </AnchorPane>

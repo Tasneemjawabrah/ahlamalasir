@@ -6,12 +6,11 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.projectsoftware.HelloController">
    <children>
       <ImageView fitHeight="543.0" fitWidth="736.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../photo/profiille.png" />
+            <Image url="@../../../photo/hffffffff.png" />
          </image>
       </ImageView>
       <TextField fx:id="idtxt" alignment="CENTER" layoutX="52.0" layoutY="14.0" prefHeight="29.0" prefWidth="217.0" style="-fx-background-color: transparnt;" text="id" />
@@ -26,5 +25,6 @@
       <Button fx:id="uploadadminoic" layoutX="471.0" layoutY="259.0" mnemonicParsing="false" onAction="#uplodeadminpicture" prefHeight="29.0" prefWidth="126.0" style="-fx-background-color: transparent;" />
       <ImageView fx:id="pictureImageView" fitHeight="163.0" fitWidth="169.0" layoutX="450.0" layoutY="75.0" pickOnBounds="true" preserveRatio="true" />
       <TextField fx:id="codetxt" alignment="CENTER" layoutX="52.0" layoutY="288.0" prefHeight="29.0" prefWidth="217.0" style="-fx-background-color: transparnt;" text="Code" />
+      <Button fx:id="servicee" layoutX="693.0" layoutY="16.0" mnemonicParsing="false" onAction="#adminservice" prefHeight="37.0" prefWidth="29.0" style="-fx-background-color: transparent;" />
    </children>
 </AnchorPane>

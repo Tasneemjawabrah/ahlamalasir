@@ -13,6 +13,8 @@ public class Services  {
     private int userId;
     private byte[] imageBytes;
     String location;
+    String state;
+
 
     public Services(){};
     public Services(int serviceId, String serviceName, String description, double price, int userId, byte[] imageBytes) {
@@ -22,6 +24,15 @@ public class Services  {
         this.price = price;
         this.userId = userId;
         this.imageBytes=imageBytes;
+    }
+    public Services(int serviceId, String serviceName, String description, double price, int userId, byte[] imageBytes,String location, String state) {
+        this.serviceId = serviceId;
+        this.serviceName = serviceName;
+        this.description = description;
+        this.price = price;
+        this.userId = userId;
+        this.location=location;
+        this.state=state;
     }
     public Services(int serviceId, String serviceName, String description, double price, int userId, byte[] imageBytes, String location) {
         this.serviceId = serviceId;
@@ -79,6 +90,12 @@ public class Services  {
     }
     public void setLocation(String Location) {
         this.location = Location;
+    }
+    public String getState() {
+        return state;
+    }
+    public void setState(String state) {
+        this.state = state;
     }
 
 

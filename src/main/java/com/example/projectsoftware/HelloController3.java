@@ -9,18 +9,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class HelloController3 {
 
@@ -60,7 +52,6 @@ public class HelloController3 {
 
         allpackage = fetchpackage();
         packageList.setItems(allpackage);
-       // packageList.setVisible(false);
         txt3.textProperty().addListener((observable, oldValue, newValue) -> searchpackages(newValue));
         packageList.setOnMouseClicked(this::ssshowHallInformationDialog);
 
@@ -91,7 +82,6 @@ public class HelloController3 {
 
                     loader.setLocation(getClass().getResource("newhall.fxml"));
                     root = loader.load();
-                    // Populate textfields and image label with information from selected hall
                     HelloController controller = loader.getController();
                     controller.populateFields(selectedHall);
 
@@ -108,7 +98,7 @@ public class HelloController3 {
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
-                e.printStackTrace(); // Log the exception or provide user feedback
+                e.printStackTrace();
             }
         }
     }
@@ -133,7 +123,7 @@ public class HelloController3 {
                 halls.add(hall);
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Handle the exception based on your application's needs
+            e.printStackTrace();
         }
 
         return halls;
@@ -142,7 +132,6 @@ public class HelloController3 {
     private void filterHalls(String query) {
         ObservableList<Halls> filteredHalls = FXCollections.observableArrayList();
 
-        // Filter based on the query (you can customize the filtering logic)
         for (Halls hall : allHalls) {
             if (hall.getName().toLowerCase().contains(query.toLowerCase()) ||
                     (isNumeric(query) && (String.valueOf(hall.getPrice()).equals(query) || String.valueOf(hall.getCapacity()).equals(query)))) {
@@ -150,7 +139,6 @@ public class HelloController3 {
             }
         }
 
-        // Update the hallListView with filtered data
         hallListView.setItems(filteredHalls);
         hallListView.setVisible(!query.isEmpty());
     }
@@ -175,7 +163,6 @@ public class HelloController3 {
 
 
 
-    // Method to display alerts/messages
     private void showAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
@@ -184,7 +171,6 @@ public class HelloController3 {
         alert.showAndWait();
     }
 
-    // Method to convert byte array to javafx.scene.image.Image
 
     @FXML
     private Button cancclllee;
@@ -433,9 +419,9 @@ public class HelloController3 {
     }
 
     @FXML
-    private ListView<packge> packageList;
+    private ListView<packge> packageList=new ListView<>();
 
     @FXML
-    private TextField txt3;
+    private TextField txt3=new TextField();
 
 }

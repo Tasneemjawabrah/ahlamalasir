@@ -62,7 +62,6 @@ public class Reservationinformation {
         return state;
     }
 
-    // Setters (if needed)
     public void setState(String state) {
         this.state = state;
     }

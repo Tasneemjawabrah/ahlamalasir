@@ -7,9 +7,6 @@ public class packge {
     private double price;
     private int maxGuests;
     private String[] includes;
-
-
-    // Constructor
     public packge(int packageId, String packageName, String description, double price, int maxGuests, String[] includes) {
         this.packageId = packageId;
         this.packageName = packageName;
@@ -20,7 +17,6 @@ public class packge {
 
     }
 
-    // Getter methods
     public int getPackageId() {
         return packageId;
     }

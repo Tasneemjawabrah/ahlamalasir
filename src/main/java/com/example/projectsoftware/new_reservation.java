@@ -51,7 +51,6 @@ public class new_reservation {
 
     }
 
-    // Getters and Setters
     public int getReservationId() {
         return reservationId;
     }

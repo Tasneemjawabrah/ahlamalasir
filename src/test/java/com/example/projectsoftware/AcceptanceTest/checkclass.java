@@ -7,13 +7,6 @@ import io.cucumber.java.en.When;
 import static org.junit.Assert.assertEquals;
 
 
-
-import com.example.projectsoftware.HelloController2;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-
-import static org.junit.Assert.assertEquals;
-
 public class checkclass {
     String email;
     String code;

@@ -9,14 +9,14 @@
    <children>
       <ImageView fitHeight="543.0" fitWidth="736.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../photo/img_4.png" />
+            <Image url="@../../../photo/seerr.png" />
          </image>
       </ImageView>
-      <Button fx:id="notifi" layoutX="438.0" layoutY="14.0" mnemonicParsing="false" onAction="#notificbutton" prefHeight="25.0" prefWidth="81.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="ww" layoutX="548.0" layoutY="14.0" mnemonicParsing="false" onAction="#www" prefHeight="25.0" prefWidth="71.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="serrr" layoutX="263.0" layoutY="14.0" mnemonicParsing="false" onAction="#serser" prefHeight="25.0" prefWidth="71.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="profile" layoutX="123.0" layoutY="14.0" mnemonicParsing="false" onAction="#adminprofile" prefHeight="25.0" prefWidth="47.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="to" layoutX="196.0" layoutY="14.0" mnemonicParsing="false" onAction="#toot" prefHeight="25.0" prefWidth="54.0" style="-fx-background-color: transparent;" />
-      <Button fx:id="bnbn" layoutX="352.0" layoutY="14.0" mnemonicParsing="false" onAction="#gotoevent" text="Button" />
+      <Button fx:id="notifi" layoutX="465.0" layoutY="14.0" mnemonicParsing="false" onAction="#notificbutton" prefHeight="25.0" prefWidth="81.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="ww" layoutX="560.0" layoutY="14.0" mnemonicParsing="false" onAction="#www" prefHeight="25.0" prefWidth="71.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="serrr" layoutX="290.0" layoutY="14.0" mnemonicParsing="false" onAction="#serser" prefHeight="25.0" prefWidth="71.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="profile" layoutX="110.0" layoutY="14.0" mnemonicParsing="false" onAction="#adminprofile" prefHeight="25.0" prefWidth="47.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="to" layoutX="179.0" layoutY="14.0" mnemonicParsing="false" onAction="#toot" prefHeight="25.0" prefWidth="81.0" style="-fx-background-color: transparent;" />
+      <Button fx:id="bnbn" layoutX="380.0" layoutY="14.0" mnemonicParsing="false" onAction="#gotoevent" prefHeight="25.0" prefWidth="59.0" style="-fx-background-color: transparent;" />
    </children>
 </AnchorPane>

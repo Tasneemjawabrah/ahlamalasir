@@ -73,17 +73,17 @@ public class HelloController4 {
 
                 if (item.isBefore(LocalDate.now())) {
                     setDisable(true);
-                    setStyle("-fx-background-color: #ffc0cb;"); // Past dates
+                    setStyle("-fx-background-color: #ffc0cb;");
                 } else {
                     setDisable(false);
                     int reservedCount = getReservedCount(item);
                     if (reservedCount == 3) {
-                        setStyle("-fx-background-color: #ff0000;"); // All times reserved
+                        setStyle("-fx-background-color: #ff0000;");
                         setOnMouseClicked(event -> showAlert("All time slots are reserved for this day."));
                     } else if (reservedCount > 0) {
-                        setStyle("-fx-background-color: #ffff00;"); // Some times reserved
+                        setStyle("-fx-background-color: #ffff00;");
                     } else {
-                        setStyle("-fx-background-color: #00ff00;"); // All times available
+                        setStyle("-fx-background-color: #00ff00;");
                     }
                 }
             }
@@ -99,7 +99,7 @@ public class HelloController4 {
             for (String time : servicetime.getItems()) {
                 checkReservationStatement.setDate(1, Date.valueOf(date));
                 checkReservationStatement.setTime(2, Time.valueOf(time));
-                checkReservationStatement.setInt(3, getHallId()); // Hall ID is 2
+                checkReservationStatement.setInt(3, getHallId());
                 ResultSet resultSet = checkReservationStatement.executeQuery();
                 resultSet.next();
                 int count = resultSet.getInt(1);
@@ -154,7 +154,7 @@ public class HelloController4 {
             checkReservationStatement = connection.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND serviceid = ?");
 
             checkReservationStatement.setDate(1, Date.valueOf(selectedDate));
-            checkReservationStatement.setInt(2, getHallId()); // Hall ID is 2
+            checkReservationStatement.setInt(2, getHallId());
 
 
             ResultSet resultSet = checkReservationStatement.executeQuery();
