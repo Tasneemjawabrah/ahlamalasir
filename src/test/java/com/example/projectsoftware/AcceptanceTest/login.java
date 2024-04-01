@@ -3,6 +3,8 @@ package com.example.projectsoftware.AcceptanceTest;
 import com.example.projectsoftware.HelloController2;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,8 +16,8 @@ public class login {
         HelloController2 ob= new HelloController2();
         @When("I click on login and flag is {string}")
         public void iClickOnLoginAndFlagIs(String string) {
-            if(string.equals("true"))assertEquals(true,true);
-            else assertEquals(false,false);
+            if(string.equals("true"))assertTrue(true);
+            else assertFalse(true);
         }
         @Then("field {string} should be with error")
         public void fieldShouldBeWithError(String string) {
@@ -28,10 +30,10 @@ public class login {
             em=string;
             System.out.print(em);
             if(string.equals("Email")){
-                assertEquals(true, true);
+               assertTrue(true);
             }
             else if(string.equals("password") ){
-                assertEquals(true, true);
+                assertTrue(true);
             }
         }
         @When("hee fills in {string}")
