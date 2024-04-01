@@ -2816,7 +2816,7 @@ public class HelloController {
     void sendclick(ActionEvent event) {
         String feedback = textareaaa.getText();
     try {
-        int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword());
+        int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(),conn);
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement statement = conn.prepareStatement("INSERT INTO software.new_table_name (userid, feedback) VALUES (?, ?)")) {
 
@@ -3113,58 +3113,43 @@ public class HelloController {
     @FXML
     void editserr(ActionEvent event) {
         String serviceName = sernametxt.getText();
-        String description = serdes.getText();
-        String price = serpricetxt.getText();
-        String location = seridtxt.getText();
-        String query;
-
-        if (!serviceName.isEmpty() && !description.isEmpty() && !price.isEmpty() && !location.isEmpty()) {
-            try {
-                connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
-                if (connection != null) {
-                    int id = getSelectedItemId();
-                    if (id != -1) {
-                        if (description.equalsIgnoreCase("hall")) {
-                            query = "UPDATE software.halls SET hallname = ?, priceperhour = ? WHERE hallid = ?";
-                        } else if (description.equalsIgnoreCase("service")) {
-                            query = "UPDATE software.services SET servicename = ?, price = ? WHERE serviceid = ?";
-                        } else {
-                            showAlert("Invalid description");
-                            return;
-                        }
-
-                        try (PreparedStatement statement = connection.prepareStatement(query)) {
-                            statement.setString(1, serviceName);
-                            statement.setBigDecimal(2, new BigDecimal(price));
-                            statement.setInt(3, id);
-                            int rowsAffected = statement.executeUpdate();
-                            if (rowsAffected > 0) {
-                                showAlert("Data updated successfully");
-                            } else {
-                                showAlert("Failed to update data");
-                            }
-                        }
-                    } else {
-                        showAlert("Please select a row");
-                    }
+    String description = serdes.getText();
+    String price = serpricetxt.getText();
+    String location = seridtxt.getText();
+    String query;
+    if (!serviceName.isEmpty() && !description.isEmpty() && !price.isEmpty() && !location.isEmpty()) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+            int id = getSelectedItemId();
+            if (id != -1) {
+                if (description.equalsIgnoreCase("hall")) {
+                    query = "UPDATE software.halls SET hallname = ?, priceperhour = ? WHERE hallid = ?";
+                } else if (description.equalsIgnoreCase("service")) {
+                    query = "UPDATE software.services SET servicename = ?, price = ? WHERE serviceid = ?";
                 } else {
-                    showAlert("Failed to connect to the database");
+                    showAlert("Invalid description");
+                    return;
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                showAlert("Error: " + e.getMessage());
-            } finally {
-                try {
-                    if (connection != null) {
-                        connection.close();
+                try (PreparedStatement statement = connection.prepareStatement(query)) {
+                    statement.setString(1, serviceName);
+                    statement.setBigDecimal(2, new BigDecimal(price));
+                    statement.setInt(3, id);
+                    int rowsAffected = statement.executeUpdate();
+                    if (rowsAffected > 0) {
+                        showAlert("Data updated successfully");
+                    } else {
+                        showAlert("Failed to update data");
                     }
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 }
+            } else {
+                showAlert("Please select a row");
             }
-        } else {
-            showAlert("Please fill in all fields");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error: " + e.getMessage());
         }
+    } else {
+        showAlert("Please fill in all fields");
+    }
     }
 
     private int getSelectedItemId() {
