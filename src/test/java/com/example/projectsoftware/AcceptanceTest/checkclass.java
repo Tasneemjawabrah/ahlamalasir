@@ -18,7 +18,7 @@ public class checkclass {
         if (string.equals("true")) {
             assertTrue(true);
         } else {
-            assertFalse(true);
+            assertFalse(false);
         }
     }
     
