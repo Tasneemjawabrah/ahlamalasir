@@ -1137,30 +1137,27 @@ public class HelloController {
     @FXML
     void deletehalls(ActionEvent event) {
         hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
-        hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
-        capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
-        priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
-        locationnn.setCellValueFactory(new PropertyValueFactory<>("location"));
-        USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
-
-        Hall selectedHall = hallTableView.getSelectionModel().getSelectedItem();
-        if (selectedHall != null) {
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-                String sql = "DELETE FROM software.halls WHERE hallid = ?";
-                PreparedStatement statement = conn.prepareStatement(sql);
-                statement.setInt(1, selectedHall.getHallId());
-                int rowsDeleted = statement.executeUpdate();
-                if (rowsDeleted > 0) {
-                    System.out.println("Row deleted successfully.");
-                    hallTableView.getItems().remove(selectedHall);
-                }
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+    hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
+    capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
+    priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
+    locationnn.setCellValueFactory(new PropertyValueFactory<>("location"));
+    USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
+    Hall selectedHall = hallTableView.getSelectionModel().getSelectedItem();
+    if (selectedHall != null) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+             PreparedStatement statement = conn.prepareStatement("DELETE FROM software.halls WHERE hallid = ?")) {
+            statement.setInt(1, selectedHall.getHallId());
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Row deleted successfully.");
+                hallTableView.getItems().remove(selectedHall);
             }
-        } else {
-            System.out.println("No row selected.");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+    } else {
+        System.out.println("No row selected.");
+    }
     }
 
 
