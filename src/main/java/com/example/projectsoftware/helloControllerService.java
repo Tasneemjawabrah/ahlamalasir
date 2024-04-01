@@ -29,6 +29,7 @@ public class helloControllerService {
         throw new IllegalStateException("Database password not found in environment variables.");
     }
     return password;
+ }
     @FXML
     public void initialize() {
         allServices = fetchAllServices();
