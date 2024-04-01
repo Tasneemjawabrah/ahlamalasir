@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.logging.Logger;
 
 
 
@@ -41,10 +42,8 @@ return true;
     }
 
     private static String getPasswordFromEnvironment() {
-        String password = System.getenv("1482003");
-        if (password == null) {
-            throw new IllegalStateException("Database password not found in environment variables.");
-        }
-        return password;
+     
+      
+        return "1482003" ;
     }
 }
