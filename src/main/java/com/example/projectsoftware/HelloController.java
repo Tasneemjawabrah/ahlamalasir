@@ -118,7 +118,7 @@ public class HelloController {
 
         String query = "SELECT * FROM software.users WHERE email = ? AND password = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, emailInput);
@@ -263,7 +263,7 @@ public class HelloController {
         OutputStream output;
         try {
             DriverManager.deregisterDriver(new org.postgresql.Driver());
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
             input = new FileInputStream(new File("Flower_Landscape.jrxml"));
             jd = JRXmlLoader.load(input);
             jr = JasperCompileManager.compileReport(jd);
@@ -484,7 +484,7 @@ public class HelloController {
 
         String query = "SELECT capacity, location, priceperhour FROM software.halls WHERE hallname = 'Rose'";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -526,7 +526,7 @@ public class HelloController {
 
         long durationHours = 2;
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
 
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
 
@@ -681,7 +681,7 @@ public class HelloController {
         String getReservationsSql = "SELECT reservationid FROM software.reservations WHERE userid = ?";
         String updateReservationSql = "UPDATE software.reservations SET totalprice = totalprice + ? WHERE reservationid = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement getUserStatement = connection.prepareStatement(getUserSql);
              PreparedStatement getReservationsStatement = connection.prepareStatement(getReservationsSql);
              PreparedStatement updateReservationStatement = connection.prepareStatement(updateReservationSql)) {
@@ -716,7 +716,13 @@ public class HelloController {
             e.printStackTrace();
         }
     }
-
+ private static String getPasswordFromEnvironment() {
+        String password = System.getenv("1482003");
+        if (password == null) {
+            throw new IllegalStateException("Database password not found in environment variables.");
+        }
+        return password;
+    }
 
     @FXML
     void forgoooot(ActionEvent event) {
@@ -767,7 +773,7 @@ public class HelloController {
 
         String query = "SELECT userid FROM software.users WHERE email = ? AND code = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, email);
@@ -805,7 +811,7 @@ public class HelloController {
 
         String updateQuery = "UPDATE software.users SET password = ? WHERE email = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
 
             preparedStatement.setString(1, newPassword);
@@ -901,7 +907,7 @@ public class HelloController {
     }
 
     private void fetchHallsAndServices() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
             List<String> availableHalls = fetchHalls(connection);
             List<String> availableServices = fetchServices(connection);
@@ -1155,7 +1161,7 @@ public class HelloController {
 
         Hall selectedHall = hallTableView.getSelectionModel().getSelectedItem();
         if (selectedHall != null) {
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
                 String sql = "DELETE FROM software.halls WHERE hallid = ?";
                 PreparedStatement statement = conn.prepareStatement(sql);
                 statement.setInt(1, selectedHall.getHallId());
@@ -1191,7 +1197,7 @@ public class HelloController {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             statement = conn.prepareStatement("SELECT * FROM software.halls");
             resultSet = statement.executeQuery();
             ObservableList<Hall> halls = FXCollections.observableArrayList();
@@ -1260,7 +1266,7 @@ public class HelloController {
 
     @FXML
     void editadmininfo(ActionEvent event) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             String sql = "UPDATE software.users SET firstname=?, lastname=?, username=?, password=?, email=?, code=? WHERE userid=?";
 
 
@@ -1312,7 +1318,7 @@ public class HelloController {
                 ImageIO.write(bufferedImage, "png", outputStream);
                 InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
 
-                Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                Connection conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
 
                 String sql = "UPDATE software.users SET photo = ? WHERE email = ? AND password = ? ";
                 PreparedStatement statement = conn.prepareStatement(sql);
@@ -1370,7 +1376,7 @@ public class HelloController {
         String password = UserCredentials.getPassword();
 
         try {
-            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             String sql = "SELECT * FROM software.users WHERE email = ? AND password = ? ";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, email);
@@ -1433,7 +1439,7 @@ public class HelloController {
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "1482003";
+    private static final String DB_PASSWORD = getPasswordFromEnvironment();
 
     @FXML
     void addhallbutton(ActionEvent event) {
@@ -1453,7 +1459,7 @@ public class HelloController {
             return;
         }
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
             String sql = "INSERT INTO software.halls (hallname, capacity, priceperhour, location, userid, image) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, hallName);
@@ -1491,7 +1497,7 @@ public class HelloController {
 
     private boolean isUserIdValid(int userId) {
         String sql = "SELECT userid FROM software.users WHERE userid = ?";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setInt(1, userId);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -1505,7 +1511,7 @@ public class HelloController {
 
     private void updateImage(int hallId) {
         if (uploadedImage != null) {
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
                 String sql = "UPDATE software.halls SET image = ? WHERE hallid = ?";
                 PreparedStatement statement = conn.prepareStatement(sql);
                 statement.setBytes(1, imageToByteArray(uploadedImage));
@@ -1656,7 +1662,7 @@ public class HelloController {
         choicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND hallid = ?");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1689,7 +1695,7 @@ public class HelloController {
         servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatementt = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1720,7 +1726,7 @@ public class HelloController {
         packagetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatementtt = connection.prepareStatement("SELECT COUNT(*) FROM software.wedding_packages WHERE date = ? AND starttime = ? AND package_id = ?");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1834,7 +1840,7 @@ public class HelloController {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
 
             checkReservationStatement = connection.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND hallid = ?");
 
@@ -1921,7 +1927,7 @@ public class HelloController {
 
     @FXML
     void logoutserviceprovider(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
@@ -1972,7 +1978,7 @@ public class HelloController {
     void accept(ActionEvent event) {
         ObservableList<new_reservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             String sql = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, "accepted");
@@ -1996,7 +2002,7 @@ public class HelloController {
     void deleteres(ActionEvent event) {
         ObservableList<new_reservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             String sql = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, "rejected");
@@ -2055,7 +2061,7 @@ public class HelloController {
 
     @FXML
     void viewstate(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
@@ -2108,7 +2114,7 @@ public class HelloController {
 
     @FXML
     void confirnation(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             ReservationInfo selectedReservation = confirmtabel.getSelectionModel().getSelectedItem();
             if (selectedReservation != null && selectedReservation.getState().equals("accepted")) {
                 int hallId = getHallId(selectedReservation.getHallName(), conn);
@@ -2171,7 +2177,7 @@ public class HelloController {
 
     @FXML
     void deletestate(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             ReservationInfo selectedReservation = confirmtabel.getSelectionModel().getSelectedItem();
             if (selectedReservation != null) {
                 if (selectedReservation.getState().equals("deleted")) {
@@ -2366,7 +2372,7 @@ public class HelloController {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
 
             checkReservationStatementtt = connection.prepareStatement("SELECT DISTINCT starttime FROM software.wedding_packages WHERE date = ? AND package_id = ?");
 
@@ -2416,7 +2422,7 @@ public class HelloController {
 
         long durationHours = 2;
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
             int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
 
@@ -2505,7 +2511,7 @@ public class HelloController {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
 
             checkReservationStatementt = connection.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND serviceid = ?");
 
@@ -2554,7 +2560,7 @@ public class HelloController {
 
         long durationHours = 2;
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
             int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
 
@@ -2773,7 +2779,7 @@ public class HelloController {
 
         feedbacktable.getItems().clear();
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             String sql = "SELECT userid, feedback FROM software.new_table_name WHERE feedback IS NOT NULL";
             PreparedStatement statement = conn.prepareStatement(sql);
             ResultSet resultSet = statement.executeQuery();
@@ -2856,7 +2862,7 @@ public class HelloController {
         String feedback = textareaaa.getText();
         try {
 
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
                 int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
                 String query = "INSERT INTO software.new_table_name (userid, feedback) VALUES (?, ?)";
                 PreparedStatement statement = connection.prepareStatement(query);
@@ -2927,7 +2933,7 @@ public class HelloController {
     @FXML
     void viewsertable(ActionEvent event) {
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
 
             int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
             ObservableList<Services> servicesList = FXCollections.observableArrayList();
@@ -3087,7 +3093,7 @@ public class HelloController {
         dialog.setContentText("Please enter the capacity:");
 
         dialog.showAndWait().ifPresent(capacity -> {
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
                 int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
                 String sql = "INSERT INTO software.halls (hallname, capacity, priceperhour, location, userid, image) VALUES (?, ?, ?, ?, ?, ?)";
                 PreparedStatement statement = conn.prepareStatement(sql);
@@ -3111,7 +3117,7 @@ public class HelloController {
     }
 
     private void saveToServicesTable() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
             String sql = "INSERT INTO software.services (servicename, description, price, userid, location,image) VALUES (?,?, ?, ?, ?, ?)";
             PreparedStatement statement = conn.prepareStatement(sql);
@@ -3163,7 +3169,7 @@ public class HelloController {
 
         if (!serviceName.isEmpty() && !description.isEmpty() && !price.isEmpty() && !location.isEmpty()) {
             try {
-                connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+                connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
                 if (connection != null) {
                     int id = getSelectedItemId();
                     if (id != -1) {
@@ -3336,7 +3342,7 @@ public class HelloController {
 
     @FXML
     void deleteevents(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             Reservation selectedReservation = eventtable.getSelectionModel().getSelectedItem();
             if (selectedReservation != null) {
                 if (selectedReservation.getState().equals("deleted")) {
@@ -3429,7 +3435,7 @@ public class HelloController {
 
     @FXML
     void viewevents(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
@@ -3591,7 +3597,7 @@ public class HelloController {
 
     @FXML
     void showshow(ActionEvent event) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
 
             ObservableList<Reservation> reservationsList = FXCollections.observableArrayList();
@@ -3717,7 +3723,7 @@ public class HelloController {
     }
 
     private void populateHallReport() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
@@ -3758,7 +3764,7 @@ public class HelloController {
 
     private void populateServiceReport() {
 
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
             if (userId != -1) {
@@ -3804,7 +3810,7 @@ public class HelloController {
 
     private Connection getConnection() throws Exception {
 
-        return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        return DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
     }
 
     @FXML
@@ -4106,7 +4112,7 @@ public class HelloController {
 
     private void saveTicketToDatabase(String ticketType, String price, String availableQuantity, LocalDate startDate, LocalDate endDate, String eventId) {
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
 
             String sql = "INSERT INTO software.tickets (ticket_type, price, available_quantity, start_date, end_date, event_name) " +
                     "VALUES (?, ?, ?, ?, ?, ?)";
@@ -4195,7 +4201,7 @@ public class HelloController {
 
     @FXML
     void eventsshow(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
@@ -4305,7 +4311,7 @@ public class HelloController {
     private TextField totalpavailability;
 
     private void populateEventChoiceBox() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             String query = "SELECT event_id, event_name, event_date FROM software.events";
             PreparedStatement statement = conn.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
@@ -4336,7 +4342,7 @@ public class HelloController {
     }
 
     private void populateTicketChoiceBox(String eventName) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             String ticketQuery = "SELECT ticket_type, price FROM software.tickets WHERE event_name = ?";
             PreparedStatement ticketStatement = conn.prepareStatement(ticketQuery);
             ticketStatement.setString(1, eventName);
@@ -4479,7 +4485,7 @@ public class HelloController {
     void getshow(ActionEvent event) {
         ObservableList<packge> data = FXCollections.observableArrayList();
         try {
-            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             String query = "SELECT * FROM software.wedding_packages";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -4543,7 +4549,7 @@ public class HelloController {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             String query = "INSERT INTO software.wedding_packages (package_id, package_name, description, price, max_guests, includes) VALUES (?, ?, ?, ?, ?, ?)";
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, Integer.parseInt(ppid.getText()));
@@ -4579,7 +4585,7 @@ public class HelloController {
     @FXML
     void getdiss(ActionEvent event) {
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
 
 
             double currentPrice = Double.parseDouble(price.getText());
