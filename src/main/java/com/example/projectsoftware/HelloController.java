@@ -507,6 +507,9 @@ public class HelloController {
         if (selectedDate == null || startTimeStr == null) {
             showAlert("Please select date and start time.");
             return;
+
+
+        
         }
         String hallName = newhallname.getText();
 
@@ -567,13 +570,14 @@ public class HelloController {
     }
 
     private int getUserId(String email, String password, Connection connection) throws SQLException {
-        String sql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, email);
-            statement.setString(2, password);
-            ResultSet resultSet = statement.executeQuery();
+      String sql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
+    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        statement.setString(1, email);
+        statement.setString(2, password);
+        try (ResultSet resultSet = statement.executeQuery()) {
             return resultSet.next() ? resultSet.getInt("userid") : -1;
         }
+    }
     }
 
     private boolean isHallAvailable(LocalDate date, LocalTime startTime, LocalTime endTime, int hallId,
