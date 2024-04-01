@@ -15,25 +15,21 @@ private static final String USERNAME = "postgres";
 private static final String PASSWORD = getPasswordFromEnvironment();
 
 public static String[] getHallsBasedOnBudget(double budget) {
-    List<String> hallsList = new ArrayList<>();
-    Connection connection = null;
-    PreparedStatement preparedStatement = null;
-    ResultSet resultSet = null;
-    try {
-        connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-        String sql = "SELECT hallname FROM software.halls WHERE priceperhour <= ?";
-        preparedStatement = connection.prepareStatement(sql);
+   List<String> hallsList = new ArrayList<>();
+    
+    try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+         PreparedStatement preparedStatement = connection.prepareStatement("SELECT hallname FROM software.halls WHERE priceperhour <= ?")) {
         preparedStatement.setDouble(1, budget);
-        resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            String hallName = resultSet.getString("hallname");
-            hallsList.add(hallName);
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+            while (resultSet.next()) {
+                String hallName = resultSet.getString("hallname");
+                hallsList.add(hallName);
+            }
         }
     } catch (SQLException e) {
         e.printStackTrace(); // Handle exception properly in your application
-    } finally {
-     
     }
+    
     return hallsList.toArray(new String[0]);
 }
 
