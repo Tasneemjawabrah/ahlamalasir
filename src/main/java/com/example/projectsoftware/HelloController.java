@@ -1279,45 +1279,38 @@ public class HelloController {
     @FXML
     void saveadmininfo(ActionEvent event) {
         String email = UserCredentials.getEmail();
-        String password = UserCredentials.getPassword();
+    String password = UserCredentials.getPassword();
+    try {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+        File selectedFile = fileChooser.showOpenDialog(saveadmiv.getScene().getWindow());
+        if (selectedFile != null) {
+            BufferedImage bufferedImage = ImageIO.read(selectedFile);
+            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                 InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+                 Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
-        try {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
-            );
-            File selectedFile = fileChooser.showOpenDialog(saveadmiv.getScene().getWindow());
-
-            if (selectedFile != null) {
-                BufferedImage bufferedImage = ImageIO.read(selectedFile);
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 ImageIO.write(bufferedImage, "png", outputStream);
-                InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-
-                Connection conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
-
                 String sql = "UPDATE software.users SET photo = ? WHERE email = ? AND password = ? ";
-                PreparedStatement statement = conn.prepareStatement(sql);
-
-                statement.setBinaryStream(1, inputStream);
-                statement.setString(2, email);
-                statement.setString(3, password);
-
-                int rowsUpdated = statement.executeUpdate();
-                if (rowsUpdated > 0) {
-                    showAlert("Admin photo updated successfully!");
-                } else {
-                    showAlert("Failed to update admin photo!");
+                try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                    statement.setBinaryStream(1, inputStream);
+                    statement.setString(2, email);
+                    statement.setString(3, password);
+                    int rowsUpdated = statement.executeUpdate();
+                    if (rowsUpdated > 0) {
+                        showAlert("Admin photo updated successfully!");
+                    } else {
+                        showAlert("Failed to update admin photo!");
+                    }
                 }
-
-                inputStream.close();
-                statement.close();
-                conn.close();
             }
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-            showAlert("Error occurred while updating admin photo!");
         }
+    } catch (SQLException | IOException e) {
+        e.printStackTrace();
+        showAlert("Error occurred while updating admin photo!");
+    }
 
     }
 
@@ -1349,51 +1342,42 @@ public class HelloController {
     @FXML
     void viweadmininfo(ActionEvent event) {
         String email = UserCredentials.getEmail();
-        String password = UserCredentials.getPassword();
-
-        try {
-            Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            String sql = "SELECT * FROM software.users WHERE email = ? AND password = ? ";
-            PreparedStatement statement = conn.prepareStatement(sql);
+    String password = UserCredentials.getPassword();
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        String sql = "SELECT * FROM software.users WHERE email = ? AND password = ? ";
+        try (PreparedStatement statement = conn.prepareStatement(sql)) {
             statement.setString(1, email);
             statement.setString(2, password);
-
-            ResultSet result = statement.executeQuery();
-            if (result.next()) {
-                int userId = result.getInt("userid");
-                String firstName = result.getString("firstname");
-                String lastName = result.getString("lastname");
-                String username = result.getString("username");
-                String userEmail = result.getString("email");
-                String userPassword = result.getString("password");
-                String userCode = result.getString("code");
-                byte[] imageData = result.getBytes("photo");
-
-                idtxt.setText(String.valueOf(userId));
-                fntxt.setText(firstName);
-                lntxt.setText(lastName);
-                userntxt.setText(username);
-                emailltxt.setText(userEmail);
-                passtxt.setText(userPassword);
-                codetxt.setText(userCode);
-
-                if (imageData != null && imageData.length > 0) {
-                    ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
-                    Image image = new Image(bis);
-                    pictureImageView.setImage(image);
+            try (ResultSet result = statement.executeQuery()) {
+                if (result.next()) {
+                    int userId = result.getInt("userid");
+                    String firstName = result.getString("firstname");
+                    String lastName = result.getString("lastname");
+                    String username = result.getString("username");
+                    String userEmail = result.getString("email");
+                    String userPassword = result.getString("password");
+                    String userCode = result.getString("code");
+                    byte[] imageData = result.getBytes("photo");
+                    idtxt.setText(String.valueOf(userId));
+                    fntxt.setText(firstName);
+                    lntxt.setText(lastName);
+                    userntxt.setText(username);
+                    emailltxt.setText(userEmail);
+                    passtxt.setText(userPassword);
+                    codetxt.setText(userCode);
+                    if (imageData != null && imageData.length > 0) {
+                        ByteArrayInputStream bis = new ByteArrayInputStream(imageData);
+                        Image image = new Image(bis);
+                        pictureImageView.setImage(image);
+                    }
+                } else {
+                    showAlert("Admin not found!");
                 }
-
-
-            } else {
-                showAlert("Admin not found!");
             }
-
-            result.close();
-            statement.close();
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    } 
     }
 
     @FXML
@@ -1419,48 +1403,41 @@ public class HelloController {
 
     @FXML
     void addhallbutton(ActionEvent event) {
-        String hallName = txet1.getText();
-        int capacity = Integer.parseInt(txet2.getText());
-        double pricePerHour = Double.parseDouble(txet3.getText());
-        String location = txet4.getText();
-        int userId = Integer.parseInt(text5.getText());
-
-        if (hallName.isEmpty() || location.isEmpty()) {
-            showAlert("Hall name and location cannot be empty.");
-            return;
+       String hallName = txet1.getText();
+    int capacity = Integer.parseInt(txet2.getText());
+    double pricePerHour = Double.parseDouble(txet3.getText());
+    String location = txet4.getText();
+    int userId = Integer.parseInt(text5.getText());
+    if (hallName.isEmpty() || location.isEmpty()) {
+        showAlert("Hall name and location cannot be empty.");
+        return;
+    }
+    if (!isUserIdValid(userId)) {
+        showAlert("User ID does not exist.");
+        return;
+    }
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
+         PreparedStatement statement = conn.prepareStatement("INSERT INTO software.halls (hallname, capacity, priceperhour, location, userid, image) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+        statement.setString(1, hallName);
+        statement.setInt(2, capacity);
+        statement.setDouble(3, pricePerHour);
+        statement.setString(4, location);
+        statement.setInt(5, userId);
+        statement.setBytes(6, null);
+        int rowsInserted = statement.executeUpdate();
+        if (rowsInserted > 0) {
+            showAlert("A new hall has been added successfully.");
+            clearTextFields();
+            updateImage(getGeneratedHallId(statement));
+        } else {
+            showAlert("Failed to add a new hall.");
         }
-
-        if (!isUserIdValid(userId)) {
-            showAlert("User ID does not exist.");
-            return;
-        }
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
-            String sql = "INSERT INTO software.halls (hallname, capacity, priceperhour, location, userid, image) VALUES (?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            statement.setString(1, hallName);
-            statement.setInt(2, capacity);
-            statement.setDouble(3, pricePerHour);
-            statement.setString(4, location);
-            statement.setInt(5, userId);
-            statement.setBytes(6, null);
-
-            int rowsInserted = statement.executeUpdate();
-            if (rowsInserted > 0) {
-                showAlert("A new hall has been added successfully.");
-                clearTextFields();
-                updateImage(getGeneratedHallId(statement));
-            } else {
-                showAlert("Failed to add a new hall.");
-            }
-
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            showAlert("Error: " + e.getMessage());
-        } catch (NumberFormatException e) {
-            showAlert("Invalid capacity, price per hour, or user ID format.");
-        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        showAlert("Error: " + e.getMessage());
+    } catch (NumberFormatException e) {
+        showAlert("Invalid capacity, price per hour, or user ID format.");
+    } 
     }
 
     private int getGeneratedHallId(PreparedStatement statement) throws SQLException {
