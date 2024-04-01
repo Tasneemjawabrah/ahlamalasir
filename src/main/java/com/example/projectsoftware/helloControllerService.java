@@ -12,7 +12,7 @@ import java.sql.*;
 
 public class helloControllerService {
 
-    @FXML
+  @FXML
     private ListView<Services> servicelist;
 
     @FXML
@@ -22,8 +22,7 @@ public class helloControllerService {
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
-    private static final String pass =getPasswordFromEnvironment();
- 
+    private static final String DB_PASSWORD = "1482003";
 
     @FXML
     public void initialize() {
@@ -38,7 +37,7 @@ public class helloControllerService {
 
         String query = "SELECT * FROM software.services";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER,pass);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -75,14 +74,6 @@ public class helloControllerService {
 
         servicelist.setItems(filteredServices);
     }
-     private static String getPasswordFromEnvironment() {
-        String password = System.geten("1482003");
-        if (password == null) {
-            throw new IllegalStateException("Database password not found in environment variables.");
-        }
-        return password;
-    }
-
 
     @FXML
     private Button addser;
@@ -95,6 +86,7 @@ public class helloControllerService {
 
     @FXML
     private CheckBox opencheck;
+
 
 
 
