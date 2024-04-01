@@ -60,7 +60,7 @@ public class HelloController4 {
         servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment() );
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -149,7 +149,7 @@ public class HelloController4 {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres",getPasswordFromEnvironment() );
 
             checkReservationStatement = connection.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND serviceid = ?");
 
@@ -182,4 +182,12 @@ public class HelloController4 {
         alert.setContentText(message);
         alert.showAndWait();
     }
+     private static String getPasswordFromEnvironment() {
+        String password = System.getenv("1482003");
+        if (password == null) {
+            throw new IllegalStateException("Database password not found in environment variables.");
+        }
+        return password;
+    }
+
 }
