@@ -7,7 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -33,12 +34,15 @@ public class DateTimeUtil {
                     }
                 }
             }
-        } catch (SQLException e) {
-   
-    logger.error("An SQL exception occurred: " + e.getMessage());
-   
-}
-return true;
+        } 
+     catch (SQLException e) {
+       
+        LOGGER.error("Error while checking availability", e);
+      
+        return true;
+    }
+    // Return a default value indicating availability
+    return true;
     }
 
     private static String getPasswordFromEnvironment() {
