@@ -13,12 +13,12 @@ public class checkclass {
     String code;
     HelloController2 h = new HelloController2();
     
-    @When("I click on check and flag is {string}")
+  @When("I click on check and flag is {string}")
     public void iClickOnCheckAndFlagIs(String string) {
         if (string.equals("true")) {
-            assertEquals(true, true);
+            assertTrue(true);
         } else {
-            assertEquals(false, true);
+            assertFalse(true);
         }
     }
     
