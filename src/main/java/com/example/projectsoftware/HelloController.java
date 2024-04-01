@@ -255,28 +255,21 @@ public class HelloController {
 
     @FXML
     void invoiceClicked(ActionEvent event) {
-        Connection conn;
-        InputStream input;
-        JasperDesign jd;
-        JasperReport jr;
-        JasperPrint jp;
-        OutputStream output;
-        try {
-            DriverManager.deregisterDriver(new org.postgresql.Driver());
-            conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
-            input = new FileInputStream(new File("Flower_Landscape.jrxml"));
-            jd = JRXmlLoader.load(input);
-            jr = JasperCompileManager.compileReport(jd);
-            jp = JasperFillManager.fillReport(jr, null, conn);
-            JFrame frame = new JFrame("reprt product");
-            frame.getContentPane().add(new JRViewer(jp));
-            frame.pack();
-            frame.setVisible(true);
+       try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         InputStream input = new FileInputStream(new File("Flower_Landscape.jrxml"))) {
+        DriverManager.deregisterDriver(new org.postgresql.Driver());
 
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.toString());
+        JasperDesign jd = JRXmlLoader.load(input);
+        JasperReport jr = JasperCompileManager.compileReport(jd);
+        JasperPrint jp = JasperFillManager.fillReport(jr, null, conn);
 
-        }
+        JFrame frame = new JFrame("reprt product");
+        frame.getContentPane().add(new JRViewer(jp));
+        frame.pack();
+        frame.setVisible(true);
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(null, ex.toString());
+    }
 
     }
 
