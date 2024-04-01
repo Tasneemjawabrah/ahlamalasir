@@ -5,6 +5,8 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import com.example.projectsoftware.signup;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class signupTest {
     private String errorMessage;
@@ -46,8 +48,9 @@ public class signupTest {
 
     @When("he presses {string} and flag is {string}")
     public void hePressesAndFlagIs(String string, String string2) {
-        if(string.equals("true"))assertEquals(true,true);
-        else assertEquals(false,false);
+        if(string.equals("true"))assertTrue(true);
+        else assertFalse(false);
+
     }
 
     @Then("show massage {string}")
