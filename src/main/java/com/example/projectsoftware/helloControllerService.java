@@ -23,13 +23,7 @@ public class helloControllerService {
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = getPasswordFromEnvironment();
- private static String getPasswordFromEnvironment() {
-    String password = System.getenv("1482003");
-    if (password == null) {
-        throw new IllegalStateException("Database password not found in environment variables.");
-    }
-    return password;
- }
+
     @FXML
     public void initialize() {
         allServices = fetchAllServices();
@@ -80,6 +74,13 @@ public class helloControllerService {
 
         servicelist.setItems(filteredServices);
     }
+   private static String getPasswordFromEnvironment() {
+    String password = System.getenv("1482003");
+    if (password == null) {
+        throw new IllegalStateException("Database password not found in environment variables.");
+    }
+    return password;
+ }
 
     @FXML
     private Button addser;
