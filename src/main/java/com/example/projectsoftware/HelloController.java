@@ -552,27 +552,18 @@ public class HelloController {
     }
 
     private int gettHallId(String hallName, Connection connection) {
-        int hallId = 0;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?");
-            statement.setString(1, hallName);
-            resultSet = statement.executeQuery();
+       int hallId = 0;
+    try (PreparedStatement statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?")) {
+        statement.setString(1, hallName);
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 hallId = resultSet.getInt("hallid");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-                if (statement != null) statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return hallId;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return hallId;
     }
 
     private int getUserId(String email, String password, Connection connection) throws SQLException {
