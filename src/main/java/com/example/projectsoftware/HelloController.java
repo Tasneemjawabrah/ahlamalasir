@@ -1163,56 +1163,53 @@ public class HelloController {
 
     @FXML
     public void viewhalls(ActionEvent event) {
-        if (hallTableView == null) {
-            System.err.println("hallTableView is not initialized!");
-            return;
+     if (hallTableView == null) {
+        System.err.println("hallTableView is not initialized!");
+        return;
+    }
+    
+    hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
+    hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
+    capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
+    priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
+    locationnn.setCellValueFactory(new PropertyValueFactory<>("location"));
+    USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
+    
+    hallTableView.getItems().clear();
+
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = conn.prepareStatement("SELECT * FROM software.halls");
+         ResultSet resultSet = statement.executeQuery()) {
+        
+        ObservableList<Hall> halls = FXCollections.observableArrayList();
+        
+        while (resultSet.next()) {
+            int hallId = resultSet.getInt("hallid");
+            String hallName = resultSet.getString("hallname");
+            int capacity = resultSet.getInt("capacity");
+            double pricePerHour = resultSet.getDouble("priceperhour");
+            String location = resultSet.getString("location");
+            int userId = resultSet.getInt("userid");
+            Hall hall = new Hall(hallId, hallName, capacity, pricePerHour, location, userId);
+            halls.add(hall);
         }
-        hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
-        hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
-        capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
-        priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
-        locationnn.setCellValueFactory(new PropertyValueFactory<>("location"));
-        USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
-        hallTableView.getItems().clear();
-        Connection conn = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            statement = conn.prepareStatement("SELECT * FROM software.halls");
-            resultSet = statement.executeQuery();
-            ObservableList<Hall> halls = FXCollections.observableArrayList();
-            while (resultSet.next()) {
-                int hallId = resultSet.getInt("hallid");
-                String hallName = resultSet.getString("hallname");
-                int capacity = resultSet.getInt("capacity");
-                double pricePerHour = resultSet.getDouble("priceperhour");
-                String location = resultSet.getString("location");
-                int userId = resultSet.getInt("userid");
-                Hall hall = new Hall(hallId, hallName, capacity, pricePerHour, location, userId);
-                halls.add(hall);
-            }
-            for (Hall hall : halls) {
-                System.out.println("Hall ID: " + hall.getHallId());
-                System.out.println("Hall Name: " + hall.getHallName());
-                System.out.println("Capacity: " + hall.getCapacity());
-                System.out.println("Price Per Hour: " + hall.getPricePerHour());
-                System.out.println("Location: " + hall.getLocation());
-                System.out.println("User ID: " + hall.getUserId());
-                System.out.println("---------------------------------");
-            }
-            hallTableView.setItems(halls);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-                if (statement != null) statement.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+        
+        for (Hall hall : halls) {
+            System.out.println("Hall ID: " + hall.getHallId());
+            System.out.println("Hall Name: " + hall.getHallName());
+            System.out.println("Capacity: " + hall.getCapacity());
+            System.out.println("Price Per Hour: " + hall.getPricePerHour());
+            System.out.println("Location: " + hall.getLocation());
+            System.out.println("User ID: " + hall.getUserId());
+            System.out.println("---------------------------------");
         }
+        
+        hallTableView.setItems(halls);
+        
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    
     }
 
     @FXML
