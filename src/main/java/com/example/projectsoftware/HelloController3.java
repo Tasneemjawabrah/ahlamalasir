@@ -35,7 +35,7 @@ public class HelloController3 {
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "1482003";
+
 
     @FXML
     public void initialize() {
@@ -108,7 +108,7 @@ public class HelloController3 {
 
         String query = "SELECT hallname, priceperhour, capacity, location, image FROM software.Halls";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER,  getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -233,7 +233,7 @@ public class HelloController3 {
 
         String query = "SELECT * FROM software.services";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER,  getPasswordFromEnvironment());
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -353,7 +353,7 @@ public class HelloController3 {
 
         String query = "SELECT * FROM software.wedding_packages";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment() );
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
@@ -416,6 +416,13 @@ public class HelloController3 {
                 e.printStackTrace();
             }
         }
+    }
+ private static String getPasswordFromEnvironment() {
+        String password = System.getenv("1482003");
+        if (password == null) {
+            throw new IllegalStateException("Database password not found in environment variables.");
+        }
+        return password;
     }
 
     @FXML
