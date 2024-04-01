@@ -75,11 +75,8 @@ public class helloControllerService {
         servicelist.setItems(filteredServices);
     }
    private static String getPasswordFromEnvironment() {
-    String password = System.getenv("1482003");
-    if (password == null) {
-        throw new IllegalStateException("Database password not found in environment variables.");
-    }
-    return password;
+   
+    return "1482003";
  }
 
     @FXML
