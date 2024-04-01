@@ -8,7 +8,7 @@ public class HelloController2 {
 
         String query = "SELECT email, password, role FROM software.users WHERE email = ? AND password = ?";
 
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres",  getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, eemail);
@@ -48,7 +48,7 @@ public class HelloController2 {
 
         String jdbcUrl = "jdbc:postgresql://localhost:5432/postgres";
         String username = "postgres";
-        String password = "1482003";
+        String password =  getPasswordFromEnvironment();
 
         String query = "SELECT userid FROM software.users WHERE email = ? AND code = ?";
 
@@ -79,7 +79,7 @@ public class HelloController2 {
         String query = "SELECT COUNT(*) FROM software.users WHERE userid= ?";
         boolean userid = false;
 
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres",  getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, int1);
@@ -96,4 +96,12 @@ public class HelloController2 {
 
         return userid;
     }
+     private static String getPasswordFromEnvironment() {
+        String password = System.getenv("1482003");
+        if (password == null) {
+            throw new IllegalStateException("Database password not found in environment variables.");
+        }
+        return password;
+    }
+
 }
