@@ -1772,20 +1772,20 @@ public class HelloController {
     }
 
     private int getHallIdd() {
-
-        String hallName = mn1.getText();
-        int hallId = 0;
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT package_id FROM software.wedding_packages WHERE package_name = ?");
-            statement.setString(1, hallName);
-            ResultSet resultSet = statement.executeQuery();
+      String hallName = mn1.getText();
+    int hallId = 0;
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = connection.prepareStatement("SELECT package_id FROM software.wedding_packages WHERE package_name = ?")) {
+        statement.setString(1, hallName);
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 hallId = resultSet.getInt("package_id");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return hallId;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return hallId;
     }
 
     public void choisetiameondate(javafx.scene.input.MouseEvent mouseEvent) {
@@ -2444,19 +2444,20 @@ public class HelloController {
     }
 
     private int getser() {
-        String hallName = lb9.getText();
-        int hallId = 0;
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?");
-            statement.setString(1, hallName);
-            ResultSet resultSet = statement.executeQuery();
+     String hallName = lb9.getText();
+    int hallId = 0;
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
+        statement.setString(1, hallName);
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 hallId = resultSet.getInt("serviceid");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return hallId;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return hallId;
     }
 
     public void clicktimeservicechoice(javafx.scene.input.MouseEvent mouseEvent) {
@@ -2552,18 +2553,18 @@ public class HelloController {
     }
 
     private int gettHallIdd(String hallName, Connection connection) {
-        int hallId = 0;
-        try {
-            PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?");
-            statement.setString(1, hallName);
-            ResultSet resultSet = statement.executeQuery();
+       int hallId = 0;
+    try (PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
+        statement.setString(1, hallName);
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 hallId = resultSet.getInt("serviceid");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
-        return hallId;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return hallId;
     }
 
     private int getUserIdd(String email, String password, Connection connection) throws SQLException {
@@ -2727,46 +2728,37 @@ public class HelloController {
 
     @FXML
     void buttonview(ActionEvent event) {
+         if (feedbacktable == null) {
+        System.err.println("feedbackTable is not initialized!");
+        return;
+    }
+    FeedbackColumn.setCellValueFactory(new PropertyValueFactory<>("feedback"));
+    Userid.setCellValueFactory(new PropertyValueFactory<>("userId"));
+    feedbacktable.getItems().clear();
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = conn.prepareStatement("SELECT userid, feedback FROM software.new_table_name WHERE feedback IS NOT NULL");
+         ResultSet resultSet = statement.executeQuery()) {
 
-        if (feedbacktable == null) {
-            System.err.println("feedbackTable is not initialized!");
-            return;
+        ObservableList<FeedbackEntry> feedbackList = FXCollections.observableArrayList();
+        while (resultSet.next()) {
+            String feedback = resultSet.getString("feedback");
+            int userId = resultSet.getInt("userid");
+            if (feedback != null) {
+                FeedbackEntry feedbackEntry = new FeedbackEntry(userId, feedback);
+                feedbackList.add(feedbackEntry);
+            }
         }
 
-        FeedbackColumn.setCellValueFactory(new PropertyValueFactory<>("feedback"));
-        Userid.setCellValueFactory(new PropertyValueFactory<>("userId"));
-
-        feedbacktable.getItems().clear();
-
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            String sql = "SELECT userid, feedback FROM software.new_table_name WHERE feedback IS NOT NULL";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            ResultSet resultSet = statement.executeQuery();
-
-            ObservableList<FeedbackEntry> feedbackList = FXCollections.observableArrayList();
-            while (resultSet.next()) {
-                String feedback = resultSet.getString("feedback");
-                int userId = resultSet.getInt("userid");
-
-                if (feedback != null) {
-                    FeedbackEntry feedbackEntry = new FeedbackEntry(userId, feedback);
-                    feedbackList.add(feedbackEntry);
-                }
-            }
-            for (FeedbackEntry entry : feedbackList) {
-                System.out.println("User ID: " + entry.getUserId());
-                System.out.println("Feedback: " + entry.getFeedback());
-                System.out.println("---------------------------------");
-            }
-
-
-            feedbacktable.setItems(feedbackList);
-
-            resultSet.close();
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        for (FeedbackEntry entry : feedbackList) {
+            System.out.println("User ID: " + entry.getUserId());
+            System.out.println("Feedback: " + entry.getFeedback());
+            System.out.println("---------------------------------");
         }
+
+        feedbacktable.setItems(feedbackList);
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
     }
 
     @FXML
@@ -2819,33 +2811,29 @@ public class HelloController {
     @FXML
     void sendclick(ActionEvent event) {
         String feedback = textareaaa.getText();
-        try {
+    try {
+        int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword());
+        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+             PreparedStatement statement = conn.prepareStatement("INSERT INTO software.new_table_name (userid, feedback) VALUES (?, ?)")) {
 
-            try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
-                int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
-                String query = "INSERT INTO software.new_table_name (userid, feedback) VALUES (?, ?)";
-                PreparedStatement statement = connection.prepareStatement(query);
-                statement.setInt(1, userId);
-                statement.setString(2, feedback);
-                statement.executeUpdate();
+            statement.setInt(1, userId);
+            statement.setString(2, feedback);
+            statement.executeUpdate();
 
-                connection.close();
-
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Success");
-                alert.setHeaderText(null);
-                alert.setContentText("Feedback sent successfully!");
-                alert.showAndWait();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
             alert.setHeaderText(null);
-            alert.setContentText("Failed to save feedback. Please try again.");
+            alert.setContentText("Feedback sent successfully!");
             alert.showAndWait();
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(null);
+        alert.setContentText("Failed to save feedback. Please try again.");
+        alert.showAndWait();
+    }
 
     }
 
@@ -3076,24 +3064,24 @@ public class HelloController {
     }
 
     private void saveToServicesTable() {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
-            String sql = "INSERT INTO software.services (servicename, description, price, userid, location,image) VALUES (?,?, ?, ?, ?, ?)";
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setString(1, sernametxt.getText());
-            statement.setString(2, serdes.getText());
-            statement.setBigDecimal(3, new BigDecimal(serpricetxt.getText()));
-            statement.setInt(4, userId);
-            statement.setString(5, seridtxt.getText());
-            statement.setBytes(6, getImageBytes());
-            statement.executeUpdate();
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = conn.prepareStatement("INSERT INTO software.services (servicename, description, price, userid, location,image) VALUES (?,?, ?, ?, ?, ?)")) {
 
-            statement.close();
-            showAlert("Service added successfully");
-        } catch (SQLException e) {
-            e.printStackTrace();
+        int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
-        }
+        statement.setString(1, sernametxt.getText());
+        statement.setString(2, serdes.getText());
+        statement.setBigDecimal(3, new BigDecimal(serpricetxt.getText()));
+        statement.setInt(4, userId);
+        statement.setString(5, seridtxt.getText());
+        statement.setBytes(6, getImageBytes());
+        statement.executeUpdate();
+
+        showAlert("Service added successfully");
+    } catch (SQLException e) {
+        e.printStackTrace();
+        showAlert("An error occurred while saving the service.");
+    }
     }
 
     private byte[] getImageBytes() {
