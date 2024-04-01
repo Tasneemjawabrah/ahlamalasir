@@ -30,7 +30,7 @@ public class signup  implements Initializable {
         throw new IllegalStateException("Database password not found in environment variables.");
     }
     return password;
-
+    }
     static Logger logger = Logger.getLogger(signup.class.getName());
     public TextField id;
     public TextField fname;
