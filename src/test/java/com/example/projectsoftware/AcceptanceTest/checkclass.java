@@ -34,9 +34,9 @@ public void iClickOnCheckAndFlagIs(String string) {
         email = string;
         System.out.print(email);
         if (string.equals("Email")) {
-            assertEquals(true, true);
+               assertTrue(true);
         } else if (string.equals("password")) {
-            assertEquals(true, true);
+                assertTrue(true);
         }
     }
     
