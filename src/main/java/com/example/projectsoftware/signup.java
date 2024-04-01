@@ -150,15 +150,11 @@ public class signup  implements Initializable {
 
 
     public static boolean idTest(String id) {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            String sql = "SELECT COUNT(*) FROM software.users WHERE CAST(userid AS TEXT) = ?";
-            statement = connection.prepareStatement(sql);
-            statement.setString(1, id);
-            resultSet = statement.executeQuery();
+     try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+         PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM software.users WHERE CAST(userid AS TEXT) = ?");
+    ) {
+        statement.setString(1, id);
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 int count = resultSet.getInt(1);
                 if (count > 0) {
@@ -166,18 +162,11 @@ public class signup  implements Initializable {
                 }
                 return id.length() > 2;
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-                if (statement != null) statement.close();
-                if (connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return false;
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
+    }
+    return false; 
     }
 
 
@@ -189,31 +178,20 @@ public class signup  implements Initializable {
 
 
     private static boolean isEmailAlreadyRegistered(String email) {
-        Connection connection = null;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-            String sql = "SELECT COUNT(*) FROM software.users WHERE email = ?";
-            statement = connection.prepareStatement(sql);
-            statement.setString(1, email);
-            resultSet = statement.executeQuery();
+     try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+         PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM software.users WHERE email = ?");
+    ) {
+        statement.setString(1, email);
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 int count = resultSet.getInt(1);
                 return count > 0;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-                if (statement != null) statement.close();
-                if (connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return false;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return false;
     }
     public static boolean registerWithExistingEmail(String email) {
 
