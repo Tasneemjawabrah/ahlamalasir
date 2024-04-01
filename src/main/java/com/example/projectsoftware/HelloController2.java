@@ -48,11 +48,11 @@ public class HelloController2 {
 
         String jdbcUrl = "jdbc:postgresql://localhost:5432/postgres";
         String username = "postgres";
-        String password =  getPasswordFromEnvironment();
+      
 
         String query = "SELECT userid FROM software.users WHERE email = ? AND code = ?";
 
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username, password);
+        try (Connection connection = DriverManager.getConnection(jdbcUrl, username,  getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, email);
