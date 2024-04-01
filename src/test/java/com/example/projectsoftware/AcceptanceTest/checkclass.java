@@ -9,24 +9,24 @@ import static org.junit.Assert.assertEquals;
 
 public class checkclass {
  
-    String email;
+  String email;
     String code;
     HelloController2 h = new HelloController2();
-
+    
     @When("I click on check and flag is {string}")
     public void iClickOnCheckAndFlagIs(String string) {
         if (string.equals("true")) {
             assertEquals(true, true);
         } else {
-            assertEquals(false, false);
+            assertEquals(false, true);
         }
     }
-
+    
     @Then("field {string} shouldddd be with error")
     public void fieldShoulddddBeWithError(String string) {
         System.out.println("rrrrrrrrrr");
     }
-
+    
     @When("he fillllls in {string}")
     public void heFilllllsIn(String string) {
         email = string;
@@ -37,17 +37,17 @@ public class checkclass {
             assertEquals(true, true);
         }
     }
-
+    
     @When("hee fillllls in {string}")
     public void heeFilllllsIn(String string) {
         code = string;
     }
-
+    
     @Then("I shoulddddd see {string}")
     public void iShouldddddSee(String string) {
         assertEquals(false, h.checkbutton(email, code));
     }
-
+    
     @Then("I shouldntttt see {string}")
     public void iShouldnttttSee(String string) {
         assertEquals(true, h.checkbutton(email, code));
