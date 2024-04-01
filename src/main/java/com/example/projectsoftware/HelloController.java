@@ -3751,67 +3751,56 @@ public class HelloController {
 
     @FXML
     void calculate(ActionEvent event) {
+           try {
+        String dateString = reporttext.getText().trim();
+        if (dateString.isEmpty()) {
+            reportlabel.setText("Please enter a date.");
+            return;
+        }
+        String[] parts = dateString.split("-");
+        int year = Integer.parseInt(parts[0]);
+        int month = Integer.parseInt(parts[1]);
+        try (Connection conn = getConnection();
+             PreparedStatement hallsStmt = conn.prepareStatement(
+                     "SELECT SUM(r.totalprice) " +
+                             "FROM software.reservations r " +
+                             "INNER JOIN software.halls h ON r.hallid = h.hallid " +
+                             "WHERE h.userid = ? AND EXTRACT(YEAR FROM r.date) = ? AND EXTRACT(MONTH FROM r.date) = ?");
+             PreparedStatement servicesStmt = conn.prepareStatement(
+                     "SELECT SUM(r.totalprice) " +
+                             "FROM software.reservations r " +
+                             "INNER JOIN software.services s ON r.serviceid = s.serviceid " +
+                             "WHERE s.userid = ? AND EXTRACT(YEAR FROM r.date) = ? AND EXTRACT(MONTH FROM r.date) = ?")) {
 
-        try {
-            String dateString = reporttext.getText().trim();
-            if (dateString.isEmpty()) {
-                reportlabel.setText("Please enter a date.");
-                return;
-            }
+            int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
-            String[] parts = dateString.split("-");
-            int year = Integer.parseInt(parts[0]);
-            int month = Integer.parseInt(parts[1]);
-
-
-            try (Connection conn = getConnection()) {
-                int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
-
-                String hallsQuery = "SELECT SUM(r.totalprice) " +
-                        "FROM software.reservations r " +
-                        "INNER JOIN software.halls h ON r.hallid = h.hallid " +
-                        "WHERE h.userid = ? AND EXTRACT(YEAR FROM r.date) = ? AND EXTRACT(MONTH FROM r.date) = ?";
-
-                PreparedStatement hallsStmt = conn.prepareStatement(hallsQuery);
-                hallsStmt.setInt(1, userId);
-                hallsStmt.setInt(2, year);
-                hallsStmt.setInt(3, month);
-
-                ResultSet hallsRs = hallsStmt.executeQuery();
+            hallsStmt.setInt(1, userId);
+            hallsStmt.setInt(2, year);
+            hallsStmt.setInt(3, month);
+            try (ResultSet hallsRs = hallsStmt.executeQuery()) {
                 double hallsTotalPrice = 0;
                 if (hallsRs.next()) {
                     hallsTotalPrice = hallsRs.getDouble(1);
                 }
-
-                hallsStmt.close();
-                hallsRs.close();
-
-                String servicesQuery = "SELECT SUM(r.totalprice) " +
-                        "FROM software.reservations r " +
-                        "INNER JOIN software.services s ON r.serviceid = s.serviceid " +
-                        "WHERE s.userid = ? AND EXTRACT(YEAR FROM r.date) = ? AND EXTRACT(MONTH FROM r.date) = ?";
-
-                PreparedStatement servicesStmt = conn.prepareStatement(servicesQuery);
+                double servicesTotalPrice = 0;
                 servicesStmt.setInt(1, userId);
                 servicesStmt.setInt(2, year);
                 servicesStmt.setInt(3, month);
-
-                ResultSet servicesRs = servicesStmt.executeQuery();
-                double servicesTotalPrice = 0;
-                if (servicesRs.next()) {
-                    servicesTotalPrice = servicesRs.getDouble(1);
+                try (ResultSet servicesRs = servicesStmt.executeQuery()) {
+                    if (servicesRs.next()) {
+                        servicesTotalPrice = servicesRs.getDouble(1);
+                    }
                 }
-
-                servicesStmt.close();
-                servicesRs.close();
-
-
                 double totalPrice = hallsTotalPrice + servicesTotalPrice;
-                reportlabel.setText("" + totalPrice);
+                reportlabel.setText(String.valueOf(totalPrice));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle SQLException appropriately
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 
     @FXML
@@ -3895,86 +3884,64 @@ public class HelloController {
 
     @FXML
     void populateHallChoiceBox() {
-        try (Connection conn = getConnection()) {
-
-            r8.getItems().clear();
-
-            String sql = "SELECT hallid, hallname FROM software.halls WHERE userid = ?";
-            int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
-
-            PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, userId);
-
-            ResultSet resultSet = statement.executeQuery();
-
+     try (Connection conn = getConnection();
+         PreparedStatement statement = conn.prepareStatement("SELECT hallid, hallname FROM software.halls WHERE userid = ?")) {
+        r8.getItems().clear();
+        int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
+        statement.setInt(1, userId);
+        try (ResultSet resultSet = statement.executeQuery()) {
             List<String> hallList = new ArrayList<>();
-
             while (resultSet.next()) {
                 int hallId = resultSet.getInt("hallid");
                 String hallName = resultSet.getString("hallname");
                 hallList.add(hallId + "-" + hallName);
             }
-
             r8.getItems().addAll(hallList);
-
             r8.setOnAction(event -> {
                 String selectedHall = r8.getValue();
                 if (selectedHall != null) {
                     r8.setValue(selectedHall);
                 }
             });
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+        // Handle SQLException appropriately
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
     }
 
 
     @FXML
     void saveevents(ActionEvent event) {
-
-        String eventName = r1.getText();
-        String eventLocation = r3.getText();
-        String eventDescription = r4.getText();
-
-        String selectedHall = r8.getValue();
-        if (selectedHall != null) {
-
-            int hallId = Integer.parseInt(selectedHall.split("-")[0]);
-
-            try (Connection conn = getConnection()) {
-
-                String eventSql = "INSERT INTO software.events (event_name, event_date, description, location, hallid, organizer_id, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-                String reservationSql = "INSERT INTO software.reservations (userid, hallid, date, starttime, endtime, totalprice, state, eventsid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-                int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
-                PreparedStatement eventStatement = conn.prepareStatement(eventSql, Statement.RETURN_GENERATED_KEYS);
-                PreparedStatement reservationStatement = conn.prepareStatement(reservationSql);
-
+String eventName = r1.getText();
+    String eventLocation = r3.getText();
+    String eventDescription = r4.getText();
+    String selectedHall = r8.getValue();
+    if (selectedHall != null) {
+        int hallId = Integer.parseInt(selectedHall.split("-")[0]);
+        try (Connection conn = getConnection()) {
+            String eventSql = "INSERT INTO software.events (event_name, event_date, description, location, hallid, organizer_id, image) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String reservationSql = "INSERT INTO software.reservations (userid, hallid, date, starttime, endtime, totalprice, state, eventsid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
+            try (PreparedStatement eventStatement = conn.prepareStatement(eventSql, Statement.RETURN_GENERATED_KEYS);
+                 PreparedStatement reservationStatement = conn.prepareStatement(reservationSql)) {
                 eventStatement.setString(1, eventName);
                 eventStatement.setDate(2, Date.valueOf(r2.getText()));
                 eventStatement.setString(3, eventDescription);
                 eventStatement.setString(4, eventLocation);
                 eventStatement.setInt(5, hallId);
                 eventStatement.setInt(6, userId);
-
                 byte[] imageData = imageToByteArray(eventsimage.getImage());
                 eventStatement.setBytes(7, imageData);
-
                 int eventRowsInserted = eventStatement.executeUpdate();
-
                 int eventId = 0;
                 ResultSet generatedKeys = eventStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     eventId = generatedKeys.getInt(1);
                 }
-
                 if (eventRowsInserted > 0 && eventId != 0) {
-
                     reservationStatement.setInt(1, userId);
                     reservationStatement.setInt(2, hallId);
                     reservationStatement.setDate(3, Date.valueOf(r2.getText()));
@@ -3983,23 +3950,20 @@ public class HelloController {
                     reservationStatement.setBigDecimal(6, BigDecimal.valueOf(0));
                     reservationStatement.setString(7, "accepted");
                     reservationStatement.setInt(8, eventId);
-
                     int reservationRowsInserted = reservationStatement.executeUpdate();
                     if (reservationRowsInserted > 0) {
                         showAlert("Reservation saved successfully!");
-
                     }
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
-        } else {
-            showAlert("Please select a hall.");
-
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
+    } else {
+        showAlert("Please select a hall.");
+    }
     }
 
     @FXML
