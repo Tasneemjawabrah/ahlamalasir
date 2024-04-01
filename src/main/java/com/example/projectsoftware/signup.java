@@ -22,7 +22,14 @@ import java.util.logging.Logger;
 public class signup  implements Initializable {
     private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
-    private static final String PASSWORD = "1482003";
+    private static final String PASSWORD = getPasswordFromEnvironment();
+    
+    private static String getPasswordFromEnvironment() {
+    String password = System.getenv("1482003");
+    if (password == null) {
+        throw new IllegalStateException("Database password not found in environment variables.");
+    }
+    return password;
 
     static Logger logger = Logger.getLogger(signup.class.getName());
     public TextField id;
