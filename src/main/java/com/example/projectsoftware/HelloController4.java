@@ -115,28 +115,19 @@ public class HelloController4 {
 
     private int getHallId() {
 
-        String hallName = lb9.getText();
-        int hallId = 0;
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try {
-            statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?");
-            statement.setString(1, hallName);
-            resultSet = statement.executeQuery();
+      String hallName = lb9.getText();
+    int hallId = 0;
+    try (PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
+        statement.setString(1, hallName);
+        try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 hallId = resultSet.getInt("serviceid");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (resultSet != null) resultSet.close();
-                if (statement != null) statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
-        return hallId;
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return hallId;
     }
     public void choisetiameondate(javafx.scene.input.MouseEvent mouseEvent) {
         LocalDate selectedDate = datereservation.getValue();
