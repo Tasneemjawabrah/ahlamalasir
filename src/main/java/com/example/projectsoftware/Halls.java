@@ -91,26 +91,31 @@ public  class Halls implements HallService {
             return name;
         }
         public static boolean isHallExists(String hallName) {
-            String query = "SELECT COUNT(*) FROM software.Halls WHERE hallname = ?";
-            boolean hallExists = false;
-
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", "1482003");
-                 PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
-                preparedStatement.setString(1, hallName);
-
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    if (resultSet.next()) {
-                        int count = resultSet.getInt(1);
-                        hallExists = count > 0;
-                    }
+        String query = "SELECT COUNT(*) FROM software.Halls WHERE hallname = ?";
+        boolean hallExists = false;
+        String password = getPasswordFromEnvironment();
+        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", password);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, hallName);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    hallExists = count > 0;
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
             }
-
-            return hallExists;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return hallExists;
+    }
+
+    private static String getPasswordFromEnvironment() {
+        String password = System.getenv("1482003");
+        if (password == null) {
+            throw new IllegalStateException("Database password not found in environment variables.");
+        }
+        return password;
+    }
 
     private int hallId;
     public int getHallId() {
