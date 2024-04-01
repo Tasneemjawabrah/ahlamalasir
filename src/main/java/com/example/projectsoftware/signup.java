@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class signup  implements Initializable {
     private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
-    private static final String PASSWORD = "1482003";
+
 
     static Logger logger = Logger.getLogger(signup.class.getName());
     public TextField id;
@@ -76,7 +76,7 @@ public class signup  implements Initializable {
         String roleValue = checkbox.getValue();
         String code = code1.getText();
 
-        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME,  getPasswordFromEnvironment() )) {
             String sql = "INSERT INTO software.users (userid, firstname, lastname, username, password, email, role,code) VALUES (?,?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
                 preparedStatement.setInt(1, idValue);
@@ -147,7 +147,7 @@ public class signup  implements Initializable {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            connection = DriverManager.getConnection(JDBC_URL, USERNAME,  getPasswordFromEnvironment() );
             String sql = "SELECT COUNT(*) FROM software.users WHERE CAST(userid AS TEXT) = ?";
             statement = connection.prepareStatement(sql);
             statement.setString(1, id);
@@ -186,7 +186,7 @@ public class signup  implements Initializable {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+            connection = DriverManager.getConnection(JDBC_URL, USERNAME,  getPasswordFromEnvironment() );
             String sql = "SELECT COUNT(*) FROM software.users WHERE email = ?";
             statement = connection.prepareStatement(sql);
             statement.setString(1, email);
@@ -218,4 +218,12 @@ public class signup  implements Initializable {
             return false;
         }
     }
+     private static String getPasswordFromEnvironment() {
+        String password = System.getenv("1482003");
+        if (password == null) {
+            throw new IllegalStateException("Database password not found in environment variables.");
+        }
+        return password;
+    }
+
 }
