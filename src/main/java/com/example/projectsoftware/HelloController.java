@@ -4236,28 +4236,23 @@ String eventName = r1.getText();
     }
 
     private void populateTicketChoiceBox(String eventName) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            String ticketQuery = "SELECT ticket_type, price FROM software.tickets WHERE event_name = ?";
-            PreparedStatement ticketStatement = conn.prepareStatement(ticketQuery);
-            ticketStatement.setString(1, eventName);
-            ResultSet resultSet = ticketStatement.executeQuery();
-
+         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement ticketStatement = conn.prepareStatement("SELECT ticket_type, price FROM software.tickets WHERE event_name = ?")) {
+        
+        ticketStatement.setString(1, eventName);
+        try (ResultSet resultSet = ticketStatement.executeQuery()) {
             ObservableList<String> tickets = FXCollections.observableArrayList();
             while (resultSet.next()) {
                 String ticketType = resultSet.getString("ticket_type");
                 double price = resultSet.getDouble("price");
                 String ticketInfo = ticketType + " - $" + price;
                 tickets.add(ticketInfo);
-
             }
-
             tickettype.setItems(tickets);
-
-            resultSet.close();
-            ticketStatement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
     }
 
     @FXML
