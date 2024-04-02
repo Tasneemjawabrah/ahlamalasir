@@ -35,7 +35,6 @@ public class DateTimeUtil {
         }
         return true;
     }
-New code
     private static String getPasswordFromEnvironment() {
      
        return "1482003" ;
