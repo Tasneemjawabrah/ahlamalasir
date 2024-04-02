@@ -430,8 +430,17 @@ private void initializeTimeSpinners() {
     timeSpinner1.setEditable(true);
 }
 
+
+
 private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
-    SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<LocalTime>(getDefaultSpinnerValueFactory()) {
+    SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<LocalTime>() {
+        {
+            setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));
+            setMin(LocalTime.of(0, 0));           // Set minimum time
+            setMax(LocalTime.of(23, 59, 59));     // Set maximum time
+            setValue(LocalTime.now());            // Set initial time
+        }
+
         @Override
         public void decrement(int steps) {
             if (getValue() == null)
@@ -452,13 +461,9 @@ private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
             }
         }
     };
-    valueFactory.setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));
     return valueFactory;
 }
 
-private SpinnerValueFactory<LocalTime> getDefaultSpinnerValueFactory() {
-    return new SpinnerValueFactory<LocalTime>(new LocalTime(0, 0, 0), new LocalTime(23, 59, 59), LocalTime.now());
-}
 
 
     @FXML
