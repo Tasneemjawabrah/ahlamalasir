@@ -3,7 +3,6 @@ package com.example.projectsoftware;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog;
-import java.time.LocalTime;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -78,6 +77,8 @@ public class HelloController {
 
     static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
     static String window = " An error occurred while opening a new window:";
+    private static final String custointer1 = "custointer.fxml";
+     private static final String serpp = "serviceproviderpage.fxml";
 
 @FXML
 public TextField gmailLogIn;
@@ -168,11 +169,11 @@ public static Button getPackgButton() {
 
                 switch (role) {
                     case "customer":
-                        loadInterface("custointer.fxml", event);
+                        loadInterface("custointer1", event);
 
                         break;
                     case "service-provider":
-                        loadInterface("serviceproviderpage.fxml", event);
+                        loadInterface("serpp", event);
                         break;
                     case "admin":
                         loadInterface("Adminlogin.fxml", event);
@@ -368,7 +369,7 @@ void backto1(ActionEvent event) {
 
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+   System.out.println("User not found!");
         }
     }
 
@@ -384,8 +385,8 @@ void backktoallhalls(ActionEvent event) {
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
-               System.out.println("error");
-
+ Logger logger = Logger.getLogger(getClass().getName());
+        logger.severe("Error loading Halls.fxml: " + e.getMessage());
     }
 }
 
@@ -491,7 +492,9 @@ void backktoallhalls(ActionEvent event) {
 
 
     @FXML
-    void choicesnew(MouseEvent event) {
+    void choicesnew(MouseEvent event)
+    System.out.println("Under implementation");
+
 
     }
 
@@ -2823,7 +2826,7 @@ void backktoallhalls(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("custointer.fxml"));
+            root = FXMLLoader.load(getClass().getResource("custointer1"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -3195,7 +3198,7 @@ void backktoallhalls(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("serviceproviderpage.fxml"));
+            root = FXMLLoader.load(getClass().getResource("serpp"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -3359,7 +3362,7 @@ void backktoallhalls(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("serviceproviderpage.fxml"));
+            root = FXMLLoader.load(getClass().getResource("serpp"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -3837,7 +3840,7 @@ void viewevents(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("custointer.fxml"));
+            root = FXMLLoader.load(getClass().getResource("custointer1"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
