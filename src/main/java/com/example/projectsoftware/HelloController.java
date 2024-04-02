@@ -348,7 +348,7 @@ void backto1(ActionEvent event) {
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
-        throw new FXMLLoaderException("Error loading hello-view.fxml", e);
+        System.out.println("error");
     }
 }
 
