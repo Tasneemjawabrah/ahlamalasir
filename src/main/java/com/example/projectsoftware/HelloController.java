@@ -80,7 +80,9 @@ public class HelloController {
    private static final String CUSTO_INTER_1_FXML = "custointer.fxml";
      private static final String SERVICE_PROVIDER_PAGE_FXML = "serviceproviderpage.fxml";
     private static final String HALL_INTER_FXML = "Halls.fxml";
-
+ private static final String HELLO_VIEW_FXML ="hello-view.fxml";
+ private static final String USER_PRINT ="User not found!";
+    private static final String LOCATION_1= "location";
 @FXML
 public TextField gmailLogIn;
 private static final Button service = new Button();
@@ -345,7 +347,7 @@ void connectClicked(ActionEvent event) {
  @FXML
 void backto1(ActionEvent event) {
     try {
-        Parent root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource(HELLO_VIEW_FXML));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
@@ -361,7 +363,7 @@ void backto1(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
+            root = FXMLLoader.load(getClass().getResource(HELLO_VIEW_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -370,7 +372,7 @@ void backto1(ActionEvent event) {
 
 
         } catch (IOException e) {
-   System.out.println("User not found!");
+   System.out.println(USER_PRINT);
         }
     }
 
@@ -512,7 +514,7 @@ void backktoallhalls(ActionEvent event) {
 
             if (resultSet.next()) {
                 int capacity = resultSet.getInt("capacity");
-                String location = resultSet.getString("location");
+                String location = resultSet.getString(LOCATION_1);
                 double price = resultSet.getDouble("priceperhour");
 
                 capacityy.setText(String.valueOf(capacity));
@@ -1097,7 +1099,7 @@ private static final String HALL_ID_COLUMN = "hallid";
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
+            root = FXMLLoader.load(getClass().getResource(HELLO_VIEW_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -1175,7 +1177,7 @@ private static final String HALL_ID_COLUMN = "hallid";
     hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
     capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
     priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
-    locationnn.setCellValueFactory(new PropertyValueFactory<>("location"));
+    locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
     USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
     Hall selectedHall = hallTableView.getSelectionModel().getSelectedItem();
     if (selectedHall != null) {
@@ -1207,7 +1209,7 @@ private static final String HALL_ID_COLUMN = "hallid";
     hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
     capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
     priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
-    locationnn.setCellValueFactory(new PropertyValueFactory<>("location"));
+    locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
     USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
     
     hallTableView.getItems().clear();
@@ -1223,7 +1225,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             String hallName = resultSet.getString("hallname");
             int capacity = resultSet.getInt("capacity");
             double pricePerHour = resultSet.getDouble("priceperhour");
-            String location = resultSet.getString("location");
+            String location = resultSet.getString(LOCATION_1);
             int userId = resultSet.getInt("userid");
             Hall hall = new Hall(hallId, hallName, capacity, pricePerHour, location, userId);
             halls.add(hall);
@@ -1967,7 +1969,7 @@ void logoutserviceprovider(ActionEvent event) {
                 }
             }
         } else {
-            System.out.println("User not found!");
+            System.out.println(USER_PRINT);
         }
     } catch (SQLException e) {
         System.err.println("Error while checking availability:");
@@ -2104,7 +2106,7 @@ void logoutserviceprovider(ActionEvent event) {
                     }
                 }
             } else {
-                System.out.println("User not found!");
+                System.out.println(USER_PRINT);
             }
         } catch (SQLException e) {
            System.err.println("Error while checking availability:");
@@ -2698,7 +2700,7 @@ void logoutserviceprovider(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
+            root = FXMLLoader.load(getClass().getResource(HELLO_VIEW_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -2738,7 +2740,7 @@ void logoutserviceprovider(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
+            root = FXMLLoader.load(getClass().getResource(HELLO_VIEW_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -2940,7 +2942,7 @@ void logoutserviceprovider(ActionEvent event) {
                                 servicesResultSet.getDouble("price"),
                                 servicesResultSet.getInt("userid"),
                                 servicesResultSet.getBytes("image"),
-                                servicesResultSet.getString("location")
+                                servicesResultSet.getString(LOCATION_1)
                         );
                     } else {
                         int descriptionn = servicesResultSet.getInt("description");
@@ -2951,7 +2953,7 @@ void logoutserviceprovider(ActionEvent event) {
                                 servicesResultSet.getDouble("price"),
                                 servicesResultSet.getInt("userid"),
                                 servicesResultSet.getBytes("image"),
-                                servicesResultSet.getString("location")
+                                servicesResultSet.getString(LOCATION_1)
                         );
                     }
                     servicesList.add(service);
@@ -2973,7 +2975,7 @@ void logoutserviceprovider(ActionEvent event) {
                             hallsResultSet.getDouble("priceperhour"),
                             hallsResultSet.getInt("userid"),
                             hallsResultSet.getBytes("image"),
-                            hallsResultSet.getString("location")
+                            hallsResultSet.getString(LOCATION_1)
                     );
                     hallsList.add(hall);
                 }
@@ -2983,7 +2985,7 @@ void logoutserviceprovider(ActionEvent event) {
             colm3.setCellValueFactory(new PropertyValueFactory<>("description"));
             colm4.setCellValueFactory(new PropertyValueFactory<>("price"));
             colm5.setCellValueFactory(new PropertyValueFactory<>("imageBytes"));
-            colm6.setCellValueFactory(new PropertyValueFactory<>("location"));
+            colm6.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
             colm7.setCellValueFactory(new PropertyValueFactory<>("userId"));
             serviceviewtable.getItems().clear();
             serviceviewtable.getItems().addAll(servicesList);
@@ -3456,7 +3458,7 @@ void viewevents(ActionEvent event) {
                 eventtable.getItems().addAll(reservationsList);
             }
         } else {
-            System.out.println("User not found!");
+            System.out.println(USER_PRINT);
         }
     } catch (SQLException e) {
         throw new RuntimeException(e);
@@ -3729,7 +3731,7 @@ void viewevents(ActionEvent event) {
                     }
                 }
             } else {
-                System.out.println("User not found!");
+                System.out.println(USER_PRINT);
             }
         } catch (SQLException e) {
           System.err.println("Error while checking availability:");
@@ -3770,7 +3772,7 @@ void viewevents(ActionEvent event) {
                     }
                 }
             } else {
-                System.out.println("User not found!");
+                System.out.println(USER_PRINT);
             }
         } catch (SQLException e) {
              System.err.println("Error while checking availability:");
@@ -4157,7 +4159,7 @@ String eventName = r1.getText();
                             int eventId = resultSet.getInt("event_id");
                             String eventName = resultSet.getString("event_name");
                             Date eventDate = resultSet.getDate("event_date");
-                            String location = resultSet.getString("location");
+                            String location = resultSet.getString(LOCATION_1);
                             String description = resultSet.getString("description");
                             int organizerId = resultSet.getInt("organizer_id");
                             Timestamp creationDate = resultSet.getTimestamp("creation_date");
@@ -4171,7 +4173,7 @@ String eventName = r1.getText();
                         eventid.setCellValueFactory(new PropertyValueFactory<>("eventId"));
                         eventsname.setCellValueFactory(new PropertyValueFactory<>("eventName"));
                         eventdescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-                        eventlocation.setCellValueFactory(new PropertyValueFactory<>("location"));
+                        eventlocation.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
                         eventsdate.setCellValueFactory(new PropertyValueFactory<>("eventDate"));
                         eventorgid.setCellValueFactory(new PropertyValueFactory<>("organizerId"));
                         creationdate.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
@@ -4187,7 +4189,7 @@ String eventName = r1.getText();
                     }
                 }
             } else {
-                System.out.println("User not found!");
+                System.out.println(USER_PRINT);
             }
         } catch (SQLException e) {
             System.err.println("Error while checking availability:");
