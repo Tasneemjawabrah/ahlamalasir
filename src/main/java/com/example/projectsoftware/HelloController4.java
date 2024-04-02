@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HelloController4 {
+    private static final String imple = "Under implementation";
 
     private Connection connection;
     private PreparedStatement checkReservationStatement;
@@ -42,21 +43,21 @@ public class HelloController4 {
 
     @FXML
     void cancleservice(javafx.event.ActionEvent event) {
-                System.out.println("under implementation ");
+                System.out.println(imple);
 
 
     }
 
     @FXML
     void clicktimeservicechoice(MouseEvent event) {
-                        System.out.println("under implementation ");
+                        System.out.println(imple);
 
 
     }
 
     @FXML
     void resser(ActionEvent event) {
-                System.out.println("under implementation ");
+                System.out.println(imple);
 
     }
 
