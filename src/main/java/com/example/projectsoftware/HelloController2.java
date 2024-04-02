@@ -3,16 +3,13 @@ package com.example.projectsoftware;
 import java.sql.*;
 
 public class HelloController2 {
-     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
-    
+
     public boolean login1Clicked(String eemail, String passw) {
-        
-
-
         String query = "SELECT email, password, role FROM software.users WHERE email = ? AND password = ?";
 
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres",  getPasswordFromEnvironment());
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, eemail);
@@ -25,15 +22,9 @@ public class HelloController2 {
 
                 switch (role) {
                     case "customer":
-
-                        return true;
-
                     case "event_planner":
-                        return true;
-
                     case "admin":
                         return true;
-
                     default:
                         return false;
                 }
@@ -50,10 +41,9 @@ public class HelloController2 {
             return false;
         }
 
-
         String query = "SELECT userid FROM software.users WHERE email = ? AND code = ?";
 
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, username,  getPasswordFromEnvironment());
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, email);
@@ -70,39 +60,38 @@ public class HelloController2 {
             }
 
         } catch (SQLException e) {
-          System.err.println("Error while checking availability:");
+            System.err.println("Error while checking availability: " + e.getMessage());
             return false;
         }
     }
 
-
-    public boolean uservalid(int int1) {
-       String query = "SELECT COUNT(*) FROM software.users WHERE userid = ?";
+    public boolean uservalid(int userId) {
+        String query = "SELECT COUNT(*) FROM software.users WHERE userid = ?";
         boolean userIdValid = false;
 
-        try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres",  getPasswordFromEnvironment());
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            preparedStatement.setInt(1, int1);
+            preparedStatement.setInt(1, userId);
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     int count = resultSet.getInt(1);
-                    userid = count > 0;
+                    userIdValid = count > 0;
                 }
             }
         } catch (SQLException e) {
-         System.err.println("Error while checking availability:");
+            System.err.println("Error while checking availability: " + e.getMessage());
         }
 
-        return userid;
+        return userIdValid;
     }
-     private static String getPasswordFromEnvironment() {
+
+    private static String getPasswordFromEnvironment() {
         String password = System.getenv("1482003");
         if (password == null) {
             throw new IllegalStateException("Database password not found in environment variables.");
         }
         return password;
     }
-
 }
