@@ -72,11 +72,11 @@ private TextField userUsername;
     }
 
     public TextField getUsername() {
-        return username;
+        return userUsername;
     }
 
     public void setUsername(TextField username) {
-        this.username = username;
+        this.username = userUsername;
     }
 
     public TextField getEmail() {
@@ -145,7 +145,7 @@ private TextField userUsername;
         int idValue = Integer.parseInt(id.getText());
         String fnameValue = fname.getText();
         String lnameValue = lname.getText();
-        String usernameValue = username.getText();
+        String usernameValue = userUsername.getText();
         String emailValue = email.getText();
         String passwordValue = passs.getText();
         String roleValue = checkbox.getValue();
