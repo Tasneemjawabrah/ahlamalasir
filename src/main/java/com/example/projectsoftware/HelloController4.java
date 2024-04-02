@@ -11,9 +11,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.logging.Logger;
 
 public class HelloController4 {
-    private static final String imple = "Under implementation";
+private static final String UNDER_IMPLEMENTATION = "Under implementation";
+ private static final Logger logger = Logger.getLogger(YourClass.class.getName());
 
     private Connection connection;
     private PreparedStatement checkReservationStatement;
@@ -43,21 +45,21 @@ public class HelloController4 {
 
     @FXML
     void cancleservice(javafx.event.ActionEvent event) {
-                System.out.println(imple);
+                  logger.info(UNDER_IMPLEMENTATION );
 
 
     }
 
     @FXML
     void clicktimeservicechoice(MouseEvent event) {
-                        System.out.println(imple);
+                       logger.info(UNDER_IMPLEMENTATION );
 
 
     }
 
     @FXML
     void resser(ActionEvent event) {
-                System.out.println(imple);
+                 logger.info(UNDER_IMPLEMENTATION );
 
     }
 
@@ -100,23 +102,25 @@ public class HelloController4 {
     }
 
     private int getReservedCount(LocalDate date) {
-        int reservedCount = 0;
-        try {
-            for (String time : servicetime.getItems()) {
-                checkReservationStatement.setDate(1, Date.valueOf(date));
-                checkReservationStatement.setTime(2, Time.valueOf(time));
-                checkReservationStatement.setInt(3, getHallId());
-                ResultSet resultSet = checkReservationStatement.executeQuery();
-                resultSet.next();
-                int count = resultSet.getInt(1);
-                if (count > 0) {
-                    reservedCount++;
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error while checking availability:");
+       int reservedCount = 0;
+    try {
+        for (String time : servicetime.getItems()) {
+            checkReservationStatement.setDate(1, Date.valueOf(date));
+            checkReservationStatement.setTime(2, Time.valueOf(time));
+            checkReservationStatement.setInt(3, getHallId());
+            checkReservationStatement.addBatch(); // Add the statement to the batch
         }
-        return reservedCount;
+        int[] counts = checkReservationStatement.executeBatch(); // Execute the batch
+        for (int count : counts) {
+            if (count > 0) {
+                reservedCount++;
+            }
+        }
+    } catch (SQLException e) {
+            logger.severe("Error while checking availability: " + e.getMessage());
+     
+    }
+    return reservedCount;
     }
 
     private int getHallId() {
@@ -131,7 +135,7 @@ public class HelloController4 {
             }
         }
     } catch (SQLException e) {
-      System.err.println("Error while checking availability:");
+     logger.severe("Error while checking availability: " + e.getMessage());
     }
     return hallId;
     }
@@ -162,7 +166,7 @@ public class HelloController4 {
 
             connection.close();
         } catch (SQLException e) {
-         System.err.println("Error while checking availability:");
+        logger.severe("Error while checking availability: " + e.getMessage());
         }
 
         List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
