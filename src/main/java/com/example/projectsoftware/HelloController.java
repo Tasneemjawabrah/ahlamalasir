@@ -79,6 +79,7 @@ public class HelloController {
     static String window = " An error occurred while opening a new window:";
    private static final String CUSTO_INTER_1_FXML = "custointer.fxml";
      private static final String SERVICE_PROVIDER_PAGE_FXML = "serviceproviderpage.fxml";
+    private static final String HALL_INTER_FXML = "Halls.fxml";
 
 @FXML
 public TextField gmailLogIn;
@@ -222,7 +223,7 @@ public static Button getPackgButton() {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("Halls.fxml"));
+            root = FXMLLoader.load(getClass().getResource(HALL_INTER_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -379,14 +380,14 @@ void backto1(ActionEvent event) {
   @FXML
 void backktoallhalls(ActionEvent event) {
     try {
-        Parent root = FXMLLoader.load(getClass().getResource("Halls.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource(HALL_INTER_FXML));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
  Logger logger = Logger.getLogger(getClass().getName());
-        logger.severe("Error loading Halls.fxml: " + e.getMessage());
+        logger.severe("Error loading HALL_INTER_FXML: " + e.getMessage());
     }
 }
 
@@ -2716,7 +2717,7 @@ void logoutserviceprovider(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("Halls.fxml"));
+            root = FXMLLoader.load(getClass().getResource(HALL_INTER_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
