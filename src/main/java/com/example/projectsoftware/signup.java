@@ -139,7 +139,7 @@ public void setId(TextField id) {
          throw new FileOperationException("Error while performing file operation", e);
 }
         }
-    }
+    
 
     public void saveUser(ActionEvent event) {
         int idValue = Integer.parseInt(id.getText());
