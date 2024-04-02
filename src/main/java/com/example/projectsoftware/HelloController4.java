@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import java.util.logging.Logger;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -66,13 +67,16 @@ private static final Logger logger = Logger.getLogger(HelloController4.class.get
 
     public void initialize() {
         servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
+        
+        private static final Logger logger = Logger.getLogger(YourClassName.class.getName());
+
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment() );
-            checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
-        } catch (SQLException e) {
-        System.err.println("Error while checking availability:");
-        }
+    connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment() );
+    checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
+} catch (SQLException e) {
+    logger.severe("Error while checking availability: " + e.getMessage());
+}
 
         datereservation.setDayCellFactory(dp -> new DateCell() {
             @Override
