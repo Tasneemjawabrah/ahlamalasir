@@ -136,7 +136,7 @@ public void setId(TextField id) {
 
 
         } catch (IOException e) {
-         throw new FileOperationException("Error while performing file operation", e);
+        logger.severe("Error while checking availability:");
 }
         }
     
@@ -233,7 +233,7 @@ public void setId(TextField id) {
                 }
             }
         } catch (SQLException e) {
-            throw new FileOperationException("Error while performing file operation", e);
+           logger.severe("Error while checking availability:");
         }
         return false;
     }
