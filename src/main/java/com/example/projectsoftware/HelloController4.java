@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class HelloController4 {
 private static final String UNDER_IMPLEMENTATION = "Under implementation";
- private static final Logger logger = Logger.getLogger(YourClass.class.getName());
+private static final Logger logger = Logger.getLogger(HelloController4.class.getName());
 
     private Connection connection;
     private PreparedStatement checkReservationStatement;
