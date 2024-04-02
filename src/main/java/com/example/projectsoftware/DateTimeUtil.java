@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+import java.util.logging.Logger;
 
 
 
@@ -16,6 +16,8 @@ public class DateTimeUtil {
  private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = getPasswordFromEnvironment();
+   private static final Logger logger = Logger.getLogger(DateTimeUtil.class.getName());
+
     public static boolean isTimeAvailable(String date, String startTimeStr, String endTimeStr) {
         LocalDate targetDate = LocalDate.parse(date);
         LocalTime startTime = LocalTime.parse(startTimeStr);
@@ -34,7 +36,7 @@ public class DateTimeUtil {
                 }
             }
         } catch (SQLException e) {
-        System.err.println("Error while checking availability:");
+          logger.severe("Error while checking availability: " + e.getMessage());
             
         }
         return true;
