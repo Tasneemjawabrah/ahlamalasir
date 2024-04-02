@@ -152,8 +152,8 @@ public static Button getPackgButton() {
              "FROM software.users " +
              "WHERE email = ? AND password = ?";
 
-        try (Connection connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-             PreparedStatement preparedStatement =  connectionDB.prepareStatement(query)) {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+             PreparedStatement preparedStatement =  connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, emailInput);
             preparedStatement.setString(2, passwordInput);
@@ -325,41 +325,33 @@ public static Button getPackgButton() {
         }
     }
 
-    @FXML
-    void connectClicked(ActionEvent event) {
-        try {
-            Parent root;
-
-            root = FXMLLoader.load(getClass().getResource("connnectus.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene;
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+@FXML
+void connectClicked(ActionEvent event) {
+    try {
+        Parent root = FXMLLoader.load(getClass().getResource("connectus.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    } catch (IOException e) {
+        throw new FXMLLoaderException("Error loading connectus.fxml", e);
     }
-
-    @FXML
-    void backto1(ActionEvent event) {
-        try {
-            Parent root;
-
-            root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene;
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+}
 
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+ @FXML
+void backto1(ActionEvent event) {
+    try {
+        Parent root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    } catch (IOException e) {
+        throw new FXMLLoaderException("Error loading hello-view.fxml", e);
     }
+}
+
 
     @FXML
     void baccc(ActionEvent event) {
@@ -382,24 +374,19 @@ public static Button getPackgButton() {
     @FXML
     private Button backtoallhalls;
 
-    @FXML
-    void backktoallhalls(ActionEvent event) {
-        try {
-            Parent root;
-
-            root = FXMLLoader.load(getClass().getResource("Halls.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene;
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+  @FXML
+void backktoallhalls(ActionEvent event) {
+    try {
+        Parent root = FXMLLoader.load(getClass().getResource("Halls.fxml"));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    } catch (IOException e) {
+        throw new FXMLLoaderException("Error loading Halls.fxml", e);
     }
+}
+
 
     @FXML
     private TextField capacityy;
@@ -429,48 +416,49 @@ public static Button getPackgButton() {
     @FXML
     private Spinner<LocalTime> timeSpinner1 = new Spinner<>();
 
-    public void performInitialization() {
-        initializeTimeSpinners();
-    }
+ public void performInitialization() {
+    initializeTimeSpinners();
+}
 
-    private void initializeTimeSpinners() {
-        SpinnerValueFactory<LocalTime> valueFactory1 = createTimeSpinnerValueFactory();
-        timeSpinner.setValueFactory(valueFactory1);
-        timeSpinner.setEditable(true);
+private void initializeTimeSpinners() {
+    SpinnerValueFactory<LocalTime> valueFactory1 = createTimeSpinnerValueFactory();
+    timeSpinner.setValueFactory(valueFactory1);
+    timeSpinner.setEditable(true);
+    SpinnerValueFactory<LocalTime> valueFactory2 = createTimeSpinnerValueFactory();
+    timeSpinner1.setValueFactory(valueFactory2);
+    timeSpinner1.setEditable(true);
+}
 
-        SpinnerValueFactory<LocalTime> valueFactory2 = createTimeSpinnerValueFactory();
-        timeSpinner1.setValueFactory(valueFactory2);
-        timeSpinner1.setEditable(true);
-    }
-
-    private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
-        SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<LocalTime>() {
-            {
-                setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));
+private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
+    SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<LocalTime>(getDefaultSpinnerValueFactory()) {
+        @Override
+        public void decrement(int steps) {
+            if (getValue() == null)
+                setValue(LocalTime.now());
+            else {
+                LocalTime time = getValue();
+                setValue(time.minusMinutes(steps));
             }
+        }
 
-            @Override
-            public void decrement(int steps) {
-                if (getValue() == null)
-                    setValue(LocalTime.now());
-                else {
-                    LocalTime time = getValue();
-                    setValue(time.minusMinutes(steps));
-                }
+        @Override
+        public void increment(int steps) {
+            if (getValue() == null)
+                setValue(LocalTime.now());
+            else {
+                LocalTime time = getValue();
+                setValue(time.plusMinutes(steps));
             }
+        }
+    };
+    valueFactory.setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));
+    return valueFactory;
+}
 
-            @Override
-            public void increment(int steps) {
-                if (getValue() == null)
-                    setValue(LocalTime.now());
-                else {
-                    LocalTime time = getValue();
-                    setValue(time.plusMinutes(steps));
-                }
-            }
-        };
-        return valueFactory;
-    }
+private SpinnerValueFactory<LocalTime> getDefaultSpinnerValueFactory() {
+    return new SpinnerValueFactory<LocalTime>(new LocalTime(0, 0, 0), new LocalTime(23, 59, 59), LocalTime.now());
+}
+
 
     @FXML
     private Button cancclllee;
