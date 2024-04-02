@@ -3,7 +3,11 @@ package com.example.projectsoftware;
 import java.sql.*;
 
 public class HelloController2 {
+     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String DB_USER = "postgres";
+    
     public boolean login1Clicked(String eemail, String passw) {
+        
 
 
         String query = "SELECT email, password, role FROM software.users WHERE email = ? AND password = ?";
@@ -46,9 +50,6 @@ public class HelloController2 {
             return false;
         }
 
-        String jdbcUrl = "jdbc:postgresql://localhost:5432/postgres";
-        String username = "postgres";
-      
 
         String query = "SELECT userid FROM software.users WHERE email = ? AND code = ?";
 
@@ -76,8 +77,8 @@ public class HelloController2 {
 
 
     public boolean uservalid(int int1) {
-        String query = "SELECT COUNT(*) FROM software.users WHERE userid= ?";
-        boolean userid = false;
+       String query = "SELECT COUNT(*) FROM software.users WHERE userid = ?";
+        boolean userIdValid = false;
 
         try (Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres",  getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
