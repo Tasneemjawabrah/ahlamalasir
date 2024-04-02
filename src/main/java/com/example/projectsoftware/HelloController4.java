@@ -70,10 +70,12 @@ private static final Logger logger = Logger.getLogger(HelloController4.class.get
         servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment());
+Uncovered code
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment() );
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
-                System.out.println("Error while checking availability");
+        System.err.println("Error while checking availability:");
+
         }
     
 
