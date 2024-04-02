@@ -104,7 +104,7 @@ public  class Halls implements HallService {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
         return hallExists;
     }
