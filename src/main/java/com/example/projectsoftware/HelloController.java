@@ -433,14 +433,13 @@ private void initializeTimeSpinners() {
 
 
 private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
-    // Create a SpinnerValueFactory with LocalTime type
     SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<LocalTime>() {
         {
             setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));
             // Define min and max values using LocalTime instances
-            setMin(LocalTime.MIN);   // Minimum time value
-            setMax(LocalTime.MAX);   // Maximum time value
-            setValue(LocalTime.now()); // Set initial value
+            setMin(LocalTime.MIN);
+            setMax(LocalTime.MAX);
+            setValue(LocalTime.now());
         }
 
         @Override
@@ -465,6 +464,7 @@ private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
     };
     return valueFactory;
 }
+
 
 
 
