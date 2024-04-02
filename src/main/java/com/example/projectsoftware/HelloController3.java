@@ -68,19 +68,13 @@ private void showHallInformationDialog(MouseEvent event) {
             FXMLLoader loader = new FXMLLoader();
             Parent root;
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            if ("Rose".equals(hallName)) {
-                loader.setLocation(getClass().getResource(NEW_HALL_FXML));
-                root = loader.load();
-                HelloController controller = loader.getController();
-                controller.populateFields(selectedHall);
-            } else {
-                loader.setLocation(getClass().getResource(NEW_HALL_FXML));
-                root = loader.load();
-                HelloController controller = loader.getController();
-                controller.populateFields(selectedHall);
-            }
+            
+            loader.setLocation(getClass().getResource(NEW_HALL_FXML));
+            root = loader.load();
             HelloController controller = loader.getController();
+            controller.populateFields(selectedHall);
             controller.performInitialization();
+            
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
