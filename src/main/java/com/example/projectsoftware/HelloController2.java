@@ -1,17 +1,14 @@
 package com.example.projectsoftware;
-
 import java.sql.*;
-
 public class HelloController2 {
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
-
-    public boolean login1Clicked(String email, String password) throws DatabaseException {
+    public boolean login1Clicked(String eemail, String passw) {
         String query = "SELECT email, password, role FROM software.users WHERE email = ? AND password = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
+            preparedStatement.setString(1, eemail);
+            preparedStatement.setString(2, passw);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 String role = rs.getString("role");
@@ -25,12 +22,11 @@ public class HelloController2 {
                 }
             }
         } catch (SQLException e) {
-            throw new DatabaseException("Error occurred while logging in", e);
+            throw new RuntimeException(e);
         }
         return false;
     }
-
-    public boolean checkButton(String email, String code) {
+    public boolean checkbutton(String email, String code) {
         if (email.isEmpty() || code.isEmpty()) {
             System.out.println("Email or code is empty.");
             return false;
@@ -53,8 +49,7 @@ public class HelloController2 {
             return false;
         }
     }
-
-    public boolean userValid(int userId) {
+    public boolean uservalid(int userId) {
         String query = "SELECT COUNT(*) FROM software.users WHERE userid = ?";
         boolean userIdValid = false;
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
@@ -67,11 +62,10 @@ public class HelloController2 {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error while checking user validity: " + e.getMessage());
+            System.err.println("Error while checking availability: " + e.getMessage());
         }
         return userIdValid;
     }
-
     private static String getPasswordFromEnvironment() {
         String password = System.getenv("1482003");
         if (password == null) {
