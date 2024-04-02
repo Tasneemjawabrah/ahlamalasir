@@ -7,8 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 
 
@@ -35,7 +34,7 @@ public class DateTimeUtil {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.error("Error while checking availability", e);
+        System.err.println("Error while checking availability:");
             
         }
         return true;
