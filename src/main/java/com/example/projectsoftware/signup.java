@@ -25,7 +25,7 @@ public class signup  implements Initializable {
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = getPasswordFromEnvironment();
       private static final Logger logger = Logger.getLogger(signup.class.getName());
-    
+     private static final String CHECKING = "Error while checking availability:";
     private static String getPasswordFromEnvironment() {
     String password = System.getenv("1482003");
     if (password == null) {
@@ -136,7 +136,7 @@ public void setId(TextField id) {
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+        logger.severe(CHECKING);
 }
         }
     
@@ -169,7 +169,7 @@ public void setId(TextField id) {
             }
 
         } catch (SQLException e) {
-            logger.severe("Error while checking availability:");
+            logger.severe(CHECKING);
         }
     }
 
@@ -233,7 +233,7 @@ public void setId(TextField id) {
                 }
             }
         } catch (SQLException e) {
-           logger.severe("Error while checking availability:");
+           logger.severe(CHECKING);
         }
         return false;
     }
@@ -254,7 +254,7 @@ public void setId(TextField id) {
                 }
             }
         } catch (SQLException e) {
-            logger.severe("Error while checking availability:");
+            logger.severe(CHECKING);
         }
         return false;
     }
