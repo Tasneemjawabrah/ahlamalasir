@@ -24,7 +24,7 @@ public class helloControllerService {
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
     private static final String DB_PASSWORD = getPasswordFromEnvironment();
-    private static final Logger logger = Logger.getLogger(HelloController4.class.getName());
+    private static final Logger logger = Logger.getLogger(helloControllerService.class.getName());
 
     @FXML
     public void initialize() {
