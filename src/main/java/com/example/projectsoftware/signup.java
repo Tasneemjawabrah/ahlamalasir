@@ -19,10 +19,12 @@ import java.sql.*;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+
 public class signup  implements Initializable {
     private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = getPasswordFromEnvironment();
+      private static final Logger logger = Logger.getLogger(signup.class.getName());
     
     private static String getPasswordFromEnvironment() {
     String password = System.getenv("1482003");
@@ -31,18 +33,83 @@ public class signup  implements Initializable {
     }
     return password;
     }
-    static Logger logger = Logger.getLogger(signup.class.getName());
-    public TextField id;
-    public TextField fname;
-    public TextField lname;
-    public TextField username;
-    public TextField email;
-    public TextField passs;
+  
+   private TextField id;
+
+public TextField getId() {
+    return id;
+}
+
+public void setId(TextField id) {
+    this.id = id;
+}
+ 
     @FXML
     private TextField code1;
 
-    public Button backsign;
-    public Button sv;
+      private TextField fname;
+    private TextField lname;
+    private TextField username;
+    private TextField email;
+    private TextField passs;
+    private Button backsign;
+    private Button sv;
+
+    public TextField getFname() {
+        return fname;
+    }
+
+    public void setFname(TextField fname) {
+        this.fname = fname;
+    }
+
+    public TextField getLname() {
+        return lname;
+    }
+
+    public void setLname(TextField lname) {
+        this.lname = lname;
+    }
+
+    public TextField getUsername() {
+        return username;
+    }
+
+    public void setUsername(TextField username) {
+        this.username = username;
+    }
+
+    public TextField getEmail() {
+        return email;
+    }
+
+    public void setEmail(TextField email) {
+        this.email = email;
+    }
+
+    public TextField getPasss() {
+        return passs;
+    }
+
+    public void setPasss(TextField passs) {
+        this.passs = passs;
+    }
+
+    public Button getBacksign() {
+        return backsign;
+    }
+
+    public void setBacksign(Button backsign) {
+        this.backsign = backsign;
+    }
+
+    public Button getSv() {
+        return sv;
+    }
+
+    public void setSv(Button sv) {
+        this.sv = sv;
+    }
 
 
     @FXML
@@ -69,7 +136,8 @@ public class signup  implements Initializable {
 
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+         throw new FileOperationException("Error while performing file operation", e);
+}
         }
     }
 
@@ -102,7 +170,7 @@ public class signup  implements Initializable {
             }
 
         } catch (SQLException e) {
-         System.err.println("Error while checking availability:");
+            logger.severe("Error while checking availability:");
         }
     }
 
@@ -132,21 +200,27 @@ public class signup  implements Initializable {
     }
 
 
-    public static boolean passwordTest(String password) {
-        boolean flags = false;
-        boolean flagc = false;
-        boolean flagn = false;
-        if (password.length() < 4) return false;
-        else {
-            for (int i = 0; i < password.length(); i++) {
-                if (Character.isLowerCase(password.charAt(i))) flags = true;
-                else if (Character.isUpperCase(password.charAt(i))) flagc = true;
-                else if (Character.isDigit(password.charAt(i))) flagn = true;
-            }
-            return flags && flagc && flagn;
+  public static boolean passwordTest(String password) {
+    boolean hasLowercase = false;
+    boolean hasUppercase = false;
+    boolean hasDigit = false;
+
+    if (password.length() < 4) {
+        return false;
+    }
+
+    for (char c : password.toCharArray()) {
+        if (Character.isLowerCase(c)) {
+            hasLowercase = true;
+        } else if (Character.isUpperCase(c)) {
+            hasUppercase = true;
+        } else if (Character.isDigit(c)) {
+            hasDigit = true;
         }
     }
 
+    return hasLowercase && hasUppercase && hasDigit;
+}
 
 
     public static boolean idTest(String id) {
@@ -164,7 +238,7 @@ public class signup  implements Initializable {
             }
         }
     } catch (SQLException e) {
-        throw new RuntimeException(e);
+       throw new FileOperationException("Error while performing file operation", e);
     }
     return false; 
     }
@@ -189,18 +263,12 @@ public class signup  implements Initializable {
             }
         }
     } catch (SQLException e) {
-       System.err.println("Error while checking availability:");
+      logger.severe("Error while checking availability:");
     }
     return false;
     }
     public static boolean registerWithExistingEmail(String email) {
 
-        if (isEmailAlreadyRegistered(email)) {
-
-            return true;
-        } else {
-
-            return false;
-        }
+     return isEmailAlreadyRegistered(email);
     }
 }
