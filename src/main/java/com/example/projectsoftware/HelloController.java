@@ -581,6 +581,8 @@ void backktoallhalls(ActionEvent event) {
             showAlert("Failed to book the hall. Please try again later.");
         }
     }
+    
+private static final String HALL_ID_COLUMN = "hallid";
 
     private int gettHallId(String hallName, Connection  connectionDB) {
        int hallId = 0;
