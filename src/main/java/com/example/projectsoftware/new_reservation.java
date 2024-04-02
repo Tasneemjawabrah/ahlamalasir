@@ -37,7 +37,7 @@ public class NewReservation {
         this.state = state;
 
     }
-    public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,   Double totalPrice, String state, int serviceId) {
+    public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,   double totalPrice, String state, int serviceId) {
         this.reservationId = reservationId;
         this.userId = userId;
         this.hallId = hallId;
@@ -45,7 +45,7 @@ public class NewReservation {
         this.startTime = startTime;
         this.endTime = endTime;
         this.state=state;
-        this.totalPricee=totalPrice;
+         this.totalPrice = totalPrice;
         this.serviceId=serviceId;
 
     }
