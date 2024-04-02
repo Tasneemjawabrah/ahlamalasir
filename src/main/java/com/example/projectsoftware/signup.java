@@ -163,7 +163,6 @@ public void setId(TextField id) {
                 preparedStatement.setString(7, roleValue);
                 preparedStatement.setString(8, code);
 
-
                 preparedStatement.executeUpdate();
                 showAlert("User successfully inserted into the database.");
 
@@ -176,12 +175,11 @@ public void setId(TextField id) {
 
     private void showAlert(String s) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Sing up");
+        alert.setTitle("Sign up");
         alert.setHeaderText(null);
         alert.setContentText(s);
         alert.showAndWait();
     }
-
 
     public static boolean gmailTest(String gmail) {
         if (Character.isDigit(gmail.charAt(0)) || gmail.length() < 11) return false;
@@ -195,80 +193,73 @@ public void setId(TextField id) {
     }
 
     public static boolean nameTest(String name) {
-
         return name != null && name.trim().length() >= 2;
     }
 
+    public static boolean passwordTest(String password) {
+        boolean hasLowercase = false;
+        boolean hasUppercase = false;
+        boolean hasDigit = false;
 
-  public static boolean passwordTest(String password) {
-    boolean hasLowercase = false;
-    boolean hasUppercase = false;
-    boolean hasDigit = false;
-
-    if (password.length() < 4) {
-        return false;
-    }
-
-    for (char c : password.toCharArray()) {
-        if (Character.isLowerCase(c)) {
-            hasLowercase = true;
-        } else if (Character.isUpperCase(c)) {
-            hasUppercase = true;
-        } else if (Character.isDigit(c)) {
-            hasDigit = true;
+        if (password.length() < 4) {
+            return false;
         }
-    }
 
-    return hasLowercase && hasUppercase && hasDigit;
-}
-
-
-    public static boolean idTest(String id) {
-     try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-         PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM software.users WHERE CAST(userid AS TEXT) = ?");
-    ) {
-        statement.setString(1, id);
-        try (ResultSet resultSet = statement.executeQuery()) {
-            if (resultSet.next()) {
-                int count = resultSet.getInt(1);
-                if (count > 0) {
-                    return false;
-                }
-                return id.length() > 2;
+        for (char c : password.toCharArray()) {
+            if (Character.isLowerCase(c)) {
+                hasLowercase = true;
+            } else if (Character.isUpperCase(c)) {
+                hasUppercase = true;
+            } else if (Character.isDigit(c)) {
+                hasDigit = true;
             }
         }
-    } catch (SQLException e) {
-       throw new FileOperationException("Error while performing file operation", e);
-    }
-    return false; 
+
+        return hasLowercase && hasUppercase && hasDigit;
     }
 
-
+    public static boolean idTest(String id) {
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM software.users WHERE CAST(userid AS TEXT) = ?");
+        ) {
+            statement.setString(1, id);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    if (count > 0) {
+                        return false;
+                    }
+                    return id.length() > 2;
+                }
+            }
+        } catch (SQLException e) {
+            throw new FileOperationException("Error while performing file operation", e);
+        }
+        return false;
+    }
 
     public static boolean selectRole(String roleName) {
         return roleName.equalsIgnoreCase("Customer");
     }
 
-
-
     private static boolean isEmailAlreadyRegistered(String email) {
-     try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-         PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM software.users WHERE email = ?");
-    ) {
-        statement.setString(1, email);
-        try (ResultSet resultSet = statement.executeQuery()) {
-            if (resultSet.next()) {
-                int count = resultSet.getInt(1);
-                return count > 0;
+        try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+             PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM software.users WHERE email = ?");
+        ) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    int count = resultSet.getInt(1);
+                    return count > 0;
+                }
             }
+        } catch (SQLException e) {
+            logger.severe("Error while checking availability:");
         }
-    } catch (SQLException e) {
-      logger.severe("Error while checking availability:");
+        return false;
     }
-    return false;
-    }
-    public static boolean registerWithExistingEmail(String email) {
 
-     return isEmailAlreadyRegistered(email);
+    public static boolean registerWithExistingEmail(String email) {
+        return isEmailAlreadyRegistered(email);
     }
 }
