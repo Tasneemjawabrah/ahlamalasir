@@ -1,4 +1,5 @@
 package com.example.projectsoftware;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,11 +8,14 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.logging.Logger;
+
 public class DateTimeUtil {
- private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
+    // Update the JDBC URL, username, and password
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
-    private static final String PASSWORD = getPasswordFromEnvironment();
-   private static final Logger logger = Logger.getLogger(DateTimeUtil.class.getName());
+    private static final String PASSWORD = "1482003"; // Replace with your new password
+    private static final Logger logger = Logger.getLogger(DateTimeUtil.class.getName());
+
     public static boolean isTimeAvailable(String date, String startTimeStr, String endTimeStr) {
         LocalDate targetDate = LocalDate.parse(date);
         LocalTime startTime = LocalTime.parse(startTimeStr);
@@ -30,14 +34,8 @@ public class DateTimeUtil {
                 }
             }
         } catch (SQLException e) {
-          logger.severe("Error while checking availability: " + e.getMessage());
-            
+            logger.severe("Error while checking availability: " + e.getMessage());
         }
         return true;
-    }
-    private static String getPasswordFromEnvironment() {
-     
-      
-        return "1482003" ;
     }
 }
