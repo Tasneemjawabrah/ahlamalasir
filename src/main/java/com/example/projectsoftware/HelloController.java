@@ -373,7 +373,7 @@ void backto1(ActionEvent event) {
 
         } catch (IOException e) {
    
-            logger.severe(USER_PRIN);
+            logger.severe(USER_PRINT);
         }
     }
 
