@@ -148,7 +148,9 @@ public static Button getPackgButton() {
         String emailInput = gmailLogIn.getText();
         String passwordInput = passwordLogIn.getText();
 
-        String query = "SELECT * FROM software.users WHERE email = ? AND password = ?";
+    String query = "SELECT users.firstname, users.lastname, users.username, users.email, users.role, users.code " +
+             "FROM software.users " +
+             "WHERE email = ? AND password = ?";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
