@@ -157,7 +157,7 @@ public class HelloController {
 
     private void loadInterface(String fxmlFileName, ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource(fxmlFileName));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
@@ -169,7 +169,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("signup.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -187,7 +187,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("Halls.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -205,7 +205,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("service.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -223,7 +223,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("packagereserve.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -241,7 +241,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("booking.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -279,7 +279,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("prof.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -297,7 +297,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("connnectus.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -315,7 +315,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -333,7 +333,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -354,7 +354,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("Halls.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -718,7 +718,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("forgotpass.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -1001,7 +1001,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("adminadmin.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -1021,7 +1021,7 @@ public class HelloController {
             System.out.println("1");
             Parent root = FXMLLoader.load(getClass().getResource("HallsTabel.fxml"));
             System.out.println("2");
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             System.out.println("3");
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -1036,7 +1036,7 @@ public class HelloController {
     void admininvoices(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("adminnotification.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -1051,7 +1051,7 @@ public class HelloController {
     void adminprofile(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("Profile.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -1067,7 +1067,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -1085,7 +1085,7 @@ public class HelloController {
     void adminusers(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("PackageAdmin.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -1127,7 +1127,7 @@ public class HelloController {
     void addhalls(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("AddHall.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -1289,7 +1289,7 @@ public class HelloController {
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
         );
-        File selectedFile = fileChooser.showOpenDialog(saveadmiv.getScene().getwindow());
+        File selectedFile = fileChooser.showOpenDialog(saveadmiv.getScene().getWindow());
         if (selectedFile != null) {
             BufferedImage bufferedImage = ImageIO.read(selectedFile);
             try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -1518,7 +1518,7 @@ public class HelloController {
     void bacckkkkk(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("HallsTabel.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -1539,7 +1539,7 @@ public class HelloController {
     void uploadhallpic(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Image File");
-        File selectedFile = fileChooser.showOpenDialog(uploadhallpppiii.getScene().getwindow());
+        File selectedFile = fileChooser.showOpenDialog(uploadhallpppiii.getScene().getWindow());
 
         if (selectedFile != null) {
             try {
@@ -1840,7 +1840,7 @@ public class HelloController {
 
 
             Parent root = FXMLLoader.load(getClass().getResource("reservationnoti.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -2662,7 +2662,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -2681,7 +2681,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("Halls.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -2702,7 +2702,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("hello-view.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -2771,7 +2771,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("Adminlogin.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -2799,7 +2799,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("custointer.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -2851,7 +2851,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("serviceview.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -3171,7 +3171,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("serviceproviderpage.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -3197,7 +3197,7 @@ public class HelloController {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg");
         fileChooser.getExtensionFilters().add(extFilter);
 
-        File selectedFile = fileChooser.showOpenDialog(s1.getScene().getwindow());
+        File selectedFile = fileChooser.showOpenDialog(s1.getScene().getWindow());
 
         if (selectedFile != null) {
             try {
@@ -3262,7 +3262,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("AddEvents.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -3335,7 +3335,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("serviceproviderpage.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -3355,7 +3355,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("reportt.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -3437,7 +3437,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("eventsprov.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -3464,7 +3464,7 @@ public class HelloController {
     void weeee(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("booking.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -3483,7 +3483,7 @@ public class HelloController {
     void sasa(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("reservationnoti.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -3622,7 +3622,7 @@ public class HelloController {
     void backreport(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("eventsprov.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -3640,7 +3640,7 @@ public class HelloController {
     void poppp(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("service.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.show();
@@ -3812,7 +3812,7 @@ public class HelloController {
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("custointer.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -3867,7 +3867,7 @@ public class HelloController {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Image");
-        selectedFile = fileChooser.showOpenDialog(x1.getScene().getwindow());
+        selectedFile = fileChooser.showOpenDialog(x1.getScene().getWindow());
 
         if (selectedFile != null) {
             javafx.scene.image.Image image = new javafx.scene.image.Image(selectedFile.toURI().toString());
@@ -3995,7 +3995,7 @@ String eventName = r1.getText();
         ButtonType closeButtonType = new ButtonType("Close", ButtonBar.ButtonData.CANCEL_CLOSE);
         ticketDialog.getButtonTypes().addAll(saveButtonType, closeButtonType);
 
-        Stage stage = (Stage) ticketDialog.getDialogPane().getScene().getwindow();
+        Stage stage = (Stage) ticketDialog.getDialogPane().getScene().getWindow();
         Button saveButton = (Button) ticketDialog.getDialogPane().lookupButton(saveButtonType);
         Button closeButton = (Button) ticketDialog.getDialogPane().lookupButton(closeButtonType);
         saveButton.addEventFilter(ActionEvent.ACTION, e -> {
@@ -4166,7 +4166,7 @@ String eventName = r1.getText();
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("eventspage.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -4275,7 +4275,7 @@ String eventName = r1.getText();
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("reservetecket.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
@@ -4355,7 +4355,7 @@ String eventName = r1.getText();
             Parent root;
 
             root = FXMLLoader.load(getClass().getResource("Addpackage.fxml"));
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getwindow();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
             stage.setScene(scene);
