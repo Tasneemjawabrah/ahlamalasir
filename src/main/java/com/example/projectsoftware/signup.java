@@ -49,7 +49,7 @@ public void setId(TextField id) {
 
       private TextField fname;
     private TextField lname;
-    private TextField username;
+private TextField userUsername;
     private TextField email;
     private TextField passs;
     private Button backsign;
