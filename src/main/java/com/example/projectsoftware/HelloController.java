@@ -530,7 +530,7 @@ void backktoallhalls(ActionEvent event) {
         LocalDate chosenDate = dat.getValue();
         String startTimeStr = choicetime.getValue();
 
-        if (selectedDate == null || startTimeStr == null) {
+        if (chosenDate == null || startTimeStr == null) {
             showAlert("Please select date and start time.");
             return;
 
@@ -562,7 +562,7 @@ void backktoallhalls(ActionEvent event) {
                 return;
             }
 
-            if (!isHallAvailable(selectedDate, startTime, endTime, hallId,  connectionDB)) {
+            if (!isHallAvailable(chosenDate, startTime, endTime, hallId,  connectionDB)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
@@ -571,7 +571,7 @@ void backktoallhalls(ActionEvent event) {
             BigDecimal pricePerHour = getPricePerHour(hallId,  connectionDB);
 
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
-            insertReservation(userId, hallId, selectedDate, startTime, endTime, totalPrice, connectionDB);
+            insertReservation(userId, hallId, chosenDate, startTime, endTime, totalPrice, connectionDB);
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
@@ -1821,8 +1821,8 @@ logger.severe(CHECKING_AVAILABLE);
     }
 
     public void choisetiameondate(javafx.scene.input.MouseEvent mouseEvent) {
-        LocalDate selectedDate = dat.getValue();
-        if (selectedDate == null) {
+        LocalDate chosenDate = dat.getValue();
+        if (chosenDate == null) {
             return;
         }
 
@@ -1835,7 +1835,7 @@ logger.severe(CHECKING_AVAILABLE);
 
             checkReservationStatement =  connectionDB.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND hallid = ?");
 
-            checkReservationStatement.setDate(1, Date.valueOf(selectedDate));
+            checkReservationStatement.setDate(1, Date.valueOf(chosenDate));
             checkReservationStatement.setInt(2, getHallId());
 
 
@@ -2359,8 +2359,8 @@ logger.severe(CHECKING_AVAILABLE);
 
     @FXML
     void clicktimepackagechoice(MouseEvent event) {
-        LocalDate selectedDate = datereservatiooon.getValue();
-        if (selectedDate == null) {
+        LocalDate chosenDate = datereservatiooon.getValue();
+        if (chosenDate == null) {
             return;
         }
 
@@ -2373,7 +2373,7 @@ logger.severe(CHECKING_AVAILABLE);
 
             checkReservationStatementtt =  connectionDB.prepareStatement("SELECT DISTINCT starttime FROM software.wedding_packages WHERE date = ? AND package_id = ?");
 
-            checkReservationStatementtt.setDate(1, Date.valueOf(selectedDate));
+            checkReservationStatementtt.setDate(1, Date.valueOf(chosenDate));
             checkReservationStatementtt.setInt(2, getHallIdd());
 
 
@@ -2400,10 +2400,10 @@ logger.severe(CHECKING_AVAILABLE);
 
     @FXML
     void reserpackageeee(ActionEvent event) {
-        LocalDate selectedDate = datereservatiooon.getValue();
+        LocalDate chosenDate = datereservatiooon.getValue();
         String startTimeStr = packagetime.getValue();
 
-        if (selectedDate == null || startTimeStr == null) {
+        if (chosenDate == null || startTimeStr == null) {
             showAlert("Please select date and start time.");
             return;
         }
@@ -2433,7 +2433,7 @@ logger.severe(CHECKING_AVAILABLE);
                 return;
             }
 
-            if (!isHallAvailablee(selectedDate, startTime, endTime, hallId,  connectionDB)) {
+            if (!isHallAvailablee(chosenDate, startTime, endTime, hallId,  connectionDB)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
@@ -2442,7 +2442,7 @@ logger.severe(CHECKING_AVAILABLE);
 
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
 
-            insertReservationn(userId, hallId, selectedDate, startTime, endTime, totalPrice,  connectionDB);
+            insertReservationn(userId, hallId, chosenDate, startTime, endTime, totalPrice,  connectionDB);
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
@@ -2499,8 +2499,8 @@ logger.severe("Error while checking availability:");
     }
 
     public void clicktimeservicechoice(javafx.scene.input.MouseEvent mouseEvent) {
-        LocalDate selectedDate = datereservation.getValue();
-        if (selectedDate == null) {
+        LocalDate chosenDate = datereservation.getValue();
+        if (chosenDate == null) {
             return;
         }
 
@@ -2513,7 +2513,7 @@ logger.severe("Error while checking availability:");
 
             checkReservationStatementt =  connectionDB.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND serviceid = ?");
 
-            checkReservationStatementt.setDate(1, Date.valueOf(selectedDate));
+            checkReservationStatementt.setDate(1, Date.valueOf(chosenDate));
             checkReservationStatementt.setInt(2, getHallId());
 
 
@@ -2540,9 +2540,9 @@ logger.severe("Error while checking availability:");
 
     @FXML
     void resser(ActionEvent event) {
-        LocalDate selectedDate = datereservation.getValue();
+        LocalDate chosenDate = datereservation.getValue();
         String startTimeStr = servicetime.getValue();
-        if (selectedDate == null || startTimeStr == null) {
+        if (chosenDate == null || startTimeStr == null) {
             showAlert("Please select date and start time.");
             return;
         }
@@ -2572,7 +2572,7 @@ logger.severe("Error while checking availability:");
                 return;
             }
 
-            if (!isHallAvailablee(selectedDate, startTime, endTime, hallId,  connectionDB)) {
+            if (!isHallAvailablee(chosenDate, startTime, endTime, hallId,  connectionDB)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
@@ -2581,7 +2581,7 @@ logger.severe("Error while checking availability:");
 
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
 
-            insertReservationn(userId, hallId, selectedDate, startTime, endTime, totalPrice,  connectionDB);
+            insertReservationn(userId, hallId, chosenDate, startTime, endTime, totalPrice,  connectionDB);
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
