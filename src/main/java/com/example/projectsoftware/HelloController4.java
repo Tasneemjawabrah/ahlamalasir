@@ -73,7 +73,7 @@ private static final Logger logger = Logger.getLogger(HelloController4.class.get
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment());
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
-            logger.severe("Error while checking availability: " + e.getMessage());
+                System.out.println("Error while checking availability");
         }
     
 
