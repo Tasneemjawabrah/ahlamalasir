@@ -2,7 +2,7 @@ package com.example.projectsoftware;
 
 import java.sql.*;
 
-public class new_reservation {
+public class NewReservation {
     private int reservationId;
     private int userId;
     private int hallId;
@@ -10,11 +10,10 @@ public class new_reservation {
     private Time startTime;
     private Time endTime;
     private double totalPrice;
-    private Double totalPricee;
     private String state;
     private int serviceId;
 
-    public new_reservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,
+    public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,
                 double totalPrice, String state, int serviceId) {
         this.reservationId = reservationId;
         this.userId = userId;
@@ -26,7 +25,7 @@ public class new_reservation {
         this.state = state;
         this.serviceId = serviceId;
     }
-    public new_reservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,
+    public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,
                            double totalPrice, String state) {
         this.reservationId = reservationId;
         this.userId = userId;
@@ -38,7 +37,7 @@ public class new_reservation {
         this.state = state;
 
     }
-    public new_reservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,   Double totalPrice, String state, int serviceId) {
+    public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,   Double totalPrice, String state, int serviceId) {
         this.reservationId = reservationId;
         this.userId = userId;
         this.hallId = hallId;
