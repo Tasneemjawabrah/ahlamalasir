@@ -492,7 +492,7 @@ void backktoallhalls(ActionEvent event) {
 
 
     @FXML
-    void choicesnew(MouseEvent event)
+    void choicesnew(MouseEvent event){
     System.out.println("Under implementation");
 
 
