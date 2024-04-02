@@ -27,7 +27,7 @@ public static String[] getHallsBasedOnBudget(double budget) {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace(); // Handle exception properly in your application
+         System.err.println("Error while checking availability:");
     }
     
     return hallsList.toArray(new String[0]);
