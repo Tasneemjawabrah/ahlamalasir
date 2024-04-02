@@ -17,6 +17,8 @@ import java.util.logging.Logger;
 public class HelloController4 {
 private static final String UNDER_IMPLEMENTATION = "Under implementation";
 private static final Logger logger = Logger.getLogger(HelloController4.class.getName());
+ private static final Logger logger = Logger.getLogger(HelloController4.class.getName());
+
 
     private Connection connection;
     private PreparedStatement checkReservationStatement;
@@ -65,18 +67,17 @@ private static final Logger logger = Logger.getLogger(HelloController4.class.get
     }
 
 
-    public void initialize() {
+  public void initialize() {
         servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
-        
-        private static final Logger logger = Logger.getLogger(YourClassName.class.getName());
-
 
         try {
-    connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment() );
-    checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
-} catch (SQLException e) {
-    logger.severe("Error while checking availability: " + e.getMessage());
-}
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment());
+            checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
+        } catch (SQLException e) {
+            logger.severe("Error while checking availability: " + e.getMessage());
+        }
+    }
+    
 
         datereservation.setDayCellFactory(dp -> new DateCell() {
             @Override
