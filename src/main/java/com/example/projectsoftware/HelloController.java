@@ -3403,63 +3403,62 @@ public static Button getPackgButton() {
 
     }
 
-    @FXML
-    void viewevents(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
+@FXML
+void viewevents(ActionEvent event) {
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
-            if (userId != -1) {
-                String sql = "(SELECT r.* \n" +
-                        "FROM software.reservations r\n" +
-                        "LEFT JOIN software.halls h ON r.hallid = h.hallid\n" +
-                        "LEFT JOIN software.services s ON r.serviceid = s.serviceid\n" +
-                        "WHERE h.userid = ? OR s.userid = ?)";
+        if (userId != -1) {
+            String sql = "(SELECT r.* \n" +
+                    "FROM software.reservations r\n" +
+                    "LEFT JOIN software.halls h ON r.hallid = h.hallid\n" +
+                    "LEFT JOIN software.services s ON r.serviceid = s.serviceid\n" +
+                    "WHERE h.userid = ? OR s.userid = ?)";
 
-                ObservableList<Reservation> reservationsList = FXCollections.observableArrayList();
+            ObservableList<Reservation> reservationsList = FXCollections.observableArrayList();
 
-                try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
-
-                    statement.setInt(1, userId);
-                    statement.setInt(2, userId);
-                    ResultSet resultSet = statement.executeQuery();
-
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, userId);
+                statement.setInt(2, userId);
+                
+                try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
-                        Reservation reservation = new Reservation(
+                        Reservation reservation = new Reservation.ReservationBuilder(
                                 resultSet.getInt("reservationid"),
                                 resultSet.getInt("userid"),
                                 resultSet.getInt("hallid"),
                                 resultSet.getDate("date"),
                                 resultSet.getTime("starttime"),
-                                resultSet.getTime("endtime"),
-                                resultSet.getDouble("totalprice"),
-                                resultSet.getInt("serviceid"),
-                                resultSet.getString("state")
-                        );
+                                resultSet.getTime("endtime")
+                            )
+                            .totalPrice(resultSet.getDouble("totalprice"))
+                            .serviceId(resultSet.getInt("serviceid"))
+                            .state(resultSet.getString("state"))
+                            .build();
                         reservationsList.add(reservation);
                     }
-
-                    e1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
-                    e2.setCellValueFactory(new PropertyValueFactory<>("userId"));
-                    e3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
-                    e4.setCellValueFactory(new PropertyValueFactory<>("Date"));
-                    e5.setCellValueFactory(new PropertyValueFactory<>("startTime"));
-                    e6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-                    e7.setCellValueFactory(new PropertyValueFactory<>("totalprice"));
-                    e8.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
-                    e9.setCellValueFactory(new PropertyValueFactory<>("state"));
-
-                    eventtable.getItems().clear();
-
-                    eventtable.getItems().addAll(reservationsList);
-
                 }
-            } else {
-                System.out.println("User not found!");
+
+                e1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
+                e2.setCellValueFactory(new PropertyValueFactory<>("userId"));
+                e3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
+                e4.setCellValueFactory(new PropertyValueFactory<>("date"));
+                e5.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+                e6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+                e7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+                e8.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
+                e9.setCellValueFactory(new PropertyValueFactory<>("state"));
+
+                eventtable.getItems().clear();
+                eventtable.getItems().addAll(reservationsList);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } else {
+            System.out.println("User not found!");
         }
+    } catch (SQLException e) {
+        throw new RuntimeException(e);
     }
+}
 
 
     @FXML
@@ -3565,49 +3564,51 @@ public static Button getPackgButton() {
     @FXML
     private Button showbuttonn;
 
-    @FXML
-    void showshow(ActionEvent event) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+  void showshow(ActionEvent event) {
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
-
-            ObservableList<Reservation> reservationsList = FXCollections.observableArrayList();
-            String query = "SELECT * FROM software.reservations";
-            try (PreparedStatement statement = connection.prepareStatement(query);
-                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    Reservation reservation = new Reservation(
-                            resultSet.getInt("reservationid"),
-                            resultSet.getInt("userid"),
-                            resultSet.getInt("hallid"),
-                            resultSet.getDate("date"),
-                            resultSet.getTime("starttime"),
-                            resultSet.getTime("endtime"),
-                            resultSet.getDouble("totalprice"),
-                            resultSet.getInt("serviceid"),
-                            resultSet.getString("state")
-                    );
-                    reservationsList.add(reservation);
-
-                    cc11.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
-                    cc22.setCellValueFactory(new PropertyValueFactory<>("userId"));
-                    cc33.setCellValueFactory(new PropertyValueFactory<>("hallId"));
-                    cc44.setCellValueFactory(new PropertyValueFactory<>("Date"));
-                    cc55.setCellValueFactory(new PropertyValueFactory<>("startTime"));
-                    cc66.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-                    cc77.setCellValueFactory(new PropertyValueFactory<>("totalprice"));
-                    cc88.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
-                    cc99.setCellValueFactory(new PropertyValueFactory<>("state"));
-
-
-                    adminviewstable.getItems().clear();
-
-                    adminviewstable.getItems().addAll(reservationsList);
-                }
+        ObservableList<Reservation> reservationsList = FXCollections.observableArrayList();
+        String query = "SELECT * FROM software.reservations";
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+            
+            // Setup cell value factories and clear existing items from TableView
+            cc11.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
+            cc22.setCellValueFactory(new PropertyValueFactory<>("userId"));
+            cc33.setCellValueFactory(new PropertyValueFactory<>("hallId"));
+            cc44.setCellValueFactory(new PropertyValueFactory<>("date"));
+            cc55.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+            cc66.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+            cc77.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+            cc88.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
+            cc99.setCellValueFactory(new PropertyValueFactory<>("state"));
+            adminviewstable.getItems().clear();
+            
+            // Iterate over the result set
+            while (resultSet.next()) {
+                Reservation reservation = new Reservation.ReservationBuilder(
+                        resultSet.getInt("reservationid"),
+                        resultSet.getInt("userid"),
+                        resultSet.getInt("hallid"),
+                        resultSet.getDate("date"),
+                        resultSet.getTime("starttime"),
+                        resultSet.getTime("endtime")
+                    )
+                    .totalPrice(resultSet.getDouble("totalprice"))
+                    .serviceId(resultSet.getInt("serviceid"))
+                    .state(resultSet.getString("state"))
+                    .build();
+                reservationsList.add(reservation);
             }
-        } catch (SQLException e) {
-            System.err.println("Error while checking availability:");
         }
+        
+        // Add all reservations to the TableView
+        adminviewstable.getItems().addAll(reservationsList);
+    } catch (SQLException e) {
+        System.err.println("Error while checking availability: " + e.getMessage());
     }
+}
+
 
 
     @FXML
