@@ -56,7 +56,7 @@ public class helloControllerService {
                 services.add(service);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
 
         return services;
