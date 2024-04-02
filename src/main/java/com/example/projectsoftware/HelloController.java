@@ -383,7 +383,8 @@ void backktoallhalls(ActionEvent event) {
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
-        throw new FXMLLoaderException("Error loading Halls.fxml", e);
+               System.out.println("error");
+
     }
 }
 
