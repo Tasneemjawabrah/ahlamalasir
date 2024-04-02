@@ -17,8 +17,11 @@ import java.util.logging.Logger;
 
 public class HelloController3 {
 
+ private static final String METHOD_NOT_IMPLEMENTED_ERROR = "Method 'choicesnew' is not yet implemented.";
+
     @FXML
     private ListView<Halls> hallListView=new ListView<>();
+    
 
 
 
@@ -163,22 +166,22 @@ private void showHallInformationDialog(MouseEvent event) {
     private TextField newprice;
 
   void choicesnew(MouseEvent event) {
-    throw new UnsupportedOperationException("Method 'choicesnew' is not yet implemented.");
+        throw new UnsupportedOperationException(METHOD_NOT_IMPLEMENTED_ERROR);
 }
 
 
 
 
     public void newreserve(javafx.event.ActionEvent actionEvent) {
-         throw new UnsupportedOperationException("Method 'choicesnew' is not yet implemented.");
+        throw new UnsupportedOperationException(METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     public void canclenew(javafx.event.ActionEvent actionEvent) {
-         throw new UnsupportedOperationException("Method 'choicesnew' is not yet implemented.");
+        throw new UnsupportedOperationException(METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     public void eeeee(javafx.event.ActionEvent actionEvent) {
-         throw new UnsupportedOperationException("Method 'choicesnew' is not yet implemented.");
+        throw new UnsupportedOperationException(METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
 
