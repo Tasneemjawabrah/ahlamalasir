@@ -495,7 +495,7 @@ public class HelloController {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+               System.err.println("Error while checking availability:");
         }
     }
 
@@ -549,7 +549,7 @@ public class HelloController {
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
-            e.printStackTrace();
+          System.err.println("Error while checking availability:");
             showAlert("Failed to book the hall. Please try again later.");
         }
     }
@@ -564,7 +564,7 @@ public class HelloController {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+         System.err.println("Error while checking availability:");
     }
     return hallId;
     }
@@ -701,7 +701,7 @@ public class HelloController {
                 showAlert("Invalid Email or Password");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+        System.err.println("Error while checking availability:");
         }
     }
  private static String getPasswordFromEnvironment() {
@@ -780,7 +780,7 @@ public class HelloController {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
             showAlert("An error occurred while checking email and code.");
         }
     }
@@ -821,7 +821,7 @@ public class HelloController {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
             showAlert("An error occurred while resetting password.");
         }
     }
@@ -1157,7 +1157,7 @@ public class HelloController {
                 hallTableView.getItems().remove(selectedHall);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+          System.err.println("Error while checking availability:");
         }
     } else {
         System.out.println("No row selected.");
@@ -1211,7 +1211,7 @@ public class HelloController {
         hallTableView.setItems(halls);
         
     } catch (SQLException e) {
-        e.printStackTrace();
+        System.err.println("Error while checking availability:");
     }
     
     }
@@ -1268,7 +1268,7 @@ public class HelloController {
         }
         
     } catch (SQLException e) {
-        e.printStackTrace();
+       System.err.println("Error while checking availability:");
         showAlert("An error occurred while updating user information: " + e.getMessage());
     }
     
@@ -1312,7 +1312,7 @@ public class HelloController {
             }
         }
     } catch (SQLException | IOException e) {
-        e.printStackTrace();
+      System.err.println("Error while checking availability:");
         showAlert("Error occurred while updating admin photo!");
     }
 
@@ -1380,7 +1380,7 @@ public class HelloController {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+     System.err.println("Error while checking availability:");
     } 
     }
 
@@ -1437,7 +1437,7 @@ public class HelloController {
             showAlert("Failed to add a new hall.");
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+       System.err.println("Error while checking availability:");
         showAlert("Error: " + e.getMessage());
     } catch (NumberFormatException e) {
         showAlert("Invalid capacity, price per hour, or user ID format.");
@@ -1461,7 +1461,7 @@ public class HelloController {
                 return resultSet.next();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
             return false;
         }
     }
@@ -1483,7 +1483,7 @@ public class HelloController {
             }
             
         } catch (SQLException e) {
-            e.printStackTrace();
+             System.err.println("Error while checking availability:");
             showAlert("Database error: " + e.getMessage());
         }
     }
@@ -1497,7 +1497,7 @@ public class HelloController {
 
             return outputStream.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
+        System.err.println("Error while checking availability:");
             showAlert("Error converting image to byte array: " + e.getMessage());
             return null;
         }
@@ -1552,7 +1552,7 @@ public class HelloController {
                     showAlert("Failed to upload image.");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Error while checking availability:");
                 showAlert("Error reading image file: " + e.getMessage());
             }
         }
@@ -1625,7 +1625,7 @@ public class HelloController {
             connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND hallid = ?");
         } catch (SQLException e) {
-            e.printStackTrace();
+      System.err.println("Error while checking availability:");
         }
 
         dat.setDayCellFactory(dp -> new DateCell() {
@@ -1658,7 +1658,7 @@ public class HelloController {
             connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatementt = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
-            e.printStackTrace();
+        System.err.println("Error while checking availability:");
         }
 
         datereservation.setDayCellFactory(dp -> new DateCell() {
@@ -1689,7 +1689,7 @@ public class HelloController {
             connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatementtt = connection.prepareStatement("SELECT COUNT(*) FROM software.wedding_packages WHERE date = ? AND starttime = ? AND package_id = ?");
         } catch (SQLException e) {
-            e.printStackTrace();
+         System.err.println("Error while checking availability:");
         }
 
         datereservatiooon.setDayCellFactory(dp -> new DateCell() {
@@ -1731,7 +1731,7 @@ public class HelloController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+          System.err.println("Error while checking availability:");
         }
         return reservedCount;
     }
@@ -1751,7 +1751,7 @@ public class HelloController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+           System.err.println("Error while checking availability:");
         }
         return reservedCount;
     }
@@ -1770,7 +1770,7 @@ public class HelloController {
         }
         
     } catch (SQLException e) {
-        e.printStackTrace();
+      System.err.println("Error while checking availability:");
     }
     return hallId;
     }
@@ -1787,7 +1787,7 @@ public class HelloController {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+        System.err.println("Error while checking availability:");
     }
     return hallId;
     }
@@ -1819,7 +1819,7 @@ public class HelloController {
 
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
 
         List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
@@ -1933,7 +1933,7 @@ public class HelloController {
                 System.out.println("User not found!");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+          System.err.println("Error while checking availability:");
         }
     }
 
@@ -1954,7 +1954,7 @@ public class HelloController {
                 logoutserviceprovider(new ActionEvent());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
 
 
@@ -1977,7 +1977,7 @@ public class HelloController {
                 logoutserviceprovider(new ActionEvent());
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+           System.err.println("Error while checking availability:");
         }
 
     }
@@ -2070,7 +2070,7 @@ public class HelloController {
                 System.out.println("User not found!");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+           System.err.println("Error while checking availability:");
         }
     }
 
@@ -2202,7 +2202,7 @@ public class HelloController {
                                 showAlert("Failed to insert reservation into the database.");
                             }
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                         System.err.println("Error while checking availability:");
                             showAlert("An error occurred while deleting reservation.");
                         }
                     }
@@ -2211,7 +2211,7 @@ public class HelloController {
                 showAlert("No reservation selected.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+           System.err.println("Error while checking availability:");
             showAlert("An error occurred while connecting to the database.");
         }
     }
@@ -2351,7 +2351,7 @@ public class HelloController {
 
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+           System.err.println("Error while checking availability:");
         }
 
         List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
@@ -2412,7 +2412,7 @@ public class HelloController {
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
-            e.printStackTrace();
+             System.err.println("Error while checking availability:");
             showAlert("Failed to book the hall. Please try again later.");
         }
 
@@ -2442,7 +2442,7 @@ public class HelloController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+         System.err.println("Error while checking availability:");
         }
         return reservedCount;
     }
@@ -2459,7 +2459,7 @@ public class HelloController {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+       System.err.println("Error while checking availability:");
     }
     return hallId;
     }
@@ -2491,7 +2491,7 @@ public class HelloController {
 
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
 
         List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
@@ -2551,7 +2551,7 @@ public class HelloController {
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
-            e.printStackTrace();
+          System.err.println("Error while checking availability:");
             showAlert("Failed to book the hall. Please try again later.");
         }
     }
@@ -2566,7 +2566,7 @@ public class HelloController {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+     System.err.println("Error while checking availability:");
     }
     return hallId;
     }
@@ -2761,7 +2761,7 @@ public class HelloController {
 
         feedbacktable.setItems(feedbackList);
     } catch (SQLException e) {
-        e.printStackTrace();
+     System.err.println("Error while checking availability:");
     }
     }
 
@@ -2831,7 +2831,7 @@ public class HelloController {
             alert.showAndWait();
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+     System.err.println("Error while checking availability:");
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);
@@ -2953,7 +2953,7 @@ public class HelloController {
             serviceviewtable.getItems().addAll(hallsList);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
     }
 
@@ -2980,7 +2980,7 @@ public class HelloController {
                     Image image = new Image(new ByteArrayInputStream(imageData));
                     imageView.setImage(image);
                 } catch (SQLException e) {
-                    e.printStackTrace();
+                    System.err.println("Error while checking availability:");
                 }
             } else {
             }
@@ -3083,7 +3083,7 @@ public class HelloController {
 
         showAlert("Service added successfully");
     } catch (SQLException e) {
-        e.printStackTrace();
+       System.err.println("Error while checking availability:");
         showAlert("An error occurred while saving the service.");
     }
     }
@@ -3144,7 +3144,7 @@ public class HelloController {
                 showAlert("Please select a row");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+         System.err.println("Error while checking availability:");
             showAlert("Error: " + e.getMessage());
         }
     } else {
@@ -3204,7 +3204,7 @@ public class HelloController {
                 Image image = new Image(new FileInputStream(selectedFile));
                 imageView.setImage(image);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Error while checking availability:");
             }
         }
     }
@@ -3315,7 +3315,7 @@ public class HelloController {
                 showAlert("No reservation selected.");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+           System.err.println("Error while checking availability:");
             showAlert("An error occurred while connecting to the database.");
         }
     }
@@ -3571,7 +3571,7 @@ public class HelloController {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
     }
 
@@ -3694,7 +3694,7 @@ public class HelloController {
                 System.out.println("User not found!");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+          System.err.println("Error while checking availability:");
         }
     }
 
@@ -3735,7 +3735,7 @@ public class HelloController {
                 System.out.println("User not found!");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+             System.err.println("Error while checking availability:");
         }
     }
 
@@ -3796,10 +3796,10 @@ public class HelloController {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+      System.err.println("Error while checking availability:");
         // Handle SQLException appropriately
     } catch (Exception e) {
-        e.printStackTrace();
+     System.err.println("Error while checking availability:");
     }
     }
 
@@ -3876,7 +3876,7 @@ public class HelloController {
             try (FileInputStream fis = new FileInputStream(selectedFile)) {
                 imageBytes = fis.readAllBytes();
             } catch (Exception e) {
-                e.printStackTrace();
+           System.err.println("Error while checking availability:");
             }
         }
     }
@@ -3905,7 +3905,7 @@ public class HelloController {
             });
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+       System.err.println("Error while checking availability:");
         // Handle SQLException appropriately
     } catch (Exception e) {
         throw new RuntimeException(e);
@@ -3957,7 +3957,7 @@ String eventName = r1.getText();
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+       System.err.println("Error while checking availability:");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -4028,7 +4028,7 @@ String eventName = r1.getText();
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+         System.err.println("Error while checking availability:");
 
         }
     }
@@ -4051,7 +4051,7 @@ String eventName = r1.getText();
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (Exception e) {
-            e.printStackTrace();
+       System.err.println("Error while checking availability:");
         }
     }
 
@@ -4152,7 +4152,7 @@ String eventName = r1.getText();
                 System.out.println("User not found!");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
 
     }
@@ -4223,7 +4223,7 @@ String eventName = r1.getText();
         }
         Eventname.setItems(events);
     } catch (SQLException e) {
-        e.printStackTrace();
+      System.err.println("Error while checking availability:");
     }
     }
 
@@ -4251,7 +4251,7 @@ String eventName = r1.getText();
             tickettype.setItems(tickets);
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+       System.err.println("Error while checking availability:");
     }
     }
 
@@ -4396,7 +4396,7 @@ String eventName = r1.getText();
             tableeee.setItems(data);
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+       System.err.println("Error while checking availability:");
     }
     }
 
@@ -4447,7 +4447,7 @@ String eventName = r1.getText();
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+    System.err.println("Error while checking availability:");
     }  
     }
 
@@ -4476,7 +4476,7 @@ String eventName = r1.getText();
         }
         getshow(event);
     } catch (SQLException e) {
-        e.printStackTrace();
+ System.err.println("Error while checking availability:");
     }
     }
 }
