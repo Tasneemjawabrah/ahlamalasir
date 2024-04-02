@@ -35,7 +35,7 @@ public class HelloController3 {
 
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
-
+   private static final String NEW_HALL_FXML = "newhall.fxml";
 
     @FXML
     public void initialize() {
@@ -58,50 +58,39 @@ public class HelloController3 {
 
     }
 
-    private void showHallInformationDialog(MouseEvent event) {
-        Halls selectedHall = hallListView.getSelectionModel().getSelectedItem();
-        if (selectedHall != null) {
-            String hallName = selectedHall.getName();
-            try {
-                FXMLLoader loader = new FXMLLoader();
-                Parent root;
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-                if ("Rose".equals(hallName)) {
-                    loader.setLocation(getClass().getResource("newhall.fxml"));
-                    root = loader.load();
-                    HelloController controller = loader.getController();
-                    controller.populateFields(selectedHall);
-                } else if ("Masaya".equals(hallName)) {
-                    loader.setLocation(getClass().getResource("Masaya.fxml"));
-                    root = loader.load();
-                } else if ("Dreamsh".equals(hallName)) {
-                    loader.setLocation(getClass().getResource("newhall.fxml"));
-                    root = loader.load();
-                } else {
-
-                    loader.setLocation(getClass().getResource("newhall.fxml"));
-                    root = loader.load();
-                    HelloController controller = loader.getController();
-                    controller.populateFields(selectedHall);
-
-                }
-
-
-                HelloController controller = new HelloController();
-                controller=loader.getController();
-                controller.performInitialization();
-
-
-
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                System.err.println("Error while checking availability:");
+  private void showHallInformationDialog(MouseEvent event) {
+    Halls selectedHall = hallListView.getSelectionModel().getSelectedItem();
+    if (selectedHall != null) {
+        String hallName = selectedHall.getName();
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            Parent root;
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            if ("Rose".equals(hallName)) {
+                loader.setLocation(getClass().getResource(NEW_HALL_FXML));
+                root = loader.load();
+                HelloController controller = loader.getController();
+                controller.populateFields(selectedHall);
+            } else if ("Masaya".equals(hallName) || "Dreamsh".equals(hallName)) {
+                loader.setLocation(getClass().getResource(NEW_HALL_FXML));
+                root = loader.load();
+            } else {
+                loader.setLocation(getClass().getResource(NEW_HALL_FXML));
+                root = loader.load();
+                HelloController controller = loader.getController();
+                controller.populateFields(selectedHall);
             }
+            HelloController controller = loader.getController();
+            controller.performInitialization();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+           
+            System.err.println("Error while checking availability:");
         }
     }
+}
 
     public ObservableList<Halls> fetchHallsFromDatabase() {
         ObservableList<Halls> halls = FXCollections.observableArrayList();
