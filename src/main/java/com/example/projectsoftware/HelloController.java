@@ -4296,17 +4296,17 @@ logger.severe("Error while checking availability:");
 
     @FXML
     void buying(ActionEvent event) {
-
+    logger.severe(CHECKING_AVAILABLE);
     }
 
     @FXML
     void canclebuu(ActionEvent event) {
-
+    logger.severe(CHECKING_AVAILABLE);
     }
 
 
     @FXML
-    private Button Ticketcu;
+    private Button ticketcu;
 
     @FXML
     void customerTicket(ActionEvent event) {
@@ -4328,8 +4328,8 @@ logger.severe("Error while checking availability:");
     }
 
     public void ticketclick(MouseEvent mouseEvent) {
-    }
-
+       logger.severe(CHECKING_AVAILABLE);
+}
 
     @FXML
     private TextField des;
@@ -4384,7 +4384,7 @@ logger.severe("Error while checking availability:");
 
     @FXML
     void deleteepac(ActionEvent event) {
-
+   logger.severe(CHECKING_AVAILABLE);
 
     }
 
@@ -4486,7 +4486,7 @@ logger.severe("Error while checking availability:");
             }
         }
     } catch (SQLException e) {
-    System.err.println(CHECKING_AVAILABLE);
+         logger.severe(CHECKING_AVAILABLE);
     }  
     }
 
@@ -4515,7 +4515,8 @@ logger.severe("Error while checking availability:");
         }
         getshow(event);
     } catch (SQLException e) {
- System.err.println(CHECKING_AVAILABLE);
+    logger.severe(CHECKING_AVAILABLE);
+       
     }
     }
 }
