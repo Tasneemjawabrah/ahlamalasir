@@ -153,7 +153,7 @@ public static Button getPackgButton() {
              "WHERE email = ? AND password = ?";
 
         try (Connection connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+             PreparedStatement preparedStatement =  connectionDB.prepareStatement(query)) {
 
             preparedStatement.setString(1, emailInput);
             preparedStatement.setString(2, passwordInput);
@@ -511,8 +511,8 @@ public static Button getPackgButton() {
 
         String query = "SELECT capacity, location, priceperhour FROM software.halls WHERE hallname = 'Rose'";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-             PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+             PreparedStatement preparedStatement =  connectionDB.prepareStatement(query);
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             if (resultSet.next()) {
@@ -556,30 +556,30 @@ public static Button getPackgButton() {
 
         long durationHours = 2;
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment())) {
 
-            int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
+            int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(),  connectionDB);
 
             if (userId == -1) {
                 showAlert("Invalid email or password.");
                 return;
             }
-            int hallId = gettHallId(hallName, connection);
+            int hallId = gettHallId(hallName,  connectionDB);
             if (hallId == 0) {
                 showAlert("Hall not found.");
                 return;
             }
 
-            if (!isHallAvailable(selectedDate, startTime, endTime, hallId, connection)) {
+            if (!isHallAvailable(selectedDate, startTime, endTime, hallId,  connectionDB)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
 
 
-            BigDecimal pricePerHour = getPricePerHour(hallId, connection);
+            BigDecimal pricePerHour = getPricePerHour(hallId,  connectionDB);
 
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
-            insertReservation(userId, hallId, selectedDate, startTime, endTime, totalPrice, connection);
+            insertReservation(userId, hallId, selectedDate, startTime, endTime, totalPrice, connectionDB);
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
@@ -588,9 +588,9 @@ public static Button getPackgButton() {
         }
     }
 
-    private int gettHallId(String hallName, Connection connection) {
+    private int gettHallId(String hallName, Connection  connectionDB) {
        int hallId = 0;
-    try (PreparedStatement statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?")) {
+    try (PreparedStatement statement =  connectionDB.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?")) {
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
@@ -603,9 +603,9 @@ public static Button getPackgButton() {
     return hallId;
     }
 
-    private int getUserId(String email, String password, Connection connection) throws SQLException {
+    private int getUserId(String email, String password, Connection  connectionDB) throws SQLException {
       String sql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
-    try (PreparedStatement statement = connection.prepareStatement(sql)) {
+    try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
         statement.setString(1, email);
         statement.setString(2, password);
         try (ResultSet resultSet = statement.executeQuery()) {
@@ -615,10 +615,10 @@ public static Button getPackgButton() {
     }
 
     private boolean isHallAvailable(LocalDate date, LocalTime startTime, LocalTime endTime, int hallId,
-                                    Connection connection) throws SQLException {
+                                    Connection  connectionDB) throws SQLException {
         String sql = "SELECT COUNT(*) FROM software.new_table_name WHERE hallid = ? AND date = ? AND "
                 + "((starttime <= ? AND endtime >= ?) OR (starttime <= ? AND endtime >= ?) AND state != 'deleted')";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
             statement.setInt(1, hallId);
             statement.setDate(2, java.sql.Date.valueOf(date));
             statement.setTime(3, java.sql.Time.valueOf(startTime));
@@ -631,9 +631,9 @@ public static Button getPackgButton() {
         }
     }
 
-    private BigDecimal getPricePerHour(int hallId, Connection connection) throws SQLException {
+    private BigDecimal getPricePerHour(int hallId, Connection  connectionDB) throws SQLException {
         String sql = "SELECT priceperhour FROM software.halls WHERE hallid = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement = connectionDB.prepareStatement(sql)) {
             statement.setInt(1, hallId);
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
@@ -642,10 +642,10 @@ public static Button getPackgButton() {
     }
 
     private void insertReservation(int userId, int hallId, LocalDate date, LocalTime startTime, LocalTime endTime,
-                                   BigDecimal totalPrice, Connection connection) throws SQLException {
+                                   BigDecimal totalPrice, Connection  connectionDB) throws SQLException {
         String sql = "INSERT INTO software.new_table_name (userid, hallid, date, starttime, endtime, totalprice, state) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
             statement.setInt(1, userId);
             statement.setInt(2, hallId);
             statement.setDate(3, java.sql.Date.valueOf(date));
@@ -703,10 +703,10 @@ public static Button getPackgButton() {
         String getReservationsSql = "SELECT reservationid FROM software.reservations WHERE userid = ?";
         String updateReservationSql = "UPDATE software.reservations SET totalprice = totalprice + ? WHERE reservationid = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-             PreparedStatement getUserStatement = connection.prepareStatement(getUserSql);
-             PreparedStatement getReservationsStatement = connection.prepareStatement(getReservationsSql);
-             PreparedStatement updateReservationStatement = connection.prepareStatement(updateReservationSql)) {
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+             PreparedStatement getUserStatement =  connectionDB.prepareStatement(getUserSql);
+             PreparedStatement getReservationsStatement =  connectionDB.prepareStatement(getReservationsSql);
+             PreparedStatement updateReservationStatement =  connectionDB.prepareStatement(updateReservationSql)) {
 
             getUserStatement.setString(1, email);
             getUserStatement.setString(2, password);
@@ -795,8 +795,8 @@ public static Button getPackgButton() {
 
         String query = "SELECT userid FROM software.users WHERE email = ? AND code = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+             PreparedStatement preparedStatement =  connectionDB.prepareStatement(query)) {
 
             preparedStatement.setString(1, email);
             preparedStatement.setString(2, code);
@@ -833,8 +833,8 @@ public static Button getPackgButton() {
 
         String updateQuery = "UPDATE software.users SET password = ? WHERE email = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-             PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+             PreparedStatement preparedStatement =  connectionDB.prepareStatement(updateQuery)) {
 
             preparedStatement.setString(1, newPassword);
             preparedStatement.setString(2, email);
@@ -929,11 +929,11 @@ public static Button getPackgButton() {
     }
 
     private void fetchHallsAndServices() {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
-            List<String> availableHalls = fetchHalls(connection);
-            List<String> availableServices = fetchServices(connection);
-            List<String> availablePackages = fetchPackages(connection);
+            List<String> availableHalls = fetchHalls( connectionDB);
+            List<String> availableServices = fetchServices( connectionDB);
+            List<String> availablePackages = fetchPackages( connectionDB);
 
             StringBuilder message = new StringBuilder("Available options:\n");
             message.append("Halls:\n");
@@ -955,10 +955,10 @@ public static Button getPackgButton() {
         }
     }
 
-    private List<String> fetchHalls(Connection connection) throws SQLException {
+    private List<String> fetchHalls(Connection  connectionDB) throws SQLException {
         List<String> halls = new ArrayList<>();
         String sql = "SELECT hallname FROM software.halls WHERE priceperhour <= ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
             statement.setDouble(1, budget * hallPercentage / 100);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -968,10 +968,10 @@ public static Button getPackgButton() {
         return halls;
     }
 
-    private List<String> fetchServices(Connection connection) throws SQLException {
+    private List<String> fetchServices(Connection  connectionDB) throws SQLException {
         List<String> services = new ArrayList<>();
         String sql = "SELECT servicename FROM software.services WHERE price <= ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
             statement.setDouble(1, budget * servicePercentage / 100);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -981,7 +981,7 @@ public static Button getPackgButton() {
         return services;
     }
 
-    private List<String> fetchPackages(Connection connection) throws SQLException {
+    private List<String> fetchPackages(Connection  connectionDB) throws SQLException {
         List<String> packages = new ArrayList<>();
         String sql = "WITH RECURSIVE service_combinations AS (" +
                 "    SELECT serviceid, servicename, price, CAST(servicename AS TEXT) AS combination " +
@@ -998,7 +998,7 @@ public static Button getPackgButton() {
                 "WHERE h.priceperhour <= ? " +
                 "GROUP BY h.hallname, sc.combination " +
                 "HAVING SUM(sc.price) <= ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
             double hallBudget = budget * hallPercentage / 100;
             double serviceBudget = budget * servicePercentage / 100;
             statement.setDouble(1, hallBudget);
@@ -1282,8 +1282,8 @@ public static Button getPackgButton() {
 
     @FXML
     void editadmininfo(ActionEvent event) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-         PreparedStatement statement = connection.prepareStatement("UPDATE software.users SET firstname=?, lastname=?, username=?, password=?, email=?, code=? WHERE userid=?")) {
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement = connectionDB.prepareStatement("UPDATE software.users SET firstname=?, lastname=?, username=?, password=?, email=?, code=? WHERE userid=?")) {
         
         statement.setString(1, fntxt.getText());
         statement.setString(2, lntxt.getText());
@@ -1656,8 +1656,8 @@ public static Button getPackgButton() {
         choicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND hallid = ?");
+             connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+            checkReservationStatement =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND hallid = ?");
         } catch (SQLException e) {
       System.err.println("Error while checking availability:");
         }
@@ -1689,8 +1689,8 @@ public static Button getPackgButton() {
         servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            checkReservationStatementt = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
+           connectionDB= DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+            checkReservationStatementt =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
         System.err.println("Error while checking availability:");
         }
@@ -1720,8 +1720,8 @@ public static Button getPackgButton() {
         packagetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            checkReservationStatementtt = connection.prepareStatement("SELECT COUNT(*) FROM software.wedding_packages WHERE date = ? AND starttime = ? AND package_id = ?");
+           connectionDB= DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+            checkReservationStatementtt =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.wedding_packages WHERE date = ? AND starttime = ? AND package_id = ?");
         } catch (SQLException e) {
          System.err.println("Error while checking availability:");
         }
@@ -1793,8 +1793,8 @@ public static Button getPackgButton() {
     private int getHallId() {
     String hallName = newhallname.getText();
     int hallId = 0;
-    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-         PreparedStatement statement = connection.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?")) {
+    try (Connection connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement =  connectionDB.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?")) {
         
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
@@ -1812,8 +1812,8 @@ public static Button getPackgButton() {
     private int getHallIdd() {
       String hallName = mn1.getText();
     int hallId = 0;
-    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-         PreparedStatement statement = connection.prepareStatement("SELECT package_id FROM software.wedding_packages WHERE package_name = ?")) {
+    try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement =  connectionDB.prepareStatement("SELECT package_id FROM software.wedding_packages WHERE package_name = ?")) {
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
@@ -1837,9 +1837,9 @@ public static Button getPackgButton() {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+            connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
 
-            checkReservationStatement = connection.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND hallid = ?");
+            checkReservationStatement =  connectionDB.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND hallid = ?");
 
             checkReservationStatement.setDate(1, Date.valueOf(selectedDate));
             checkReservationStatement.setInt(2, getHallId());
@@ -1851,7 +1851,7 @@ public static Button getPackgButton() {
                 availableTimes.add(resultSet.getString("starttime"));
             }
 
-            connection.close();
+         connectionDB.close();
         } catch (SQLException e) {
             System.err.println("Error while checking availability:");
         }
@@ -2250,9 +2250,9 @@ public static Button getPackgButton() {
         }
     }
 
-    private int getUserIdFromUserName(String userName, Connection connection) throws SQLException {
+    private int getUserIdFromUserName(String userName, Connection  connectionDB) throws SQLException {
         String sql = "SELECT userid FROM software.users WHERE username = ?";
-        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+        try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
             statement.setString(1, userName);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? resultSet.getInt("userid") : -1;
@@ -2369,9 +2369,9 @@ public static Button getPackgButton() {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+            connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
 
-            checkReservationStatementtt = connection.prepareStatement("SELECT DISTINCT starttime FROM software.wedding_packages WHERE date = ? AND package_id = ?");
+            checkReservationStatementtt =  connectionDB.prepareStatement("SELECT DISTINCT starttime FROM software.wedding_packages WHERE date = ? AND package_id = ?");
 
             checkReservationStatementtt.setDate(1, Date.valueOf(selectedDate));
             checkReservationStatementtt.setInt(2, getHallIdd());
@@ -2383,7 +2383,7 @@ public static Button getPackgButton() {
                 availableTimes.add(resultSet.getString("starttime"));
             }
 
-            connection.close();
+             connectionDB.close();
         } catch (SQLException e) {
            System.err.println("Error while checking availability:");
         }
@@ -2419,9 +2419,9 @@ public static Button getPackgButton() {
 
         long durationHours = 2;
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
-            int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
+            int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(),  connectionDB);
 
             if (userId == -1) {
                 showAlert("Invalid email or password.");
@@ -2433,16 +2433,16 @@ public static Button getPackgButton() {
                 return;
             }
 
-            if (!isHallAvailablee(selectedDate, startTime, endTime, hallId, connection)) {
+            if (!isHallAvailablee(selectedDate, startTime, endTime, hallId,  connectionDB)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
 
-            BigDecimal pricePerHour = getPricePerHourr(hallId, connection);
+            BigDecimal pricePerHour = getPricePerHourr(hallId, connectionDB);
 
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
 
-            insertReservationn(userId, hallId, selectedDate, startTime, endTime, totalPrice, connection);
+            insertReservationn(userId, hallId, selectedDate, startTime, endTime, totalPrice,  connectionDB);
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
@@ -2484,8 +2484,8 @@ public static Button getPackgButton() {
     private int getser() {
      String hallName = lb9.getText();
     int hallId = 0;
-    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-         PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
+    try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement statement =  connectionDB.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
@@ -2509,9 +2509,9 @@ public static Button getPackgButton() {
         List<String> availableTimes = new ArrayList<>();
 
         try {
-            connection = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
+           connectionDB = DriverManager.getConnection(DB_URL, DB_USER,getPasswordFromEnvironment());
 
-            checkReservationStatementt = connection.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND serviceid = ?");
+            checkReservationStatementt =  connectionDB.prepareStatement("SELECT DISTINCT starttime FROM software.reservations WHERE date = ? AND serviceid = ?");
 
             checkReservationStatementt.setDate(1, Date.valueOf(selectedDate));
             checkReservationStatementt.setInt(2, getHallId());
@@ -2523,7 +2523,7 @@ public static Button getPackgButton() {
                 availableTimes.add(resultSet.getString("starttime"));
             }
 
-            connection.close();
+       connectionDB.close();
         } catch (SQLException e) {
             System.err.println("Error while checking availability:");
         }
@@ -2558,30 +2558,30 @@ public static Button getPackgButton() {
 
         long durationHours = 2;
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
 
-            int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connection);
+            int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connectionDB);
 
             if (userId == -1) {
                 showAlert("Invalid email or password.");
                 return;
             }
-            int hallId = gettHallIdd(hallName, connection);
+            int hallId = gettHallIdd(hallName,  connectionDB);
             if (hallId == 0) {
                 showAlert("Service not found.");
                 return;
             }
 
-            if (!isHallAvailablee(selectedDate, startTime, endTime, hallId, connection)) {
+            if (!isHallAvailablee(selectedDate, startTime, endTime, hallId,  connectionDB)) {
                 showAlert("Wait owner to accept your reservation.");
                 return;
             }
 
-            BigDecimal pricePerHour = getPricePerHourr(hallId, connection);
+            BigDecimal pricePerHour = getPricePerHourr(hallId, connectionDB);
 
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
 
-            insertReservationn(userId, hallId, selectedDate, startTime, endTime, totalPrice, connection);
+            insertReservationn(userId, hallId, selectedDate, startTime, endTime, totalPrice,  connectionDB);
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
@@ -2590,9 +2590,9 @@ public static Button getPackgButton() {
         }
     }
 
-    private int gettHallIdd(String hallName, Connection connection) {
+    private int gettHallIdd(String hallName, Connection  connectionDB) {
        int hallId = 0;
-    try (PreparedStatement statement = connection.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
+    try (PreparedStatement statement = connectionDB.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
