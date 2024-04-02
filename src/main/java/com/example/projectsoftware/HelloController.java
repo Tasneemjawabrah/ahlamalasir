@@ -86,6 +86,7 @@ public class HelloController {
     private static final String LOCATION_1= "location";
    private static final String CHECKING_AVAILABLE= "Error while checking availability:";
    private static final String INVALID_CREDENTIALS_MESSAGE = "Invalid email or password.";
+   private static final String CAPACITY_COLUMN = "capacity";
  
 @FXML
 public TextField gmailLogIn;
@@ -381,7 +382,7 @@ void backto1(ActionEvent event) {
     @FXML
     private Button backtoallhalls;
 
-  @FXML
+@FXML
 void backktoallhalls(ActionEvent event) {
     try {
         Parent root = FXMLLoader.load(getClass().getResource(HALL_INTER_FXML));
@@ -389,9 +390,9 @@ void backktoallhalls(ActionEvent event) {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-    } catch (IOException e) {
- Logger logger = Logger.getLogger(getClass().getName());
-        logger.severe("Error loading HALL_INTER_FXML: " + e.getMessage());
+    } catch (IOException ex) {
+        Logger log = Logger.getLogger(getClass().getName());
+        log.severe("Error loading HALL_INTER_FXML: " + ex.getMessage());
     }
 }
 
@@ -507,7 +508,7 @@ void backktoallhalls(ActionEvent event) {
              ResultSet resultSet = preparedStatement.executeQuery()) {
 
             if (resultSet.next()) {
-                int capacity = resultSet.getInt("capacity");
+                int capacity = resultSet.getInt( CAPACITY_COLUMN);
                 String location = resultSet.getString(LOCATION_1);
                 double price = resultSet.getDouble("priceperhour");
 
@@ -657,8 +658,7 @@ private static final String HALL_ID_COLUMN = "hallid";
         alert.showAndWait();
     }
 
-    //  @FXML
-    //private Button addser;
+
 
     @FXML
     private CheckBox deccheck;
@@ -1169,7 +1169,7 @@ logger.severe(CHECKING_AVAILABLE);
     void deletehalls(ActionEvent event) {
         hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
     hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
-    capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
+    capacityyy.setCellValueFactory(new PropertyValueFactory<>( CAPACITY_COLUMN));
     priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
     locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
     USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
@@ -1201,7 +1201,7 @@ logger.severe(CHECKING_AVAILABLE);
     
     hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
     hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
-    capacityyy.setCellValueFactory(new PropertyValueFactory<>("capacity"));
+    capacityyy.setCellValueFactory(new PropertyValueFactory<>( CAPACITY_COLUMN));
     priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
     locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
     USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
@@ -1217,7 +1217,7 @@ logger.severe(CHECKING_AVAILABLE);
         while (resultSet.next()) {
             int hallId = resultSet.getInt("hallid");
             String hallName = resultSet.getString("hallname");
-            int capacity = resultSet.getInt("capacity");
+            int capacity = resultSet.getInt( CAPACITY_COLUMN);
             double pricePerHour = resultSet.getDouble("priceperhour");
             String location = resultSet.getString(LOCATION_1);
             int userId = resultSet.getInt("userid");
@@ -2962,7 +2962,7 @@ logger.severe("Error while checking availability:");
                 ResultSet hallsResultSet = hallsStatement.executeQuery();
                 while (hallsResultSet.next()) {
                     Services hall;
-                    int capacity = hallsResultSet.getInt("capacity");
+                    int capacity = hallsResultSet.getInt( CAPACITY_COLUMN);
                     hall = new Services(
                             hallsResultSet.getInt("hallid"),
                             hallsResultSet.getString("hallname"),
