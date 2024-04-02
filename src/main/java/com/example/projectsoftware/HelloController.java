@@ -152,7 +152,7 @@ public static Button getPackgButton() {
              "FROM software.users " +
              "WHERE email = ? AND password = ?";
 
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+        try (Connection connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, emailInput);
@@ -1616,7 +1616,7 @@ public static Button getPackgButton() {
     private LocalDate selectedDate;
 
 
-    private Connection connection;
+    private Connection connectionDB;
     private PreparedStatement checkReservationStatement;
     private PreparedStatement checkReservationStatementtt;
 
