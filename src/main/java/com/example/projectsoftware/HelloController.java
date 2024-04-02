@@ -77,7 +77,7 @@ public class HelloController {
 
     static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
     static String window = " An error occurred while opening a new window:";
-private static final String CUSTO_INTER_1 = "custointer.fxml";
+private static final String CUSTO_INTER_1_FXML = "custointer.fxml";
      private static final String Serpp = "serviceproviderpage.fxml";
 
 @FXML
