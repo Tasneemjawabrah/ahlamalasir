@@ -25,6 +25,18 @@ public class NewReservation {
         this.state = state;
         this.serviceId = serviceId;
     }
+      public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,
+                           double totalPrice, String state) {
+        this.reservationId = reservationId;
+        this.userId = userId;
+        this.hallId = hallId;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.totalPrice = totalPrice;
+        this.state = state;
+
+    }
 
     public int getReservationId() {
         return reservationId;
