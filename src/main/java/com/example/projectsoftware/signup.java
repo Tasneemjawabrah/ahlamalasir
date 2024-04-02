@@ -102,7 +102,7 @@ public class signup  implements Initializable {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+         System.err.println("Error while checking availability:");
         }
     }
 
@@ -189,7 +189,7 @@ public class signup  implements Initializable {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+       System.err.println("Error while checking availability:");
     }
     return false;
     }
