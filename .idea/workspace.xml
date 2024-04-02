@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="93258a7d-5283-4af9-a5e7-09a63f91b7e3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/new_reservation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/projectsoftware/NewReservation.java" afterDir="false" />
-    </list>
+    <list default="true" id="93258a7d-5283-4af9-a5e7-09a63f91b7e3" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -220,7 +217,7 @@
       <workItem from="1711894489795" duration="1739000" />
       <workItem from="1711918593901" duration="16195000" />
       <workItem from="1711978786255" duration="5446000" />
-      <workItem from="1712068518086" duration="517000" />
+      <workItem from="1712068518086" duration="967000" />
     </task>
     <servers />
   </component>
