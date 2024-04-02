@@ -69,7 +69,7 @@ public class HelloController2 {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+          System.err.println("Error while checking availability:");
             return false;
         }
     }
@@ -91,7 +91,7 @@ public class HelloController2 {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+         System.err.println("Error while checking availability:");
         }
 
         return userid;
