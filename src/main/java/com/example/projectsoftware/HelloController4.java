@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.logging.Logger;
+
 
 public class HelloController4 {
 private static final String UNDER_IMPLEMENTATION = "Under implementation";
@@ -72,7 +72,7 @@ private static final Logger logger = Logger.getLogger(HelloController4.class.get
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment() );
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
-        System.err.println("Error while checking availability:");
+     logger.severe("Error while checking availability:"); 
         }
         datereservation.setDayCellFactory(dp -> new DateCell() {
             @Override
@@ -115,8 +115,7 @@ private static final Logger logger = Logger.getLogger(HelloController4.class.get
             }
         }
     } catch (SQLException e) {
-            logger.severe("Error while checking availability: " + e.getMessage());
-     
+logger.severe("Error while checking availability:");     
     }
     return reservedCount;
     }
