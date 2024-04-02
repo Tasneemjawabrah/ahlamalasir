@@ -76,7 +76,7 @@ import javafx.embed.swing.SwingFXUtils;
 
 public class HelloController {
 
-    static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
+   private static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
     static String window = " An error occurred while opening a new window:";
    private static final String CUSTO_INTER_1_FXML = "custointer.fxml";
      private static final String SERVICE_PROVIDER_PAGE_FXML = "serviceproviderpage.fxml";
@@ -85,7 +85,7 @@ public class HelloController {
  private static final String USER_PRINT ="User not found!";
     private static final String LOCATION_1= "location";
    private static final String CHECKING_AVAILABLE= "Error while checking availability:";
-    private static final Logger logger = Logger.getLogger(HelloController.class.getName());
+ 
 @FXML
 public TextField gmailLogIn;
 private static final Button service = new Button();
