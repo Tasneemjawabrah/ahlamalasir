@@ -78,16 +78,48 @@ public class HelloController {
     static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
     static String window = " An error occurred while opening a new window:";
 
-    @FXML
-    public TextField gmailLogIn;
-    public Button service;
-    public Button halls;
-    public Button booking;
-    public Button invoice;
-    public Button prof;
-    public Button connect;
-    public Button bback;
-    public Button packg;
+@FXML
+public TextField gmailLogIn;
+private static final Button service = new Button();
+private static final Button halls = new Button();
+private static final Button booking = new Button();
+private static final Button invoice = new Button();
+private static final Button prof = new Button();
+private static final Button connect = new Button();
+private static final Button bback = new Button();
+private static final Button packg = new Button();
+
+public static Button getServiceButton() {
+    return service;
+}
+
+public static Button getHallsButton() {
+    return halls;
+}
+
+public static Button getBookingButton() {
+    return booking;
+}
+
+public static Button getInvoiceButton() {
+    return invoice;
+}
+
+public static Button getProfButton() {
+    return prof;
+}
+
+public static Button getConnectButton() {
+    return connect;
+}
+
+public static Button getBbackButton() {
+    return bback;
+}
+
+public static Button getPackgButton() {
+    return packg;
+}
     @FXML
     private javafx.scene.control.Button login1;
     @FXML
