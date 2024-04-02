@@ -42,16 +42,21 @@ public class HelloController4 {
 
     @FXML
     void cancleservice(javafx.event.ActionEvent event) {
+                System.out.println("under implementation ");
+
 
     }
 
     @FXML
     void clicktimeservicechoice(MouseEvent event) {
+                        System.out.println("under implementation ");
+
 
     }
 
     @FXML
     void resser(ActionEvent event) {
+                System.out.println("under implementation ");
 
     }
 
