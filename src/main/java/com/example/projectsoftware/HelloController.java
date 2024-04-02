@@ -1916,54 +1916,60 @@ void backktoallhalls(ActionEvent event) {
     private TableView<NewReservation> tabelnotification = new TableView<>();
 
 
-    @FXML
-    void logoutserviceprovider(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
+@FXML
+void logoutserviceprovider(ActionEvent event) {
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(), conn);
 
-            if (userId != -1) {
-                String sql = "SELECT r.reservationid, r.userid, r.hallid, r.date, r.starttime, r.endtime, r.totalprice, r.state " +
-                        "FROM software.new_table_name r " +
-                        "INNER JOIN software.halls h ON r.hallid = h.hallid " +
-                        "WHERE h.userid = ?";
-                try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                    statement.setInt(1, userId);
-                    try (ResultSet resultSet = statement.executeQuery()) {
-                        ArrayList<NewReservation> reservations = new ArrayList<>();
-                        while (resultSet.next()) {
-                            int reservationId = resultSet.getInt("reservationid");
-                            int userIdd = resultSet.getInt("userid");
-                            int hallId = resultSet.getInt("hallid");
-                            Date date = resultSet.getDate("date");
-                            Time startTime = resultSet.getTime("starttime");
-                            Time endTime = resultSet.getTime("endtime");
-                            double totalPrice = resultSet.getDouble("totalprice");
-                            String state = resultSet.getString("state");
-                            reservations.add(new NewReservation(reservationId, userIdd, hallId, date, startTime, endTime, totalPrice, state));
-                        }
+        if (userId != -1) {
+            String sql = "SELECT r.reservationid, r.userid, r.hallid, r.date, r.starttime, r.endtime, r.totalprice, r.state " +
+                    "FROM software.new_table_name r " +
+                    "INNER JOIN software.halls h ON r.hallid = h.hallid " +
+                    "WHERE h.userid = ?";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setInt(1, userId);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    ArrayList<NewReservation> reservations = new ArrayList<>();
+                    while (resultSet.next()) {
+                        int reservationId = resultSet.getInt("reservationid");
+                        int userIdd = resultSet.getInt("userid");
+                        int hallId = resultSet.getInt("hallid");
+                        Date date = resultSet.getDate("date");
+                        Time startTime = resultSet.getTime("starttime");
+                        Time endTime = resultSet.getTime("endtime");
+                        double totalPrice = resultSet.getDouble("totalprice");
+                        String state = resultSet.getString("state");
 
-                        cc1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
-                        cc2.setCellValueFactory(new PropertyValueFactory<>("userId"));
-                        cc3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
-                        cc4.setCellValueFactory(new PropertyValueFactory<>("date"));
-                        cc5.setCellValueFactory(new PropertyValueFactory<>("startTime"));
-                        cc6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-                        cc7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
-                        cc8.setCellValueFactory(new PropertyValueFactory<>("state"));
-
-                        ArrayList<NewReservation> items = new ArrayList<>(tabelnotification.getItems());
-
-                        tabelnotification.getItems().clear();
-                        tabelnotification.getItems().addAll(reservations);
+                        // Use the builder pattern to create NewReservation objects
+                        NewReservation reservation = new NewReservation.Builder(reservationId, userIdd, hallId, date, startTime, endTime)
+                                                    .totalPrice(totalPrice)
+                                                    .state(state)
+                                                    .build();
+                        reservations.add(reservation);
                     }
+
+                    cc1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
+                    cc2.setCellValueFactory(new PropertyValueFactory<>("userId"));
+                    cc3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
+                    cc4.setCellValueFactory(new PropertyValueFactory<>("date"));
+                    cc5.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+                    cc6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+                    cc7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+                    cc8.setCellValueFactory(new PropertyValueFactory<>("state"));
+
+                    ArrayList<NewReservation> items = new ArrayList<>(tabelnotification.getItems());
+
+                    tabelnotification.getItems().clear();
+                    tabelnotification.getItems().addAll(reservations);
                 }
-            } else {
-                System.out.println("User not found!");
             }
-        } catch (SQLException e) {
-          System.err.println("Error while checking availability:");
+        } else {
+            System.out.println("User not found!");
         }
+    } catch (SQLException e) {
+        System.err.println("Error while checking availability:");
     }
+}
 
     @FXML
     void accept(ActionEvent event) {
