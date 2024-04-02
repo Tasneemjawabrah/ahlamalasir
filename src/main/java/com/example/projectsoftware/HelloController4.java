@@ -66,30 +66,18 @@ private static final Logger logger = Logger.getLogger(HelloController4.class.get
     }
 
 
-  public void initialize() {
+ public void initialize() {
         servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
-
         try {
-Uncovered code
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment() );
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
         System.err.println("Error while checking availability:");
-
         }
-    
-
-    // This method retrieves the password from the environment
-    private String getPasswordFromEnvironment() {
-        // Implement this method according to your application's requirements
-        return "password"; // Example implementation, replace with your logic
-    }
-
         datereservation.setDayCellFactory(dp -> new DateCell() {
             @Override
             public void updateItem(LocalDate item, boolean empty) {
                 super.updateItem(item, empty);
-
                 if (item.isBefore(LocalDate.now())) {
                     setDisable(true);
                     setStyle("-fx-background-color: #ffc0cb;");
@@ -107,7 +95,6 @@ Uncovered code
                 }
             }
         });
-
 
 
     }
