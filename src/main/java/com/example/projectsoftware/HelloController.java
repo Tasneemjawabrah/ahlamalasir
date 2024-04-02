@@ -527,7 +527,7 @@ void backktoallhalls(ActionEvent event) {
 
     @FXML
     void bookHall(ActionEvent event) {
-        LocalDate selectedDate = dat.getValue();
+        LocalDate chosenDate = dat.getValue();
         String startTimeStr = choicetime.getValue();
 
         if (selectedDate == null || startTimeStr == null) {
@@ -540,7 +540,7 @@ void backktoallhalls(ActionEvent event) {
         String hallName = newhallname.getText();
 
         if (hallName.isEmpty()) {
-            showAlert("Please enter the hall name.");
+          showAlert(ENTER_HALL_NAME_MESSAGE);
             return;
         }
         LocalTime startTime = LocalTime.parse(startTimeStr);
@@ -1041,23 +1041,22 @@ logger.severe(CHECKING_AVAILABLE);
 
     }
 
-    @FXML
-    void adminhalls(ActionEvent event) {
-        System.out.println("0");
-        try {
-            System.out.println("1");
-            Parent root = FXMLLoader.load(getClass().getResource("HallsTabel.fxml"));
-            System.out.println("2");
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            System.out.println("3");
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            System.out.println("11");
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
-        }
+   void adminhalls(ActionEvent event) {
+    logger.info("0");
+    try {
+        logger.info("1");
+        Parent root = FXMLLoader.load(getClass().getResource("HallsTabel.fxml"));
+        logger.info("2");
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        logger.info("3");
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    } catch (IOException e) {
+        logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+        logger.info("11");
     }
+}
 
     @FXML
     void admininvoices(ActionEvent event) {
@@ -1123,11 +1122,11 @@ logger.severe(CHECKING_AVAILABLE);
     }
 
 
-    @FXML
-    private Button Addd;
+  @FXML
+ private Button addd;
 
     @FXML
-    private Button Deleteee;
+    private Button deleteee;
     @FXML
     private TableView<Hall> hallTableView = new TableView<>();
 
@@ -1145,6 +1144,7 @@ logger.severe(CHECKING_AVAILABLE);
     @FXML
     private TableColumn<Hall, Double> priceperhourr;
     private TableColumn<Hall, Integer> USERID;
+   private static final String ENTER_HALL_NAME_MESSAGE = "Please enter the hall name.";
 
 
     @FXML
@@ -1607,7 +1607,7 @@ logger.severe(CHECKING_AVAILABLE);
     private Button buttontime;
 
 
-    private LocalDate selectedDate;
+    private LocalDate chosenDate;
 
 
     private Connection connectionDB;
@@ -2410,7 +2410,7 @@ logger.severe(CHECKING_AVAILABLE);
         String hallName = mn1.getText();
 
         if (hallName.isEmpty()) {
-            showAlert("Please enter the hall name.");
+          showAlert(ENTER_HALL_NAME_MESSAGE);
             return;
         }
         LocalTime startTime = LocalTime.parse(startTimeStr);
@@ -2549,7 +2549,7 @@ logger.severe("Error while checking availability:");
         String hallName = lb9.getText();
 
         if (hallName.isEmpty()) {
-            showAlert("Please enter the hall name.");
+          showAlert(ENTER_HALL_NAME_MESSAGE);
             return;
         }
         LocalTime startTime = LocalTime.parse(startTimeStr);
