@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import java.util.logging.Logger;
+
 
 
 import java.io.*;
@@ -234,7 +234,7 @@ public static Button getPackgButton() {
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
-      logger.severe("Error while checking availability:");
+     logger.severe(CHECKING_AVAILABLE);
     }
 }
 
@@ -252,7 +252,7 @@ public static Button getPackgButton() {
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -270,7 +270,7 @@ public static Button getPackgButton() {
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -288,7 +288,7 @@ public static Button getPackgButton() {
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -326,7 +326,7 @@ public static Button getPackgButton() {
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -339,7 +339,7 @@ void connectClicked(ActionEvent event) {
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
     }
 }
 
@@ -353,7 +353,7 @@ void backto1(ActionEvent event) {
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
     }
 }
 
@@ -495,7 +495,7 @@ void backktoallhalls(ActionEvent event) {
 
     @FXML
     void choicesnew(MouseEvent event){
-  logger.severe("Error while checking availability:");
+ logger.severe(CHECKING_AVAILABLE);
 
 
     }
@@ -525,7 +525,7 @@ void backktoallhalls(ActionEvent event) {
             }
 
         } catch (SQLException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -579,7 +579,7 @@ void backktoallhalls(ActionEvent event) {
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
-   logger.severe("Error while checking availability:");
+  logger.severe(CHECKING_AVAILABLE);
             showAlert("Failed to book the hall. Please try again later.");
         }
     }
@@ -596,7 +596,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             }
         }
     } catch (SQLException e) {
-  logger.severe("Error while checking availability:");
+ logger.severe(CHECKING_AVAILABLE);
     }
     return hallId;
     }
@@ -733,7 +733,7 @@ private static final String HALL_ID_COLUMN = "hallid";
                 showAlert("Invalid Email or Password");
             }
         } catch (SQLException e) {
- logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
         }
     }
  private static String getPasswordFromEnvironment() {
@@ -812,7 +812,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             }
 
         } catch (SQLException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
             showAlert("An error occurred while checking email and code.");
         }
     }
@@ -853,7 +853,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             }
 
         } catch (SQLException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
             showAlert("An error occurred while resetting password.");
         }
     }
@@ -1107,7 +1107,7 @@ private static final String HALL_ID_COLUMN = "hallid";
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
 
@@ -1189,7 +1189,7 @@ private static final String HALL_ID_COLUMN = "hallid";
                 hallTableView.getItems().remove(selectedHall);
             }
         } catch (SQLException e) {
-   logger.severe("Error while checking availability:");
+  logger.severe(CHECKING_AVAILABLE);
         }
     } else {
         System.out.println("No row selected.");
@@ -1243,7 +1243,7 @@ private static final String HALL_ID_COLUMN = "hallid";
         hallTableView.setItems(halls);
         
     } catch (SQLException e) {
- logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
     }
     
     }
@@ -1493,7 +1493,7 @@ logger.severe("Error while checking availability:");
                 return resultSet.next();
             }
         } catch (SQLException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
             return false;
         }
     }
@@ -1515,7 +1515,7 @@ logger.severe("Error while checking availability:");
             }
             
         } catch (SQLException e) {
-      logger.severe("Error while checking availability:");
+     logger.severe(CHECKING_AVAILABLE);
             showAlert("Database error: " + e.getMessage());
         }
     }
@@ -1529,7 +1529,7 @@ logger.severe("Error while checking availability:");
 
             return outputStream.toByteArray();
         } catch (IOException e) {
- logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
             showAlert("Error converting image to byte array: " + e.getMessage());
             return null;
         }
@@ -1584,7 +1584,7 @@ logger.severe("Error while checking availability:");
                     showAlert("Failed to upload image.");
                 }
             } catch (IOException e) {
-         logger.severe("Error while checking availability:");
+        logger.severe(CHECKING_AVAILABLE);
                 showAlert("Error reading image file: " + e.getMessage());
             }
         }
@@ -1690,7 +1690,7 @@ logger.severe("Error while checking availability:");
            connectionDB= DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatementt =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
- logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
         }
 
         datereservation.setDayCellFactory(dp -> new DateCell() {
@@ -1721,7 +1721,7 @@ logger.severe("Error while checking availability:");
            connectionDB= DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatementtt =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.wedding_packages WHERE date = ? AND starttime = ? AND package_id = ?");
         } catch (SQLException e) {
-  logger.severe("Error while checking availability:");
+ logger.severe(CHECKING_AVAILABLE);
         }
 
         datereservatiooon.setDayCellFactory(dp -> new DateCell() {
@@ -1763,7 +1763,7 @@ logger.severe("Error while checking availability:");
                 }
             }
         } catch (SQLException e) {
-   logger.severe("Error while checking availability:");
+  logger.severe(CHECKING_AVAILABLE);
         }
         return reservedCount;
     }
@@ -1783,7 +1783,7 @@ logger.severe("Error while checking availability:");
                 }
             }
         } catch (SQLException e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
         }
         return reservedCount;
     }
@@ -1819,7 +1819,7 @@ logger.severe("Error while checking availability:");
             }
         }
     } catch (SQLException e) {
- logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
     }
     return hallId;
     }
@@ -1851,7 +1851,7 @@ logger.severe("Error while checking availability:");
 
          connectionDB.close();
         } catch (SQLException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
         }
 
         List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
@@ -1971,7 +1971,7 @@ void logoutserviceprovider(ActionEvent event) {
             System.out.println(USER_PRINT);
         }
     } catch (SQLException e) {
- logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
     }
 }
 
@@ -1992,7 +1992,7 @@ void logoutserviceprovider(ActionEvent event) {
                 logoutserviceprovider(new ActionEvent());
             }
         } catch (SQLException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
         }
 
 
@@ -2015,7 +2015,7 @@ void logoutserviceprovider(ActionEvent event) {
                 logoutserviceprovider(new ActionEvent());
             }
         } catch (SQLException e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -2108,7 +2108,7 @@ void logoutserviceprovider(ActionEvent event) {
                 System.out.println(USER_PRINT);
             }
         } catch (SQLException e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -2240,7 +2240,7 @@ void logoutserviceprovider(ActionEvent event) {
                                 showAlert("Failed to insert reservation into the database.");
                             }
                         } catch (SQLException e) {
-                  logger.severe("Error while checking availability:");
+                 logger.severe(CHECKING_AVAILABLE);
                             showAlert("An error occurred while deleting reservation.");
                         }
                     }
@@ -2249,7 +2249,7 @@ void logoutserviceprovider(ActionEvent event) {
                 showAlert("No reservation selected.");
             }
         } catch (SQLException e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
             showAlert("An error occurred while connecting to the database.");
         }
     }
@@ -2389,7 +2389,7 @@ void logoutserviceprovider(ActionEvent event) {
 
              connectionDB.close();
         } catch (SQLException e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
         }
 
         List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
@@ -2450,7 +2450,7 @@ void logoutserviceprovider(ActionEvent event) {
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
-      logger.severe("Error while checking availability:");
+     logger.severe(CHECKING_AVAILABLE);
             showAlert("Failed to book the hall. Please try again later.");
         }
 
@@ -2480,7 +2480,7 @@ void logoutserviceprovider(ActionEvent event) {
                 }
             }
         } catch (SQLException e) {
-  logger.severe("Error while checking availability:");
+ logger.severe(CHECKING_AVAILABLE);
         }
         return reservedCount;
     }
@@ -2529,7 +2529,7 @@ logger.severe("Error while checking availability:");
 
        connectionDB.close();
         } catch (SQLException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
         }
 
         List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
@@ -2589,7 +2589,7 @@ logger.severe("Error while checking availability:");
 
             showAlert("Wait owner to accept your reservation.");
         } catch (SQLException e) {
-   logger.severe("Error while checking availability:");
+  logger.severe(CHECKING_AVAILABLE);
             showAlert("Failed to book the hall. Please try again later.");
         }
     }
@@ -2708,7 +2708,7 @@ logger.severe("Error while checking availability:");
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -2727,7 +2727,7 @@ logger.severe("Error while checking availability:");
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -2748,7 +2748,7 @@ logger.severe("Error while checking availability:");
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -2817,7 +2817,7 @@ logger.severe("Error while checking availability:");
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -2845,7 +2845,7 @@ logger.severe("Error while checking availability:");
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -2991,7 +2991,7 @@ logger.severe("Error while checking availability:");
             serviceviewtable.getItems().addAll(hallsList);
 
         } catch (SQLException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -3018,7 +3018,7 @@ logger.severe("Error while checking availability:");
                     Image image = new Image(new ByteArrayInputStream(imageData));
                     imageView.setImage(image);
                 } catch (SQLException e) {
-             logger.severe("Error while checking availability:");
+            logger.severe(CHECKING_AVAILABLE);
                 }
             } else {
             }
@@ -3182,7 +3182,7 @@ logger.severe("Error while checking availability:");
                 showAlert("Please select a row");
             }
         } catch (SQLException e) {
-  logger.severe("Error while checking availability:");
+ logger.severe(CHECKING_AVAILABLE);
             showAlert("Error: " + e.getMessage());
         }
     } else {
@@ -3242,7 +3242,7 @@ logger.severe("Error while checking availability:");
                 Image image = new Image(new FileInputStream(selectedFile));
                 imageView.setImage(image);
             } catch (IOException e) {
-         logger.severe("Error while checking availability:");
+        logger.severe(CHECKING_AVAILABLE);
             }
         }
     }
@@ -3353,7 +3353,7 @@ logger.severe("Error while checking availability:");
                 showAlert("No reservation selected.");
             }
         } catch (SQLException e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
             showAlert("An error occurred while connecting to the database.");
         }
     }
@@ -3460,7 +3460,7 @@ void viewevents(ActionEvent event) {
             System.out.println(USER_PRINT);
         }
     } catch (SQLException e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
     }
 }
 
@@ -3733,7 +3733,7 @@ void viewevents(ActionEvent event) {
                 System.out.println(USER_PRINT);
             }
         } catch (SQLException e) {
-   logger.severe("Error while checking availability:");
+  logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -3774,7 +3774,7 @@ void viewevents(ActionEvent event) {
                 System.out.println(USER_PRINT);
             }
         } catch (SQLException e) {
-      logger.severe("Error while checking availability:");
+     logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -3859,7 +3859,7 @@ void viewevents(ActionEvent event) {
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -3915,7 +3915,7 @@ void viewevents(ActionEvent event) {
             try (FileInputStream fis = new FileInputStream(selectedFile)) {
                 imageBytes = fis.readAllBytes();
             } catch (Exception e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
             }
         }
     }
@@ -3947,7 +3947,7 @@ void viewevents(ActionEvent event) {
 logger.severe("Error while checking availability:");
         // Handle SQLException appropriately
     } catch (Exception e) {
-    logger.severe("Error while checking availability:");
+   logger.severe(CHECKING_AVAILABLE);
     }
     }
 
@@ -3998,7 +3998,7 @@ String eventName = r1.getText();
         } catch (SQLException e) {
 logger.severe("Error while checking availability:");
         } catch (Exception e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
     } else {
         showAlert("Please select a hall.");
@@ -4067,7 +4067,7 @@ logger.severe("Error while checking availability:");
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-  logger.severe("Error while checking availability:");
+ logger.severe(CHECKING_AVAILABLE);
 
         }
     }
@@ -4191,7 +4191,7 @@ logger.severe("Error while checking availability:");
                 System.out.println(USER_PRINT);
             }
         } catch (SQLException e) {
-     logger.severe("Error while checking availability:");
+    logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -4213,7 +4213,7 @@ logger.severe("Error while checking availability:");
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -4322,7 +4322,7 @@ logger.severe("Error while checking availability:");
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
     }
@@ -4402,7 +4402,7 @@ logger.severe("Error while checking availability:");
 
 
         } catch (IOException e) {
-        logger.severe("Error while checking availability:");
+       logger.severe(CHECKING_AVAILABLE);
         }
 
     }
