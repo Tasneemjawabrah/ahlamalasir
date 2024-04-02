@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.sql.*;
+import java.util.logging.Logger;
 
 public class HelloController3 {
 
@@ -36,6 +37,7 @@ public class HelloController3 {
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
    private static final String NEW_HALL_FXML = "newhall.fxml";
+    private static final Logger logger = Logger.getLogger(HelloController3.class.getName());
 
     @FXML
     public void initialize() {
@@ -58,7 +60,7 @@ public class HelloController3 {
 
     }
 
-  private void showHallInformationDialog(MouseEvent event) {
+private void showHallInformationDialog(MouseEvent event) {
     Halls selectedHall = hallListView.getSelectionModel().getSelectedItem();
     if (selectedHall != null) {
         String hallName = selectedHall.getName();
@@ -71,9 +73,6 @@ public class HelloController3 {
                 root = loader.load();
                 HelloController controller = loader.getController();
                 controller.populateFields(selectedHall);
-            } else if ("Masaya".equals(hallName) || "Dreamsh".equals(hallName)) {
-                loader.setLocation(getClass().getResource(NEW_HALL_FXML));
-                root = loader.load();
             } else {
                 loader.setLocation(getClass().getResource(NEW_HALL_FXML));
                 root = loader.load();
@@ -86,8 +85,7 @@ public class HelloController3 {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-           
-            System.err.println("Error while checking availability:");
+            logger.severe("Error while checking availability:");
         }
     }
 }
@@ -112,7 +110,7 @@ public class HelloController3 {
                 halls.add(hall);
             }
         } catch (SQLException e) {
-         System.err.println("Error while checking availability:");
+         logger.severe("Error while checking availability:");
         }
 
         return halls;
@@ -141,25 +139,11 @@ public class HelloController3 {
         }
     }
 
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-
-
-
-    private void showAlert(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
+Alert alert = new Alert(Alert.AlertType.ERROR);
+alert.setTitle(("Error");
+alert.setHeaderText(null);
+alert.setContentText(message);
+alert.showAndWait();
 
     @FXML
     private Button cancclllee;
@@ -188,21 +172,23 @@ public class HelloController3 {
     @FXML
     private TextField newprice;
 
-    @FXML
-    void choicesnew(MouseEvent event) {
-
-    }
+  void choicesnew(MouseEvent event) {
+    throw new UnsupportedOperationException("Method 'choicesnew' is not yet implemented.");
+}
 
 
 
 
     public void newreserve(javafx.event.ActionEvent actionEvent) {
+         throw new UnsupportedOperationException("Method 'choicesnew' is not yet implemented.");
     }
 
     public void canclenew(javafx.event.ActionEvent actionEvent) {
+         throw new UnsupportedOperationException("Method 'choicesnew' is not yet implemented.");
     }
 
     public void eeeee(javafx.event.ActionEvent actionEvent) {
+         throw new UnsupportedOperationException("Method 'choicesnew' is not yet implemented.");
     }
 
 
@@ -220,7 +206,7 @@ public class HelloController3 {
     private ObservableList<Services> fetchAllServices() {
         ObservableList<Services> services = FXCollections.observableArrayList();
 
-        String query = "SELECT * FROM software.services";
+    String query = "SELECT serviceid, servicename, description, price FROM software.services";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER,  getPasswordFromEnvironment());
              Statement statement = connection.createStatement();
@@ -241,7 +227,7 @@ public class HelloController3 {
                 services.add(service);
             }
         } catch (SQLException e) {
-        System.err.println("Error while checking availability:");
+      logger.severe("Error while checking availability:");
         }
 
         return services;
@@ -280,52 +266,35 @@ public class HelloController3 {
 
 
 
-
-    private void sshowHallInformationDialog(MouseEvent event) {
-        Services selectedHall = servicelist.getSelectionModel().getSelectedItem();
-        if (selectedHall != null) {
-            String hallName = selectedHall.getServiceName();
-            try {
-                FXMLLoader loader = new FXMLLoader();
-                Parent root;
-                Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
+private void sshowHallInformationDialog(MouseEvent event) {
+    Services selectedHall = servicelist.getSelectionModel().getSelectedItem();
+    if (selectedHall != null) {
+        String hallName = selectedHall.getServiceName();
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            Parent root;
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            if ("Dj".equals(hallName) || "wewe".equals(hallName) || "erg".equals(hallName)) {
+                loader.setLocation(getClass().getResource("servicepageee.fxml"));
+                root = loader.load();
+                HelloController controller = loader.getController();
                 if ("Dj".equals(hallName)) {
-                    loader.setLocation(getClass().getResource("servicepageee.fxml"));
-                    root = loader.load();
-                    HelloController controller = loader.getController();
                     controller.populateFieldss(selectedHall);
-
-                } else if ("wewe".equals(hallName)) {
-                    loader.setLocation(getClass().getResource("servicepageee.fxml"));
-                    root = loader.load();
-                } else if ("erg".equals(hallName)) {
-                    loader.setLocation(getClass().getResource("servicepageee.fxml"));
-                    root = loader.load();
-                } else {
-
-                    loader.setLocation(getClass().getResource("servicepageee.fxml"));
-                    root = loader.load();
-                   HelloController controller = loader.getController();
-                    controller.populateFieldss(selectedHall);
-
                 }
-
-
-                HelloController controller = new HelloController();
-                controller=loader.getController();
-                controller.performInitialization();
-
-
-
-                Scene scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                System.err.println("Error while checking availability:");
+            } else {
+                loader.setLocation(getClass().getResource("servicepageee.fxml"));
+                root = loader.load();
+                HelloController controller = loader.getController();
+                controller.populateFieldss(selectedHall);
             }
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+           logger.severe("Error while checking availability:"); 
         }
     }
+}
 
 
   @FXML
@@ -340,7 +309,7 @@ public class HelloController3 {
     private ObservableList<packge> fetchpackage() {
         ObservableList<packge> services = FXCollections.observableArrayList();
 
-        String query = "SELECT * FROM software.wedding_packages";
+        String query = "SELECT package_id, package_name, description, price, max_guests, includes, created_at FROM software.wedding_packages";
 
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment() );
              Statement statement = connection.createStatement();
@@ -361,7 +330,7 @@ public class HelloController3 {
                 services.add(service);
             }
         } catch (SQLException e) {
-            System.err.println("Error while checking availability:");
+         logger.severe("Error while checking availability:");
         }
 
         return services;
@@ -402,7 +371,7 @@ public class HelloController3 {
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
-              System.err.println("Error while checking availability:");
+              logger.severe("Error while checking availability:");
             }
         }
     }
