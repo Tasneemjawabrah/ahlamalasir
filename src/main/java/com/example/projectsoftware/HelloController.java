@@ -372,7 +372,8 @@ void backto1(ActionEvent event) {
 
 
         } catch (IOException e) {
-   System.out.println(USER_PRINT);
+   
+            logger.severe(USER_PRIN);
         }
     }
 
@@ -3730,7 +3731,8 @@ void viewevents(ActionEvent event) {
                     }
                 }
             } else {
-                System.out.println(USER_PRINT);
+                 logger.severe(USER_PRINT);
+            
             }
         } catch (SQLException e) {
   logger.severe(CHECKING_AVAILABLE);
@@ -3771,7 +3773,7 @@ void viewevents(ActionEvent event) {
                     }
                 }
             } else {
-                System.out.println(USER_PRINT);
+                logger.severe(USER_PRINT);
             }
         } catch (SQLException e) {
      logger.severe(CHECKING_AVAILABLE);
@@ -4188,7 +4190,10 @@ logger.severe("Error while checking availability:");
                     }
                 }
             } else {
-                System.out.println(USER_PRINT);
+          logger.severe(USER_PRINT);
+
+
+               
             }
         } catch (SQLException e) {
     logger.severe(CHECKING_AVAILABLE);
