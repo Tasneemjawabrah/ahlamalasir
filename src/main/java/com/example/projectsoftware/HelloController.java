@@ -85,6 +85,7 @@ public class HelloController {
  private static final String USER_PRINT ="User not found!";
     private static final String LOCATION_1= "location";
    private static final String CHECKING_AVAILABLE= "Error while checking availability:";
+   private static final String INVALID_CREDENTIALS_MESSAGE = "Invalid email or password.";
  
 @FXML
 public TextField gmailLogIn;
@@ -189,7 +190,7 @@ public static Button getPackgButton() {
                         break;
                 }
             } else {
-                showAlert("Invalid Email or Password");
+                    showAlert(INVALID_CREDENTIALS_MESSAGE);
             }
         } catch (Exception e) {
             showAlert("Error during login: " + e.getMessage());
@@ -426,7 +427,7 @@ void backktoallhalls(ActionEvent event) {
         timeSpinner1.setEditable(true);
     }
 
-    private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
+   private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
     SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<LocalTime>() {
         {
             setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));
@@ -434,24 +435,17 @@ void backktoallhalls(ActionEvent event) {
 
         @Override
         public void decrement(int steps) {
-            if (getValue() == null)
-                setValue(LocalTime.now());
-            else {
-                LocalTime time = getValue();
-                setValue(time.minusMinutes(steps));
-            }
+            setValue(getValue().minusMinutes(steps));
         }
 
         @Override
         public void increment(int steps) {
-            if (getValue() == null)
-                setValue(LocalTime.now());
-            else {
-                LocalTime time = getValue();
-                setValue(time.plusMinutes(steps));
-            }
+            setValue(getValue().plusMinutes(steps));
         }
     };
+
+    valueFactory.setValue(LocalTime.now());
+
     return valueFactory;
 }
 
@@ -731,7 +725,7 @@ private static final String HALL_ID_COLUMN = "hallid";
                     }
                 }
             } else {
-                showAlert("Invalid Email or Password");
+                    showAlert(INVALID_CREDENTIALS_MESSAGE);
             }
         } catch (SQLException e) {
 logger.severe(CHECKING_AVAILABLE);
@@ -1345,7 +1339,8 @@ logger.severe("Error while checking availability:");
             }
         }
     } catch (SQLException | IOException e) {
-      System.err.println(CHECKING_AVAILABLE);
+
+       logger.severe(CHECKING_AVAILABLE);
         showAlert("Error occurred while updating admin photo!");
     }
 
@@ -1413,7 +1408,7 @@ logger.severe("Error while checking availability:");
             }
         }
     } catch (SQLException e) {
-     System.err.println(CHECKING_AVAILABLE);
+ logger.severe(CHECKING_AVAILABLE);
     } 
     }
 
@@ -1658,7 +1653,7 @@ logger.severe(CHECKING_AVAILABLE);
              connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
             checkReservationStatement =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND hallid = ?");
         } catch (SQLException e) {
-      System.err.println(CHECKING_AVAILABLE);
+  logger.severe(CHECKING_AVAILABLE);
         }
 
         dat.setDayCellFactory(dp -> new DateCell() {
@@ -1803,7 +1798,7 @@ logger.severe(CHECKING_AVAILABLE);
         }
         
     } catch (SQLException e) {
-      System.err.println(CHECKING_AVAILABLE);
+  logger.severe(CHECKING_AVAILABLE);
     }
     return hallId;
     }
@@ -2605,7 +2600,7 @@ logger.severe("Error while checking availability:");
             }
         }
     } catch (SQLException e) {
-     System.err.println(CHECKING_AVAILABLE);
+ logger.severe(CHECKING_AVAILABLE);
     }
     return hallId;
     }
@@ -2800,7 +2795,7 @@ logger.severe("Error while checking availability:");
 
         feedbacktable.setItems(feedbackList);
     } catch (SQLException e) {
-     System.err.println(CHECKING_AVAILABLE);
+ logger.severe(CHECKING_AVAILABLE);
     }
     }
 
@@ -2870,7 +2865,7 @@ logger.severe("Error while checking availability:");
             alert.showAndWait();
         }
     } catch (SQLException e) {
-     System.err.println(CHECKING_AVAILABLE);
+ logger.severe(CHECKING_AVAILABLE);
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");
         alert.setHeaderText(null);
@@ -3837,10 +3832,10 @@ void viewevents(ActionEvent event) {
             }
         }
     } catch (SQLException e) {
-      System.err.println(CHECKING_AVAILABLE);
+  logger.severe(CHECKING_AVAILABLE);
         // Handle SQLException appropriately
     } catch (Exception e) {
-     System.err.println(CHECKING_AVAILABLE);
+ logger.severe(CHECKING_AVAILABLE);
     }
     }
 
@@ -4267,7 +4262,7 @@ logger.severe("Error while checking availability:");
         }
         Eventname.setItems(events);
     } catch (SQLException e) {
-      System.err.println(CHECKING_AVAILABLE);
+  logger.severe(CHECKING_AVAILABLE);
     }
     }
 
