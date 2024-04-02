@@ -41,7 +41,7 @@ public class HelloController3 {
     private static final String DB_USER = "postgres";
    private static final String NEW_HALL_FXML = "newhall.fxml";
     private static final Logger logger = Logger.getLogger(HelloController3.class.getName());
-
+private static final String CHECKER="Error while checking availability:";
     @FXML
     public void initialize() {
         allHalls = fetchHallsFromDatabase();
@@ -66,7 +66,7 @@ public class HelloController3 {
 private void showHallInformationDialog(MouseEvent event) {
     Halls selectedHall = hallListView.getSelectionModel().getSelectedItem();
     if (selectedHall != null) {
-        String hallName = selectedHall.getName();
+     
         try {
             FXMLLoader loader = new FXMLLoader();
             Parent root;
@@ -82,8 +82,8 @@ private void showHallInformationDialog(MouseEvent event) {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-       final String ERROR_MESSAGE = "Error while checking availability:";
-        logger.severe(ERROR_MESSAGE);   
+     
+        logger.severe(CHECKER);   
         }
     }
     }
@@ -284,7 +284,7 @@ private void sshowHallInformationDialog(MouseEvent event) {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-           logger.severe("Error while checking availability:"); 
+           logger.severe(CHECKER); 
         }
     }
 }
@@ -323,7 +323,7 @@ private void sshowHallInformationDialog(MouseEvent event) {
                 services.add(service);
             }
         } catch (SQLException e) {
-         logger.severe("Error while checking availability:");
+         logger.severe(CHECKER);
         }
 
         return services;
@@ -364,7 +364,7 @@ private void sshowHallInformationDialog(MouseEvent event) {
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
-              logger.severe("Error while checking availability:");
+              logger.severe(CHECKER);
             }
         }
     }
