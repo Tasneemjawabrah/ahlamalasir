@@ -418,53 +418,6 @@ void backktoallhalls(ActionEvent event) {
     @FXML
     private Spinner<LocalTime> timeSpinner1 = new Spinner<>();
 
- public void performInitialization() {
-    initializeTimeSpinners();
-}
-
-private void initializeTimeSpinners() {
-    SpinnerValueFactory<LocalTime> valueFactory1 = createTimeSpinnerValueFactory();
-    timeSpinner.setValueFactory(valueFactory1);
-    timeSpinner.setEditable(true);
-    SpinnerValueFactory<LocalTime> valueFactory2 = createTimeSpinnerValueFactory();
-    timeSpinner1.setValueFactory(valueFactory2);
-    timeSpinner1.setEditable(true);
-}
-
-
-
-private SpinnerValueFactory<LocalTime> createTimeSpinnerValueFactory() {
-    SpinnerValueFactory<LocalTime> valueFactory = new SpinnerValueFactory<LocalTime>() {
-        {
-            setConverter(new LocalTimeStringConverter(FormatStyle.MEDIUM));
-            // Define min and max values using LocalTime instances
-            setMin(LocalTime.MIN);
-            setMax(LocalTime.MAX);
-            setValue(LocalTime.now());
-        }
-
-        @Override
-        public void decrement(int steps) {
-            if (getValue() == null)
-                setValue(LocalTime.now());
-            else {
-                LocalTime time = getValue();
-                setValue(time.minusMinutes(steps));
-            }
-        }
-
-        @Override
-        public void increment(int steps) {
-            if (getValue() == null)
-                setValue(LocalTime.now());
-            else {
-                LocalTime time = getValue();
-                setValue(time.plusMinutes(steps));
-            }
-        }
-    };
-    return valueFactory;
-}
 
 
 
