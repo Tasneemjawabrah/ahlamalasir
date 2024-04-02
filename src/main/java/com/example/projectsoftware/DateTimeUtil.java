@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 
 
 public class DateTimeUtil {
+     private static final String PASSWORD_CONSTANT = "1482003";
+
  private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = getPasswordFromEnvironment();
@@ -43,9 +45,5 @@ public class DateTimeUtil {
     }
 
 
-    private static String getPasswordFromEnvironment() {
-     
-      
-        return "1482003" ;
-    }
+   
 }
