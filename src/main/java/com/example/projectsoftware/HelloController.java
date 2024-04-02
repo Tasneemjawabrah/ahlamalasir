@@ -77,8 +77,8 @@ public class HelloController {
 
     static Logger logger = Logger.getLogger(com.example.projectsoftware.HelloController.class.getName());
     static String window = " An error occurred while opening a new window:";
-private static final String CUSTO_INTER_1_FXML = "custointer.fxml";
-     private static final String Serpp = "serviceproviderpage.fxml";
+   private static final String CUSTO_INTER_1_FXML = "custointer.fxml";
+     private static final String SERVICE_PROVIDER_PAGE_FXML = "serviceproviderpage.fxml";
 
 @FXML
 public TextField gmailLogIn;
@@ -169,11 +169,11 @@ public static Button getPackgButton() {
 
                 switch (role) {
                     case "customer":
-                        loadInterface("CUSTO_INTER_1", event);
+                        loadInterface(CUSTO_INTER_1_FXML, event);
 
                         break;
                     case "service-provider":
-                        loadInterface("Serpp", event);
+                        loadInterface(SERVICE_PROVIDER_PAGE_FXML, event);
                         break;
                     case "admin":
                         loadInterface("Adminlogin.fxml", event);
@@ -2834,7 +2834,7 @@ void logoutserviceprovider(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("CUSTO_INTER_1"));
+            root = FXMLLoader.load(getClass().getResource(CUSTO_INTER_1_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -3206,7 +3206,7 @@ void logoutserviceprovider(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("Serpp"));
+            root = FXMLLoader.load(getClass().getResource(SERVICE_PROVIDER_PAGE_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -3370,7 +3370,7 @@ void logoutserviceprovider(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("Serpp"));
+            root = FXMLLoader.load(getClass().getResource(SERVICE_PROVIDER_PAGE_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
@@ -3848,7 +3848,7 @@ void viewevents(ActionEvent event) {
         try {
             Parent root;
 
-            root = FXMLLoader.load(getClass().getResource("CUSTO_INTER_1"));
+            root = FXMLLoader.load(getClass().getResource(CUSTO_INTER_1_FXML));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             Scene scene;
             scene = new Scene(root);
