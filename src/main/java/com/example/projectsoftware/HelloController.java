@@ -3417,7 +3417,7 @@ public static Button getPackgButton() {
 
                 ObservableList<Reservation> reservationsList = FXCollections.observableArrayList();
 
-                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
 
                     statement.setInt(1, userId);
                     statement.setInt(2, userId);
