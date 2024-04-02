@@ -417,7 +417,18 @@ void backktoallhalls(ActionEvent event) {
 
     @FXML
     private Spinner<LocalTime> timeSpinner1 = new Spinner<>();
+public void performInitialization() {
+    initializeTimeSpinners();
+}
 
+private void initializeTimeSpinners() {
+    SpinnerValueFactory<LocalTime> valueFactory1 = createTimeSpinnerValueFactory();
+    timeSpinner.setValueFactory(valueFactory1);
+    timeSpinner.setEditable(true);
+    SpinnerValueFactory<LocalTime> valueFactory2 = createTimeSpinnerValueFactory();
+    timeSpinner1.setValueFactory(valueFactory2);
+    timeSpinner1.setEditable(true);
+}
 
 
 
