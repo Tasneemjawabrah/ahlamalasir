@@ -334,7 +334,7 @@ void connectClicked(ActionEvent event) {
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
-        throw new FXMLLoaderException("Error loading connectus.fxml", e);
+        System.out.println("error");
     }
 }
 
