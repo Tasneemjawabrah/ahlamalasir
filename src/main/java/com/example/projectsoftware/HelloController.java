@@ -1895,31 +1895,31 @@ public static Button getPackgButton() {
     private Button bt3;
 
     @FXML
-    private TableColumn<new_reservation, Integer> cc1 = new TableColumn<>();
+    private TableColumn<NewReservation, Integer> cc1 = new TableColumn<>();
 
     @FXML
-    private TableColumn<new_reservation, Integer> cc2 = new TableColumn<>();
+    private TableColumn<NewReservation, Integer> cc2 = new TableColumn<>();
 
     @FXML
-    private TableColumn<new_reservation, Integer> cc3 = new TableColumn<>();
+    private TableColumn<NewReservation, Integer> cc3 = new TableColumn<>();
 
     @FXML
-    private TableColumn<new_reservation, Date> cc4 = new TableColumn<>();
+    private TableColumn<NewReservation, Date> cc4 = new TableColumn<>();
 
     @FXML
-    private TableColumn<new_reservation, Time> cc5 = new TableColumn<>();
+    private TableColumn<NewReservation, Time> cc5 = new TableColumn<>();
 
     @FXML
-    private TableColumn<new_reservation, Time> cc6 = new TableColumn<>();
+    private TableColumn<NewReservation, Time> cc6 = new TableColumn<>();
 
     @FXML
-    private TableColumn<new_reservation, Double> cc7 = new TableColumn<>();
+    private TableColumn<NewReservation, Double> cc7 = new TableColumn<>();
 
     @FXML
-    private TableColumn<new_reservation, String> cc8 = new TableColumn<>();
+    private TableColumn<NewReservation, String> cc8 = new TableColumn<>();
 
     @FXML
-    private TableView<new_reservation> tabelnotification = new TableView<>();
+    private TableView<NewReservation> tabelnotification = new TableView<>();
 
 
     @FXML
@@ -1935,7 +1935,7 @@ public static Button getPackgButton() {
                 try (PreparedStatement statement = conn.prepareStatement(sql)) {
                     statement.setInt(1, userId);
                     try (ResultSet resultSet = statement.executeQuery()) {
-                        ArrayList<new_reservation> reservations = new ArrayList<>();
+                        ArrayList<NewReservation> reservations = new ArrayList<>();
                         while (resultSet.next()) {
                             int reservationId = resultSet.getInt("reservationid");
                             int userIdd = resultSet.getInt("userid");
@@ -1945,7 +1945,7 @@ public static Button getPackgButton() {
                             Time endTime = resultSet.getTime("endtime");
                             double totalPrice = resultSet.getDouble("totalprice");
                             String state = resultSet.getString("state");
-                            reservations.add(new new_reservation(reservationId, userIdd, hallId, date, startTime, endTime, totalPrice, state));
+                            reservations.add(new NewReservation(reservationId, userIdd, hallId, date, startTime, endTime, totalPrice, state));
                         }
 
                         cc1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
@@ -1957,7 +1957,7 @@ public static Button getPackgButton() {
                         cc7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         cc8.setCellValueFactory(new PropertyValueFactory<>("state"));
 
-                        ArrayList<new_reservation> items = new ArrayList<>(tabelnotification.getItems());
+                        ArrayList<NewReservation> items = new ArrayList<>(tabelnotification.getItems());
 
                         tabelnotification.getItems().clear();
                         tabelnotification.getItems().addAll(reservations);
@@ -1973,13 +1973,13 @@ public static Button getPackgButton() {
 
     @FXML
     void accept(ActionEvent event) {
-        ObservableList<new_reservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
+        ObservableList<NewReservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             String sql = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, "accepted");
-                for (new_reservation reservation : selectedReservations) {
+                for (NewReservation reservation : selectedReservations) {
                     statement.setInt(2, reservation.getReservationId());
 
                     statement.executeUpdate();
@@ -1997,13 +1997,13 @@ public static Button getPackgButton() {
 
     @FXML
     void deleteres(ActionEvent event) {
-        ObservableList<new_reservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
+        ObservableList<NewReservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             String sql = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, "rejected");
-                for (new_reservation reservation : selectedReservations) {
+                for (NewReservation reservation : selectedReservations) {
                     statement.setInt(2, reservation.getReservationId());
                     statement.executeUpdate();
                 }
@@ -2662,16 +2662,16 @@ public static Button getPackgButton() {
     @FXML
     private TextField jtxt1;
 
-    private ObservableList<new_reservation> reservationsData = FXCollections.observableArrayList();
+    private ObservableList<NewReservation> reservationsData = FXCollections.observableArrayList();
 
     @FXML
     void soso(KeyEvent event) {
         String searchText = jtxt1.getText().toLowerCase();
 
-        ObservableList<new_reservation> filteredList = FXCollections.observableArrayList();
+        ObservableList<NewReservation> filteredList = FXCollections.observableArrayList();
 
 
-        for (new_reservation reservation : tabelnotification.getItems()) {
+        for (NewReservation reservation : tabelnotification.getItems()) {
             if (String.valueOf(reservation.getHallId()).toLowerCase().contains(searchText) ||
                     reservation.getState().toLowerCase().contains(searchText) ||
                     String.valueOf(reservation.getDate()).toLowerCase().contains(searchText) ||
