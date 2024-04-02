@@ -63,7 +63,7 @@ public class HelloController4 {
             connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/postgres", "postgres", getPasswordFromEnvironment() );
             checkReservationStatement = connection.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
         } catch (SQLException e) {
-            e.printStackTrace();
+        System.err.println("Error while checking availability:");
         }
 
         datereservation.setDayCellFactory(dp -> new DateCell() {
@@ -108,7 +108,7 @@ public class HelloController4 {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
         return reservedCount;
     }
@@ -125,7 +125,7 @@ public class HelloController4 {
             }
         }
     } catch (SQLException e) {
-        e.printStackTrace();
+      System.err.println("Error while checking availability:");
     }
     return hallId;
     }
@@ -156,7 +156,7 @@ public class HelloController4 {
 
             connection.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+         System.err.println("Error while checking availability:");
         }
 
         List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
