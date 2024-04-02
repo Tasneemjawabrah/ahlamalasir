@@ -75,8 +75,8 @@ private TextField userUsername;
         return userUsername;
     }
 
-    public void setUsername(TextField username) {
-        this.username = userUsername;
+    public void setUsername(TextField userUsername) {
+        this.userUsername = userUsername;
     }
 
     public TextField getEmail() {
