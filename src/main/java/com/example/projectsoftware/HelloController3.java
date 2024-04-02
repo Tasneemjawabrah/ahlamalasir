@@ -372,7 +372,7 @@ public class HelloController3 {
                 services.add(service);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.err.println("Error while checking availability:");
         }
 
         return services;
@@ -413,7 +413,7 @@ public class HelloController3 {
                 stage.setScene(scene);
                 stage.show();
             } catch (IOException e) {
-                e.printStackTrace();
+              System.err.println("Error while checking availability:");
             }
         }
     }
