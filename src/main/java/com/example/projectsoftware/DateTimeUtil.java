@@ -9,16 +9,13 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.logging.Logger;
 
-
-
-
 public class DateTimeUtil {
-     private static final String PASSWORD_CONSTANT = "1482003";
+    private static final String PASSWORD_CONSTANT = "1482003";
 
- private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
-    private static final String PASSWORD = getPasswordFromEnvironment();
-   private static final Logger logger = Logger.getLogger(DateTimeUtil.class.getName());
+    private static final String PASSWORD = PASSWORD_CONSTANT; // Use the constant here
+    private static final Logger logger = Logger.getLogger(DateTimeUtil.class.getName());
 
     public static boolean isTimeAvailable(String date, String startTimeStr, String endTimeStr) {
         LocalDate targetDate = LocalDate.parse(date);
@@ -38,12 +35,8 @@ public class DateTimeUtil {
                 }
             }
         } catch (SQLException e) {
-          logger.severe("Error while checking availability: " + e.getMessage());
-            
+            logger.severe("Error while checking availability: " + e.getMessage());
         }
         return true;
     }
-
-
-   
 }
