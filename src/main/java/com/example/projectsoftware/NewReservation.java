@@ -1,6 +1,7 @@
 package com.example.projectsoftware;
 
-import java.sql.*;
+import java.sql.Date;
+import java.sql.Time;
 
 public class NewReservation {
     private int reservationId;
@@ -11,34 +12,61 @@ public class NewReservation {
     private Time endTime;
     private double totalPrice;
     private String state;
-    
     private int serviceId;
 
-    public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,
-                double totalPrice, String state, int serviceId) {
-        this.reservationId = reservationId;
-        this.userId = userId;
-        this.hallId = hallId;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.totalPrice = totalPrice;
-        this.state = state;
-        this.serviceId = serviceId;
-    }
-      public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,
-                           double totalPrice, String state) {
-        this.reservationId = reservationId;
-        this.userId = userId;
-        this.hallId = hallId;
-        this.date = date;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.totalPrice = totalPrice;
-        this.state = state;
-
+    private NewReservation(Builder builder) {
+        this.reservationId = builder.reservationId;
+        this.userId = builder.userId;
+        this.hallId = builder.hallId;
+        this.date = builder.date;
+        this.startTime = builder.startTime;
+        this.endTime = builder.endTime;
+        this.totalPrice = builder.totalPrice;
+        this.state = builder.state;
+        this.serviceId = builder.serviceId;
     }
 
+    public static class Builder {
+        private int reservationId;
+        private int userId;
+        private int hallId;
+        private Date date;
+        private Time startTime;
+        private Time endTime;
+        private double totalPrice;
+        private String state;
+        private int serviceId;
+
+        public Builder(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime) {
+            this.reservationId = reservationId;
+            this.userId = userId;
+            this.hallId = hallId;
+            this.date = date;
+            this.startTime = startTime;
+            this.endTime = endTime;
+        }
+
+        public Builder totalPrice(double totalPrice) {
+            this.totalPrice = totalPrice;
+            return this;
+        }
+
+        public Builder state(String state) {
+            this.state = state;
+            return this;
+        }
+
+        public Builder serviceId(int serviceId) {
+            this.serviceId = serviceId;
+            return this;
+        }
+
+        public NewReservation build() {
+            return new NewReservation(this);
+        }
+    }
+
+    // Getters and setters
     public int getReservationId() {
         return reservationId;
     }
@@ -111,4 +139,3 @@ public class NewReservation {
         this.serviceId = serviceId;
     }
 }
-
