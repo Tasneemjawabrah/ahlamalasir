@@ -11,6 +11,7 @@ public class NewReservation {
     private Time endTime;
     private double totalPrice;
     private String state;
+    
     private int serviceId;
 
     public  NewReservation(int reservationId, int userId, int hallId, Date date, Time startTime, Time endTime,
