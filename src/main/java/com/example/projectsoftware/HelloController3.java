@@ -79,10 +79,12 @@ private void showHallInformationDialog(MouseEvent event) {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            logger.severe("Error while checking availability:");
+       final String ERROR_MESSAGE = "Error while checking availability:";
+        logger.severe(ERROR_MESSAGE);   
         }
     }
-}
+    }
+
 
     public ObservableList<Halls> fetchHallsFromDatabase() {
         ObservableList<Halls> halls = FXCollections.observableArrayList();
