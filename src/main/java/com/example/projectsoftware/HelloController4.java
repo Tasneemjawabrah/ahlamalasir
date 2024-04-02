@@ -17,7 +17,6 @@ import java.util.logging.Logger;
 public class HelloController4 {
 private static final String UNDER_IMPLEMENTATION = "Under implementation";
 private static final Logger logger = Logger.getLogger(HelloController4.class.getName());
- private static final Logger logger = Logger.getLogger(HelloController4.class.getName());
 
 
     private Connection connection;
@@ -76,8 +75,13 @@ private static final Logger logger = Logger.getLogger(HelloController4.class.get
         } catch (SQLException e) {
             logger.severe("Error while checking availability: " + e.getMessage());
         }
-    }
     
+
+    // This method retrieves the password from the environment
+    private String getPasswordFromEnvironment() {
+        // Implement this method according to your application's requirements
+        return "password"; // Example implementation, replace with your logic
+    }
 
         datereservation.setDayCellFactory(dp -> new DateCell() {
             @Override
