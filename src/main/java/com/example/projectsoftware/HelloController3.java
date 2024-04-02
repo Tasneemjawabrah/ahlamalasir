@@ -106,7 +106,7 @@ private void showHallInformationDialog(MouseEvent event) {
                 halls.add(hall);
             }
         } catch (SQLException e) {
-         logger.severe("Error while checking availability:");
+        logger.severe("Error while fetching halls from the database: " + e.getMessage());
         }
 
         return halls;
@@ -217,7 +217,7 @@ private void showHallInformationDialog(MouseEvent event) {
                 services.add(service);
             }
         } catch (SQLException e) {
-      logger.severe("Error while checking availability:");
+        logger.severe("Error while fetching halls from the database: " + e.getMessage());
         }
 
         return services;
