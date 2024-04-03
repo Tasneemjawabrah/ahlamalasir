@@ -110,6 +110,14 @@ private static final String HALL_NAME_COLUMN = "hallname";
    private static final String ACCEPTED_STATE ="accepted" ;
    private static final String GET_SERVICE_ID_SQL ="SELECT serviceid FROM software.services WHERE servicename = ?";
    private static final String SERVICE_ID_COLUMN =  "serviceid";
+   private static final String DELETED_STATE ="deleted" ;
+   private static final String PRICE_COLUMN ="price" ;
+   private static final String DESCRIPTION_COLUMN = "description";
+   private static final String IMAGE_COLUMN ="image" ;
+   private static final String SERVICE_ID_COLUMNNN = "serviceId";
+
+
+   
    
 
  
@@ -2144,7 +2152,7 @@ logger.severe(CHECKING_AVAILABLE);
             statement.setString(1, serviceName);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    serviceId = resultSet.getInt("serviceid");
+                    serviceId = resultSet.getInt(SERVICE_ID_COLUMN );
                 }
             }
         }
@@ -2156,7 +2164,7 @@ logger.severe(CHECKING_AVAILABLE);
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             ReservationInfo selectedReservation = confirmtabel.getSelectionModel().getSelectedItem();
             if (selectedReservation != null) {
-                if (selectedReservation.getState().equals("deleted")) {
+                if (selectedReservation.getState().equals(DELETED_STATE)) {
                     showAlert("This reservation is already deleted.");
                     return;
                 }
@@ -2201,7 +2209,7 @@ logger.severe(CHECKING_AVAILABLE);
                             insertStatement.setTime(6, selectedReservation.getEndTime());
                             insertStatement.setDouble(7, newPrice);
                             insertStatement.setInt(8, selectedReservation.getServiceId());
-                            insertStatement.setString(9, "deleted");
+                            insertStatement.setString(9, DELETED_STATE);
 
                             int rowsInserted = insertStatement.executeUpdate();
                             if (rowsInserted > 0) {
@@ -2255,12 +2263,15 @@ logger.severe(CHECKING_AVAILABLE);
     }
 
     public void newreserve(javafx.event.ActionEvent actionEvent) {
+        logger.severe(CHECKING_AVAILABLE);
     }
 
     public void canclenew(javafx.event.ActionEvent actionEvent) {
+        logger.severe(CHECKING_AVAILABLE);
     }
 
     public void eeeee(javafx.event.ActionEvent actionEvent) {
+        logger.severe(CHECKING_AVAILABLE);
     }
 
     @FXML
@@ -2468,7 +2479,7 @@ logger.severe(CHECKING_AVAILABLE);
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
-                hallId = resultSet.getInt("serviceid");
+                hallId = resultSet.getInt(SERVICE_ID_COLUMN );
             }
         }
     } catch (SQLException e) {
@@ -2575,7 +2586,7 @@ logger.severe(CHECKING_AVAILABLE);
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
-                hallId = resultSet.getInt("serviceid");
+                hallId = resultSet.getInt(SERVICE_ID_COLUMN );
             }
         }
     } catch (SQLException e) {
@@ -2617,7 +2628,7 @@ logger.severe(CHECKING_AVAILABLE);
             statement.setInt(1, hallId);
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
-            return resultSet.getBigDecimal("price");
+            return resultSet.getBigDecimal(PRICE_COLUMN );
         }
     }
 
@@ -2732,7 +2743,7 @@ logger.severe(CHECKING_AVAILABLE);
     private TableColumn<FeedbackEntry, String> FeedbackColumn;
 
     @FXML
-    private TableColumn<FeedbackEntry, Integer> Userid;
+    private TableColumn<FeedbackEntry, Integer> userIdColumn;
 
     @FXML
     private TableView<FeedbackEntry> feedbacktable;
@@ -2907,26 +2918,26 @@ logger.severe(CHECKING_AVAILABLE);
                 ResultSet servicesResultSet = servicesStatement.executeQuery();
                 while (servicesResultSet.next()) {
                     Services service;
-                    String description = servicesResultSet.getString("description");
+                    String description = servicesResultSet.getString(DESCRIPTION_COLUMN);
                     if (description != null) {
                         service = new Services(
-                                servicesResultSet.getInt("serviceid"),
+                                servicesResultSet.getInt(SERVICE_ID_COLUMN ),
                                 servicesResultSet.getString(SERVICE_NAME_COLUMN),
                                 description,
-                                servicesResultSet.getDouble("price"),
+                                servicesResultSet.getDouble(PRICE_COLUMN ),
                                 servicesResultSet.getInt(USER_ID_COLUMN),
-                                servicesResultSet.getBytes("image"),
+                                servicesResultSet.getBytes(IMAGE_COLUMN),
                                 servicesResultSet.getString(LOCATION_1)
                         );
                     } else {
-                        int descriptionn = servicesResultSet.getInt("description");
+                        int descriptionn = servicesResultSet.getInt(DESCRIPTION_COLUMN);
                         service = new Services(
-                                servicesResultSet.getInt("serviceid"),
+                                servicesResultSet.getInt(SERVICE_ID_COLUMN ),
                                 servicesResultSet.getString(SERVICE_NAME_COLUMN),
                                 String.valueOf(descriptionn),
-                                servicesResultSet.getDouble("price"),
+                                servicesResultSet.getDouble(PRICE_COLUMN ),
                                 servicesResultSet.getInt(USER_ID_COLUMN),
-                                servicesResultSet.getBytes("image"),
+                                servicesResultSet.getBytes(IMAGE_COLUMN),
                                 servicesResultSet.getString(LOCATION_1)
                         );
                     }
@@ -2948,16 +2959,16 @@ logger.severe(CHECKING_AVAILABLE);
                             String.valueOf(capacity),
                             hallsResultSet.getDouble(PRICE_PER_HOUR_COLUMN ),
                             hallsResultSet.getInt(USER_ID_COLUMN),
-                            hallsResultSet.getBytes("image"),
+                            hallsResultSet.getBytes(IMAGE_COLUMN),
                             hallsResultSet.getString(LOCATION_1)
                     );
                     hallsList.add(hall);
                 }
             }
-            colm1.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
+            colm1.setCellValueFactory(new PropertyValueFactory<>(SERVICE_ID_COLUMNNN ));
             colm2.setCellValueFactory(new PropertyValueFactory<>(SERVICE_NAME_COLUMN));
-            colm3.setCellValueFactory(new PropertyValueFactory<>("description"));
-            colm4.setCellValueFactory(new PropertyValueFactory<>("price"));
+            colm3.setCellValueFactory(new PropertyValueFactory<>(DESCRIPTION_COLUMN));
+            colm4.setCellValueFactory(new PropertyValueFactory<>(PRICE_COLUMN ));
             colm5.setCellValueFactory(new PropertyValueFactory<>("imageBytes"));
             colm6.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
             colm7.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
@@ -3121,6 +3132,7 @@ logger.severe(CHECKING_AVAILABLE);
 
     @FXML
     void deleteserr(ActionEvent event) {
+       logger.severe(CHECKING_AVAILABLE);  
     }
 
     @FXML
@@ -3294,7 +3306,7 @@ logger.severe(CHECKING_AVAILABLE);
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             Reservation selectedReservation = eventtable.getSelectionModel().getSelectedItem();
             if (selectedReservation != null) {
-                if (selectedReservation.getState().equals("deleted")) {
+                if (selectedReservation.getState().equals(DELETED_STATE)) {
                     showAlert("This reservation is already deleted.");
                     return;
                 }
@@ -3306,7 +3318,7 @@ logger.severe(CHECKING_AVAILABLE);
                         int rowsUpdated = updateStatement.executeUpdate();
                         if (rowsUpdated > 0) {
                             showAlert("Reservation successfully deleted.");
-                            updateStateInNewTableName(conn, reservationId, "deleted");
+                            updateStateInNewTableName(conn, reservationId, DELETED_STATE);
                         } else {
                             showAlert("Failed to update reservation state.");
                         }
@@ -3318,7 +3330,7 @@ logger.severe(CHECKING_AVAILABLE);
                         int rowsDeleted = deleteStatement.executeUpdate();
                         if (rowsDeleted > 0) {
                             showAlert("Reservation successfully deleted.");
-                            updateStateInNewTableName(conn, reservationId, "deleted");
+                            updateStateInNewTableName(conn, reservationId, DELETED_STATE);
                         } else {
                             showAlert("Failed to delete reservation.");
                         }
@@ -3411,7 +3423,7 @@ void viewevents(ActionEvent event) {
                                 resultSet.getTime(END_TIME_COLUMN)
                             )
                             .totalPrice(resultSet.getDouble(TOTAL_PRICE_COLUMN))
-                            .serviceId(resultSet.getInt("serviceid"))
+                            .serviceId(resultSet.getInt(SERVICE_ID_COLUMN ))
                             .state(resultSet.getString(STATE_COLUMN ))
                             .build();
                         reservationsList.add(reservation);
@@ -3425,7 +3437,7 @@ void viewevents(ActionEvent event) {
                 e5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
                 e6.setCellValueFactory(new PropertyValueFactory<>(END_TIME_COLUMN));
                 e7.setCellValueFactory(new PropertyValueFactory<>(TOTAL_PRICE_COLUMN));
-                e8.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
+                e8.setCellValueFactory(new PropertyValueFactory<>(SERVICE_ID_COLUMNNN  ));
                 e9.setCellValueFactory(new PropertyValueFactory<>(STATE_COLUMN ));
 
                 eventtable.getItems().clear();
@@ -3559,7 +3571,7 @@ void viewevents(ActionEvent event) {
             cc55.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
             cc66.setCellValueFactory(new PropertyValueFactory<>(END_TIME_COLUMN));
             cc77.setCellValueFactory(new PropertyValueFactory<>(TOTAL_PRICE_COLUMN));
-            cc88.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
+            cc88.setCellValueFactory(new PropertyValueFactory<>(SERVICE_ID_COLUMNNN  ));
             cc99.setCellValueFactory(new PropertyValueFactory<>(STATE_COLUMN ));
             adminviewstable.getItems().clear();
             
@@ -3574,7 +3586,7 @@ void viewevents(ActionEvent event) {
                         resultSet.getTime(END_TIME_COLUMN)
                     )
                     .totalPrice(resultSet.getDouble(TOTAL_PRICE_COLUMN))
-                    .serviceId(resultSet.getInt("serviceid"))
+                    .serviceId(resultSet.getInt(SERVICE_ID_COLUMN ))
                     .state(resultSet.getString(STATE_COLUMN ))
                     .build();
                 reservationsList.add(reservation);
@@ -3732,7 +3744,7 @@ void viewevents(ActionEvent event) {
 
                         while (resultSet.next()) {
                             String serviceName = resultSet.getString(SERVICE_NAME_COLUMN);
-                            double price = resultSet.getDouble("price");
+                            double price = resultSet.getDouble(PRICE_COLUMN );
                             int numberOfReservations = resultSet.getInt("num_reservations");
                             double totalPrice = resultSet.getDouble("total_price");
                             serviceData.add(new HallReportData(serviceName, price, numberOfReservations, totalPrice));
@@ -3842,6 +3854,8 @@ void viewevents(ActionEvent event) {
 
     @FXML
     void calenderclick(MouseEvent event) {
+          logger.severe(CHECKING_AVAILABLE); 
+       
     }
 
 
@@ -4135,7 +4149,7 @@ logger.severe(CHECKING_AVAILABLE);
                             String eventName = resultSet.getString("event_name");
                             Date eventDate = resultSet.getDate("event_date");
                             String location = resultSet.getString(LOCATION_1);
-                            String description = resultSet.getString("description");
+                            String description = resultSet.getString(DESCRIPTION_COLUMN);
                             int organizerId = resultSet.getInt("organizer_id");
                             Timestamp creationDate = resultSet.getTimestamp("creation_date");
 
@@ -4147,7 +4161,7 @@ logger.severe(CHECKING_AVAILABLE);
                         }
                         eventid.setCellValueFactory(new PropertyValueFactory<>("eventId"));
                         eventsname.setCellValueFactory(new PropertyValueFactory<>("eventName"));
-                        eventdescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+                        eventdescription.setCellValueFactory(new PropertyValueFactory<>(DESCRIPTION_COLUMN));
                         eventlocation.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
                         eventsdate.setCellValueFactory(new PropertyValueFactory<>("eventDate"));
                         eventorgid.setCellValueFactory(new PropertyValueFactory<>("organizerId"));
@@ -4262,7 +4276,7 @@ logger.severe(CHECKING_AVAILABLE);
             ObservableList<String> tickets = FXCollections.observableArrayList();
             while (resultSet.next()) {
                 String ticketType = resultSet.getString("ticket_type");
-                double price = resultSet.getDouble("price");
+                double price = resultSet.getDouble(PRICE_COLUMN );
                 String ticketInfo = ticketType + " - $" + price;
                 tickets.add(ticketInfo);
             }
@@ -4400,8 +4414,8 @@ logger.severe(CHECKING_AVAILABLE);
             while (resultSet.next()) {
                 int packageId = resultSet.getInt("package_id");
                 String packageName = resultSet.getString("package_name");
-                String description = resultSet.getString("description");
-                double price = resultSet.getDouble("price");
+                String description = resultSet.getString(DESCRIPTION_COLUMN);
+                double price = resultSet.getDouble(PRICE_COLUMN );
                 int maxGuests = resultSet.getInt("max_guests");
                 String includes = resultSet.getString("includes");
                 String[] includesArray = includes.split(",");
@@ -4409,8 +4423,8 @@ logger.severe(CHECKING_AVAILABLE);
             }
             packageIdColumn.setCellValueFactory(new PropertyValueFactory<>("packageId"));
             pnameecolumn.setCellValueFactory(new PropertyValueFactory<>("packageName"));
-            descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
-            priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
+            descriptionColumn.setCellValueFactory(new PropertyValueFactory<>(DESCRIPTION_COLUMN));
+            priceColumn.setCellValueFactory(new PropertyValueFactory<>(PRICE_COLUMN ));
             maxGuestsColumn.setCellValueFactory(new PropertyValueFactory<>("maxGuests"));
             includesColumn.setCellValueFactory(new PropertyValueFactory<>("includes"));
             tableeee.setItems(data);
