@@ -499,7 +499,7 @@ void backktoallhalls(ActionEvent event) {
 
     @FXML
     private void select(ActionEvent event) {
-
+    final String PRICE_PER_HOUR_COLUMN = "priceperhour";
 
         String query = "SELECT capacity, location, priceperhour FROM software.halls WHERE hallname = 'Rose'";
 
@@ -510,7 +510,7 @@ void backktoallhalls(ActionEvent event) {
             if (resultSet.next()) {
                 int capacity = resultSet.getInt( CAPACITY_COLUMN);
                 String location = resultSet.getString(LOCATION_1);
-                double price = resultSet.getDouble("priceperhour");
+                double price = resultSet.getDouble(PRICE_PER_HOUR_COLUMN );
 
                 capacityy.setText(String.valueOf(capacity));
                 locationn.setText(location);
@@ -1218,7 +1218,7 @@ logger.severe(CHECKING_AVAILABLE);
             int hallId = resultSet.getInt("hallid");
             String hallName = resultSet.getString("hallname");
             int capacity = resultSet.getInt( CAPACITY_COLUMN);
-            double pricePerHour = resultSet.getDouble("priceperhour");
+            double pricePerHour = resultSet.getDouble(PRICE_PER_HOUR_COLUMN );
             String location = resultSet.getString(LOCATION_1);
             int userId = resultSet.getInt("userid");
             Hall hall = new Hall(hallId, hallName, capacity, pricePerHour, location, userId);
@@ -2967,7 +2967,7 @@ logger.severe("Error while checking availability:");
                             hallsResultSet.getInt("hallid"),
                             hallsResultSet.getString("hallname"),
                             String.valueOf(capacity),
-                            hallsResultSet.getDouble("priceperhour"),
+                            hallsResultSet.getDouble(PRICE_PER_HOUR_COLUMN ),
                             hallsResultSet.getInt("userid"),
                             hallsResultSet.getBytes("image"),
                             hallsResultSet.getString(LOCATION_1)
@@ -3711,7 +3711,7 @@ void viewevents(ActionEvent event) {
 
                         while (resultSet.next()) {
                             String hallName = resultSet.getString("hallname");
-                            double pricePerHour = resultSet.getDouble("priceperhour");
+                            double pricePerHour = resultSet.getDouble(PRICE_PER_HOUR_COLUMN );
                             int numberOfReservations = resultSet.getInt("num_reservations");
                             double totalPrice = resultSet.getDouble("total_price");
                             hallData.add(new HallReportData(hallName, pricePerHour, numberOfReservations, totalPrice));
