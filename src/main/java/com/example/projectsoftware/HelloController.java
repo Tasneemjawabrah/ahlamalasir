@@ -2761,7 +2761,7 @@ logger.severe(CHECKING_AVAILABLE);
         return;
     }
     FeedbackColumn.setCellValueFactory(new PropertyValueFactory<>("feedback"));
-    Userid.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
+    userIdColumn.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
     feedbacktable.getItems().clear();
     try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
          PreparedStatement statement = conn.prepareStatement("SELECT userid, feedback FROM software.new_table_name WHERE feedback IS NOT NULL");
