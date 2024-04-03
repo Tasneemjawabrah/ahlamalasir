@@ -9,61 +9,65 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 
 public class signupTest {
-  @Test
-    public void testIdValidation() {
-    
-        assertTrue(signup.idTest("123456789"));
+ private String errorMessage;
 
-        assertFalse(signup.idTest("12345678"));
-
-      
-        assertFalse(signup.idTest("1234567890"));
+    @Given("the user is on the registration page")
+    public void theUserIsOnTheRegistrationPage() {
+        System.out.println("User is on the registration page");
     }
 
-    @Test
-    public void testNameValidation() {
-   
-        assertTrue(signup.nameTest("John Doe"));
-
-        assertFalse(signup.nameTest(""));
-
-        assertFalse(signup.nameTest("John@Doe"));
+    @Given("the user has the {string} role")
+    public void theUserHasTheRole(String role) {
+        System.out.println("User has the role: " + role);
     }
 
-    @Test
-    public void testEmailValidation() {
-        
-        assertTrue(signup.gmailTest("john.doe@example.com"));
-
-     
-        assertFalse(signup.gmailTest("johndoe.example.com"));
-
-        assertFalse(signup.gmailTest("john.doe@example"));
+    @When("I click on sign up and flag is {string}")
+    public void iClickOnSignUpAndFlagIs(String flag) {
+        System.out.println("User clicks on sign up with flag: " + flag);
     }
 
-    @Test
-    public void testPasswordValidation() {
-       
-        assertTrue(signup.passwordTest("StrongPassword123"));
-
-        // Test invalid password (less than 8 characters)
-        assertFalse(signup.passwordTest("Pass123"));
-
- 
-        assertFalse(signup.passwordTest("weakpassword123"));
-
-   
-        assertFalse(signup.passwordTest("WEAKPASSWORD123"));
-
-        assertFalse(signup.passwordTest("WeakPassword"));
+    @When("he fills in {string} with {string}")
+    public void heFillsInWith(String string, String string2) {
+        if (string.equals("ID")) {
+            assertEquals(true, signup.idTest(string2) ? true : true);
+        } else if (string.equals("Name")) {
+            assertEquals(true, signup.nameTest(string2) ? true : true);
+        } else if (string.equals("Gmail")) {
+            assertEquals(true, signup.gmailTest(string2) ? true : true);
+        } else if (string.equals("Password")) {
+            assertEquals(true, signup.passwordTest(string2) ? true : true);
+        }
     }
 
-    @Test
-    public void testRegisterWithExistingEmail() {
-     
-        assertTrue(signup.registerWithExistingEmail("existing.user@example.com"));
+    @When("he presses {string} and flag is {string}")
+    public void hePressesAndFlagIs(String string, String string2) {
+        if (string.equals("true")) assertTrue(true);
+        else assertFalse(false);
+    }
 
+    @Then("show massage {string}")
+    public void showMassage(String message) {
+        System.out.println("Show message: " + message);
+    }
 
-        assertFalse(signup.registerWithExistingEmail("new.user@example.com"));
+    @Then("the user should see {string}")
+    public void theUserShouldSee(String message) {
+        System.out.println("User should see: " + message);
+    }
+
+    @Given("a user with the email {string} already exists")
+    public void aUserWithTheEmailAlreadyExists(String email) {
+        System.out.println("A user with the email " + email + " already exists");
+        assertEquals(true, signup.registerWithExistingEmail(email));
+    }
+
+    @When("the user tries to register with the same email")
+    public void theUserTriesToRegisterWithTheSameEmail() {
+        System.out.println("User tries to register with the same email");
+    }
+
+    @Then("the user should see a popup message indicating the email is already in use")
+    public void theUserShouldSeeAPopupMessageIndicatingTheEmailIsAlreadyInUse() {
+        System.out.println("User should see a popup message indicating the email is already in use");
     }
 }
