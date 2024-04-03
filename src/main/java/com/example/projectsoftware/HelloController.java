@@ -110,7 +110,7 @@ private static final String HALL_NAME_COLUMN = "hallname";
    private static final String ACCEPTED_STATE ="accepted" ;
    private static final String GET_SERVICE_ID_SQL ="SELECT serviceid FROM software.services WHERE servicename = ?";
    private static final String SERVICE_ID_COLUMN =  "serviceid";
-   private static final String DELETED_STATE ="deleted" ;
+   private static final String DELETED_STATE = "deleted";
    private static final String PRICE_COLUMN ="price" ;
    private static final String DESCRIPTION_COLUMN = "description";
    private static final String IMAGE_COLUMN ="image" ;
@@ -3336,7 +3336,7 @@ void deleteevents(ActionEvent event) {
         int reservationId = selectedReservation.getReservationId();
 
         if (selectedReservation.getState().equals(ACCEPTED_STATE)) {
-            updateReservationState(conn, reservationId, "deleted", 0);
+            updateReservationState(conn, reservationId, DELETED_STATE, 0);
         } else if (selectedReservation.getState().equals("wait")) {
             deleteReservation(conn, reservationId);
         }
