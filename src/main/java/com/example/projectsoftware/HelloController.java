@@ -84,7 +84,7 @@ public class HelloController {
  private static final String HELLO_VIEW_FXML ="hello-view.fxml";
  private static final String USER_PRINT ="User not found!";
     private static final String LOCATION_1= "location";
-   private static final String CHECKING_AVAILABLE= "Error while checking availability:";
+   private static final String CHECKING_AVAILABLE= CHECKING_AVAILABLE;
    private static final String INVALID_CREDENTIALS_MESSAGE ="Invalid email or password." ;
    private static final String CAPACITY_COLUMN = "capacity";
     private static final String START_TIME_COLUMN = "starttime";
@@ -93,6 +93,10 @@ public class HelloController {
   private static final String RESERVATION_ID_COLUMN = "reservationid";
    private static final String BOOKING_FAILED_MESSAGE ="Failed to book the hall. Please try again later.";
 private static final String HALL_NAME_COLUMN = "hallname";
+  private static final String SERVICE_NAME_COLUMN ="servicename";
+   private static final String WINDOW_OPENING_ERROR_MESSAGE = "An error occurred while opening a new window:";
+    private static final String PRICE_PER_HOUR_COLUMN_NAME ="pricePerHour" ;
+   private static final String IMAGE_DESCRIPTION ="Image Files" ;
 @FXML
 public TextField gmailLogIn;
 private static final Button service = new Button();
@@ -637,7 +641,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             statement.setInt(1, hallId);
             ResultSet resultSet = statement.executeQuery();
             resultSet.next();
-            return resultSet.getBigDecimal("priceperhour");
+            return resultSet.getBigDecimal( PRICE_PER_HOUR_COLUMN_NAME);
         }
     }
 
@@ -973,7 +977,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             statement.setDouble(1, budget * servicePercentage / 100);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                services.add(resultSet.getString("servicename"));
+                services.add(resultSet.getString(SERVICE_NAME_COLUMN));
             }
         }
         return services;
@@ -1058,7 +1062,7 @@ private static final String HALL_ID_COLUMN = "hallid";
         stage.setScene(scene);
         stage.show();
     } catch (IOException e) {
-        logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+        logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         logger.info("11");
     }
 }
@@ -1072,7 +1076,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
 
@@ -1087,7 +1091,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
     }
@@ -1121,7 +1125,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
     }
@@ -1164,7 +1168,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
 
@@ -1175,7 +1179,7 @@ private static final String HALL_ID_COLUMN = "hallid";
         hallidd.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
     hallnamee.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
     capacityyy.setCellValueFactory(new PropertyValueFactory<>( CAPACITY_COLUMN));
-    priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
+    priceperhourr.setCellValueFactory(new PropertyValueFactory<>( PRICE_PER_HOUR_COLUMN_NAME));
     locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
     USERID.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
     Hall selectedHall = hallTableView.getSelectionModel().getSelectedItem();
@@ -1207,7 +1211,7 @@ private static final String HALL_ID_COLUMN = "hallid";
     hallidd.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
     hallnamee.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
     capacityyy.setCellValueFactory(new PropertyValueFactory<>( CAPACITY_COLUMN));
-    priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
+    priceperhourr.setCellValueFactory(new PropertyValueFactory<>( PRICE_PER_HOUR_COLUMN_NAME));
     locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
     USERID.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
     
@@ -1300,7 +1304,7 @@ logger.severe(CHECKING_AVAILABLE);
         }
         
     } catch (SQLException e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
         showAlert("An error occurred while updating user information: " + e.getMessage());
     }
     
@@ -1319,7 +1323,7 @@ logger.severe("Error while checking availability:");
     try {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION , "*.png", "*.jpg", "*.jpeg")
         );
         File selectedFile = fileChooser.showOpenDialog(saveadmiv.getScene().getWindow());
         if (selectedFile != null) {
@@ -1361,7 +1365,7 @@ logger.severe("Error while checking availability:");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Image File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif")
+                new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION , "*.png", "*.jpg", "*.gif")
         );
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
@@ -1470,7 +1474,7 @@ logger.severe("Error while checking availability:");
             showAlert("Failed to add a new hall.");
         }
     } catch (SQLException e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
         showAlert("Error: " + e.getMessage());
     } catch (NumberFormatException e) {
         showAlert("Invalid capacity, price per hour, or user ID format.");
@@ -1556,7 +1560,7 @@ logger.severe(CHECKING_AVAILABLE);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
     }
@@ -1879,7 +1883,7 @@ logger.severe(CHECKING_AVAILABLE);
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
 
         }
     }
@@ -2082,7 +2086,7 @@ logger.severe(CHECKING_AVAILABLE);
                             int reservationId = resultSet.getInt(RESERVATION_ID_COLUMN);
                             String userName = resultSet.getString("username");
                             String hallName = resultSet.getString(HALL_NAME_COLUMN);
-                            String serviceName = resultSet.getString("servicename");
+                            String serviceName = resultSet.getString(SERVICE_NAME_COLUMN);
                             Date date = resultSet.getDate("date");
                             Time startTime = resultSet.getTime(START_TIME_COLUMN);
                             Time endTime = resultSet.getTime("endtime");
@@ -2093,7 +2097,7 @@ logger.severe(CHECKING_AVAILABLE);
                         col1.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
                         col2.setCellValueFactory(new PropertyValueFactory<>("userName"));
                         col3.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
-                        col4.setCellValueFactory(new PropertyValueFactory<>("serviceName"));
+                        col4.setCellValueFactory(new PropertyValueFactory<>(SERVICE_NAME_COLUMN));
                         col5.setCellValueFactory(new PropertyValueFactory<>("date"));
                         col6.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
                         col7.setCellValueFactory(new PropertyValueFactory<>("endTime"));
@@ -2499,7 +2503,7 @@ logger.severe(CHECKING_AVAILABLE);
             }
         }
     } catch (SQLException e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
     }
     return hallId;
     }
@@ -2938,7 +2942,7 @@ logger.severe("Error while checking availability:");
                     if (description != null) {
                         service = new Services(
                                 servicesResultSet.getInt("serviceid"),
-                                servicesResultSet.getString("servicename"),
+                                servicesResultSet.getString(SERVICE_NAME_COLUMN),
                                 description,
                                 servicesResultSet.getDouble("price"),
                                 servicesResultSet.getInt(USER_ID_COLUMN),
@@ -2949,7 +2953,7 @@ logger.severe("Error while checking availability:");
                         int descriptionn = servicesResultSet.getInt("description");
                         service = new Services(
                                 servicesResultSet.getInt("serviceid"),
-                                servicesResultSet.getString("servicename"),
+                                servicesResultSet.getString(SERVICE_NAME_COLUMN),
                                 String.valueOf(descriptionn),
                                 servicesResultSet.getDouble("price"),
                                 servicesResultSet.getInt(USER_ID_COLUMN),
@@ -2982,7 +2986,7 @@ logger.severe("Error while checking availability:");
                 }
             }
             colm1.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
-            colm2.setCellValueFactory(new PropertyValueFactory<>("serviceName"));
+            colm2.setCellValueFactory(new PropertyValueFactory<>(SERVICE_NAME_COLUMN));
             colm3.setCellValueFactory(new PropertyValueFactory<>("description"));
             colm4.setCellValueFactory(new PropertyValueFactory<>("price"));
             colm5.setCellValueFactory(new PropertyValueFactory<>("imageBytes"));
@@ -3123,7 +3127,7 @@ logger.severe("Error while checking availability:");
 
         showAlert("Service added successfully");
     } catch (SQLException e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
         showAlert("An error occurred while saving the service.");
     }
     }
@@ -3234,7 +3238,7 @@ logger.severe("Error while checking availability:");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Image File");
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION , "*.png", "*.jpg", "*.jpeg");
         fileChooser.getExtensionFilters().add(extFilter);
 
         File selectedFile = fileChooser.showOpenDialog(s1.getScene().getWindow());
@@ -3509,7 +3513,7 @@ void viewevents(ActionEvent event) {
             stage.show();
         } catch (IOException e) {
 
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
 
@@ -3528,7 +3532,7 @@ void viewevents(ActionEvent event) {
             stage.show();
         } catch (IOException e) {
 
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
 
@@ -3668,7 +3672,7 @@ void viewevents(ActionEvent event) {
             stage.setScene(scene);
             stage.show();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
 
@@ -3687,7 +3691,7 @@ void viewevents(ActionEvent event) {
             stage.show();
         } catch (IOException e) {
 
-            logger.log(Level.SEVERE, "An error occurred while opening a new window:", e);
+            logger.log(Level.SEVERE,  WINDOW_OPENING_ERROR_MESSAGE, e);
         }
 
     }
@@ -3724,7 +3728,7 @@ void viewevents(ActionEvent event) {
                         }
 
                         hnr.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
-                        phr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
+                        phr.setCellValueFactory(new PropertyValueFactory<>( PRICE_PER_HOUR_COLUMN_NAME));
                         tphr.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         numberhr.setCellValueFactory(new PropertyValueFactory<>("numberOfReservations"));
 
@@ -3758,7 +3762,7 @@ void viewevents(ActionEvent event) {
                         ObservableList<HallReportData> serviceData = FXCollections.observableArrayList();
 
                         while (resultSet.next()) {
-                            String serviceName = resultSet.getString("servicename");
+                            String serviceName = resultSet.getString(SERVICE_NAME_COLUMN);
                             double price = resultSet.getDouble("price");
                             int numberOfReservations = resultSet.getInt("num_reservations");
                             double totalPrice = resultSet.getDouble("total_price");
@@ -3766,7 +3770,7 @@ void viewevents(ActionEvent event) {
                         }
 
                         snr.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
-                        psr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
+                        psr.setCellValueFactory(new PropertyValueFactory<>( PRICE_PER_HOUR_COLUMN_NAME));
                         tpsr.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         numbersrr.setCellValueFactory(new PropertyValueFactory<>("numberOfReservations"));
 
@@ -3947,7 +3951,7 @@ void viewevents(ActionEvent event) {
             });
         }
     } catch (SQLException e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
         // Handle SQLException appropriately
     } catch (Exception e) {
    logger.severe(CHECKING_AVAILABLE);
@@ -3999,7 +4003,7 @@ String eventName = r1.getText();
                 }
             }
         } catch (SQLException e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
         } catch (Exception e) {
        logger.severe(CHECKING_AVAILABLE);
         }
@@ -4093,7 +4097,7 @@ logger.severe("Error while checking availability:");
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (Exception e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
         }
     }
 
@@ -4296,7 +4300,7 @@ logger.severe("Error while checking availability:");
             tickettype.setItems(tickets);
         }
     } catch (SQLException e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
     }
     }
 
@@ -4377,7 +4381,7 @@ logger.severe("Error while checking availability:");
     private TableColumn<packge, String> pnameecolumn;
 
   
-  final String PRICE_PER_HOUR_COLUMN = "priceperhour";
+  final String PRICE_PER_HOUR_COLUMN =  PRICE_PER_HOUR_COLUMN_NAME;
       @FXML
     private TextField price;
 
@@ -4443,7 +4447,7 @@ logger.severe("Error while checking availability:");
             tableeee.setItems(data);
         }
     } catch (SQLException e) {
-logger.severe("Error while checking availability:");
+logger.severe(CHECKING_AVAILABLE);
     }
     }
 
