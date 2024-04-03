@@ -4370,8 +4370,10 @@ logger.severe("Error while checking availability:");
     @FXML
     private TableColumn<packge, String> pnameecolumn;
 
-    @FXML
+  
   final String PRICE_PER_HOUR_COLUMN = "priceperhour";
+      @FXML
+    private TextField price;
 
     @FXML
     private TableColumn<packge, Double> priceColumn;
