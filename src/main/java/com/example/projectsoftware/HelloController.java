@@ -99,6 +99,16 @@ private static final String HALL_NAME_COLUMN = "hallname";
    private static final String WINDOW_OPENING_ERROR_MESSAGE = "An error occurred while opening a new window:";
     private static final String PRICE_PER_HOUR_COLUMN_NAME ="pricePerHour" ;
    private static final String IMAGE_DESCRIPTION ="Image Files" ;
+   private static final String DEFAULT_TIME = "16:00:00";
+   private static final String DEFAULT_TIME_1800 ="18:00:00" ;
+   private static final String DEFAULT_TIME_2000 ="20:00:00" ;
+   private static final String HALLS_JOIN_CONDITION = "INNER JOIN software.halls h ON r.hallid = h.hallid";
+   private static final String END_TIME_COLUMN ="endtime" ;
+   private static final String TOTAL_PRICE_COLUMN = "totalprice";
+   private static final String STATE_COLUMN ="state" ;
+ 
+   
+   
 @FXML
 public TextField gmailLogIn;
 private static final Button service = new Button();
@@ -1656,13 +1666,13 @@ private void setPackageInfo(packge selectedPackage) {
 }
 
 private void setupTimeItems() {
-    r9.setItems(FXCollections.observableArrayList("16:00:00", "20:00:00", "18:00:00", "22:00:00", "24:00:00"));
+    r9.setItems(FXCollections.observableArrayList(DEFAULT_TIME,  DEFAULT_TIME_2000, DEFAULT_TIME_1800, "22:00:00", "24:00:00"));
     r9.getSelectionModel().selectFirst();
-    r10.setItems(FXCollections.observableArrayList("16:00:00", "20:00:00", "18:00:00", "22:00:00", "24:00:00"));
+    r10.setItems(FXCollections.observableArrayList(DEFAULT_TIME,  DEFAULT_TIME_2000, DEFAULT_TIME_1800, "22:00:00", "24:00:00"));
     r10.getSelectionModel().selectFirst();
-    choicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
-    servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
-    packagetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
+    choicetime.getItems().addAll(DEFAULT_TIME, DEFAULT_TIME_1800,  DEFAULT_TIME_2000);
+    servicetime.getItems().addAll(DEFAULT_TIME, DEFAULT_TIME_1800,  DEFAULT_TIME_2000);
+    packagetime.getItems().addAll(DEFAULT_TIME, DEFAULT_TIME_1800,  DEFAULT_TIME_2000);
 }
 
 private void prepareCheckReservationStatements() {
@@ -1812,7 +1822,7 @@ logger.severe(CHECKING_AVAILABLE);
     logger.severe(CHECKING_AVAILABLE);
         }
 
-        List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
+        List<String> allTimes = List.of(DEFAULT_TIME, DEFAULT_TIME_1800,  DEFAULT_TIME_2000);
 
         List<String> availableTimesFiltered = allTimes.stream()
                 .filter(time -> !availableTimes.contains(time))
@@ -1887,7 +1897,7 @@ void logoutserviceprovider(ActionEvent event) {
         if (userId != -1) {
             String sql = "SELECT r.reservationid, r.userid, r.hallid, r.date, r.starttime, r.endtime, r.totalprice, r.state " +
                     "FROM software.new_table_name r " +
-                    "INNER JOIN software.halls h ON r.hallid = h.hallid " +
+                   HALLS_JOIN_CONDITION +
                     "WHERE h.userid = ?";
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setInt(1, userId);
@@ -1899,9 +1909,9 @@ void logoutserviceprovider(ActionEvent event) {
                         int hallId = resultSet.getInt(HALL_ID_COLUMN);
                         Date date = resultSet.getDate("date");
                         Time startTime = resultSet.getTime(START_TIME_COLUMN);
-                        Time endTime = resultSet.getTime("endtime");
-                        double totalPrice = resultSet.getDouble("totalprice");
-                        String state = resultSet.getString("state");
+                        Time endTime = resultSet.getTime(END_TIME_COLUMN);
+                        double totalPrice = resultSet.getDouble(TOTAL_PRICE_COLUMN);
+                        String state = resultSet.getString(STATE_COLUMN );
 
                         // Use the builder pattern to create NewReservation objects
                         NewReservation reservation = new NewReservation.Builder(reservationId, userIdd, hallId, date, startTime, endTime)
@@ -1916,9 +1926,9 @@ void logoutserviceprovider(ActionEvent event) {
                     cc3.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
                     cc4.setCellValueFactory(new PropertyValueFactory<>("date"));
                     cc5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
-                    cc6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-                    cc7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
-                    cc8.setCellValueFactory(new PropertyValueFactory<>("state"));
+                    cc6.setCellValueFactory(new PropertyValueFactory<>(END_TIME_COLUMN));
+                    cc7.setCellValueFactory(new PropertyValueFactory<>(TOTAL_PRICE_COLUMN));
+                    cc8.setCellValueFactory(new PropertyValueFactory<>(STATE_COLUMN ));
 
                     ArrayList<NewReservation> items = new ArrayList<>(tabelnotification.getItems());
 
@@ -2042,9 +2052,9 @@ logger.severe(CHECKING_AVAILABLE);
                             String serviceName = resultSet.getString(SERVICE_NAME_COLUMN);
                             Date date = resultSet.getDate("date");
                             Time startTime = resultSet.getTime(START_TIME_COLUMN);
-                            Time endTime = resultSet.getTime("endtime");
-                            double totalPrice = resultSet.getDouble("totalprice");
-                            String state = resultSet.getString("state");
+                            Time endTime = resultSet.getTime(END_TIME_COLUMN);
+                            double totalPrice = resultSet.getDouble(TOTAL_PRICE_COLUMN);
+                            String state = resultSet.getString(STATE_COLUMN );
                             reservations.add(new ReservationInfo(reservationId, userName, hallName, serviceName, date, startTime, endTime, totalPrice, state));
                         }
                         col1.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
@@ -2053,9 +2063,9 @@ logger.severe(CHECKING_AVAILABLE);
                         col4.setCellValueFactory(new PropertyValueFactory<>(SERVICE_NAME_COLUMN));
                         col5.setCellValueFactory(new PropertyValueFactory<>("date"));
                         col6.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
-                        col7.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-                        col8.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
-                        col9.setCellValueFactory(new PropertyValueFactory<>("state"));
+                        col7.setCellValueFactory(new PropertyValueFactory<>(END_TIME_COLUMN));
+                        col8.setCellValueFactory(new PropertyValueFactory<>(TOTAL_PRICE_COLUMN));
+                        col9.setCellValueFactory(new PropertyValueFactory<>(STATE_COLUMN ));
 
 
                         confirmtabel.getItems().clear();
@@ -2351,7 +2361,7 @@ logger.severe(CHECKING_AVAILABLE);
    logger.severe(CHECKING_AVAILABLE);
         }
 
-        List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
+        List<String> allTimes = List.of(DEFAULT_TIME, DEFAULT_TIME_1800,  DEFAULT_TIME_2000);
 
         List<String> availableTimesFiltered = allTimes.stream()
                 .filter(time -> !availableTimes.contains(time))
@@ -2491,7 +2501,7 @@ logger.severe(CHECKING_AVAILABLE);
     logger.severe(CHECKING_AVAILABLE);
         }
 
-        List<String> allTimes = List.of("16:00:00", "18:00:00", "20:00:00");
+        List<String> allTimes = List.of(DEFAULT_TIME, DEFAULT_TIME_1800,  DEFAULT_TIME_2000);
 
         List<String> availableTimesFiltered = allTimes.stream()
                 .filter(time -> !availableTimes.contains(time))
@@ -3392,11 +3402,11 @@ void viewevents(ActionEvent event) {
                                 resultSet.getInt(HALL_ID_COLUMN),
                                 resultSet.getDate("date"),
                                 resultSet.getTime(START_TIME_COLUMN),
-                                resultSet.getTime("endtime")
+                                resultSet.getTime(END_TIME_COLUMN)
                             )
-                            .totalPrice(resultSet.getDouble("totalprice"))
+                            .totalPrice(resultSet.getDouble(TOTAL_PRICE_COLUMN))
                             .serviceId(resultSet.getInt("serviceid"))
-                            .state(resultSet.getString("state"))
+                            .state(resultSet.getString(STATE_COLUMN ))
                             .build();
                         reservationsList.add(reservation);
                     }
@@ -3407,10 +3417,10 @@ void viewevents(ActionEvent event) {
                 e3.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
                 e4.setCellValueFactory(new PropertyValueFactory<>("date"));
                 e5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
-                e6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-                e7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+                e6.setCellValueFactory(new PropertyValueFactory<>(END_TIME_COLUMN));
+                e7.setCellValueFactory(new PropertyValueFactory<>(TOTAL_PRICE_COLUMN));
                 e8.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
-                e9.setCellValueFactory(new PropertyValueFactory<>("state"));
+                e9.setCellValueFactory(new PropertyValueFactory<>(STATE_COLUMN ));
 
                 eventtable.getItems().clear();
                 eventtable.getItems().addAll(reservationsList);
@@ -3541,10 +3551,10 @@ void viewevents(ActionEvent event) {
             cc33.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
             cc44.setCellValueFactory(new PropertyValueFactory<>("date"));
             cc55.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
-            cc66.setCellValueFactory(new PropertyValueFactory<>("endTime"));
-            cc77.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+            cc66.setCellValueFactory(new PropertyValueFactory<>(END_TIME_COLUMN));
+            cc77.setCellValueFactory(new PropertyValueFactory<>(TOTAL_PRICE_COLUMN));
             cc88.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
-            cc99.setCellValueFactory(new PropertyValueFactory<>("state"));
+            cc99.setCellValueFactory(new PropertyValueFactory<>(STATE_COLUMN ));
             adminviewstable.getItems().clear();
             
             // Iterate over the result set
@@ -3555,11 +3565,11 @@ void viewevents(ActionEvent event) {
                         resultSet.getInt(HALL_ID_COLUMN),
                         resultSet.getDate("date"),
                         resultSet.getTime(START_TIME_COLUMN),
-                        resultSet.getTime("endtime")
+                        resultSet.getTime(END_TIME_COLUMN)
                     )
-                    .totalPrice(resultSet.getDouble("totalprice"))
+                    .totalPrice(resultSet.getDouble(TOTAL_PRICE_COLUMN))
                     .serviceId(resultSet.getInt("serviceid"))
-                    .state(resultSet.getString("state"))
+                    .state(resultSet.getString(STATE_COLUMN ))
                     .build();
                 reservationsList.add(reservation);
             }
@@ -3682,7 +3692,7 @@ void viewevents(ActionEvent event) {
 
                         hnr.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
                         phr.setCellValueFactory(new PropertyValueFactory<>( PRICE_PER_HOUR_COLUMN_NAME));
-                        tphr.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+                        tphr.setCellValueFactory(new PropertyValueFactory<>(TOTAL_PRICE_COLUMN));
                         numberhr.setCellValueFactory(new PropertyValueFactory<>("numberOfReservations"));
 
                         hallreport.setItems(hallData);
@@ -3724,7 +3734,7 @@ void viewevents(ActionEvent event) {
 
                         snr.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
                         psr.setCellValueFactory(new PropertyValueFactory<>( PRICE_PER_HOUR_COLUMN_NAME));
-                        tpsr.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
+                        tpsr.setCellValueFactory(new PropertyValueFactory<>(TOTAL_PRICE_COLUMN));
                         numbersrr.setCellValueFactory(new PropertyValueFactory<>("numberOfReservations"));
 
                         servicereport.setItems(serviceData);
