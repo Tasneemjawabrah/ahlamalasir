@@ -88,6 +88,9 @@ public class HelloController {
    private static final String INVALID_CREDENTIALS_MESSAGE = "Invalid email or password.";
    private static final String CAPACITY_COLUMN = "capacity";
     private static final String START_TIME_COLUMN = "starttime";
+   private static final String SELECT_HALL_ID_QUERY = "SELECT hallid FROM software.halls WHERE hallname = ?";
+   private static final String SELECT_USER_ID_QUERY = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
+  private static final String RESERVATION_ID_COLUMN = "reservationid";
  
 @FXML
 public TextField gmailLogIn;
@@ -586,7 +589,7 @@ private static final String HALL_ID_COLUMN = "hallid";
 
     private int gettHallId(String hallName, Connection  connectionDB) {
        int hallId = 0;
-    try (PreparedStatement statement =  connectionDB.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?")) {
+    try (PreparedStatement statement =  connectionDB.prepareStatement(SELECT_HALL_ID_QUERY)) {
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
@@ -600,7 +603,7 @@ private static final String HALL_ID_COLUMN = "hallid";
     }
 
     private int getUserId(String email, String password, Connection  connectionDB) throws SQLException {
-      String sql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
+      String sql = SELECT_USER_ID_QUERY;
     try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
         statement.setString(1, email);
         statement.setString(2, password);
@@ -693,7 +696,7 @@ private static final String HALL_ID_COLUMN = "hallid";
 
 
    private void updateTotalPrice(String email, String password, double additionalPrice) {
-    String getUserSql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
+    String getUserSql = SELECT_USER_ID_QUERY;
     String getReservationsSql = "SELECT reservationid FROM software.reservations WHERE userid = ?";
     String updateReservationSql = "UPDATE software.reservations SET totalprice = totalprice + ? WHERE reservationid = ?";
     
@@ -715,7 +718,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             updateReservationStatement.setDouble(1, additionalPrice);
             
             while (reservationsResultSet.next()) {
-                int reservationId = reservationsResultSet.getInt("reservationid");
+                int reservationId = reservationsResultSet.getInt(RESERVATION_ID_COLUMN);
                 updateReservationStatement.setInt(2, reservationId);
                 int rowsAffected = updateReservationStatement.executeUpdate();
                 
@@ -1789,7 +1792,7 @@ logger.severe(CHECKING_AVAILABLE);
     String hallName = newhallname.getText();
     int hallId = 0;
     try (Connection connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-         PreparedStatement statement =  connectionDB.prepareStatement("SELECT hallid FROM software.halls WHERE hallname = ?")) {
+         PreparedStatement statement =  connectionDB.prepareStatement(SELECT_HALL_ID_QUERY)) {
         
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
@@ -1933,7 +1936,7 @@ void logoutserviceprovider(ActionEvent event) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     ArrayList<NewReservation> reservations = new ArrayList<>();
                     while (resultSet.next()) {
-                        int reservationId = resultSet.getInt("reservationid");
+                        int reservationId = resultSet.getInt(RESERVATION_ID_COLUMN);
                         int userIdd = resultSet.getInt(USER_ID_COLUMN);
                         int hallId = resultSet.getInt("hallid");
                         Date date = resultSet.getDate("date");
@@ -1950,7 +1953,7 @@ void logoutserviceprovider(ActionEvent event) {
                         reservations.add(reservation);
                     }
 
-                    cc1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
+                    cc1.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
                     cc2.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
                     cc3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
                     cc4.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -2075,7 +2078,7 @@ logger.severe(CHECKING_AVAILABLE);
                     try (ResultSet resultSet = statement.executeQuery()) {
                         ArrayList<ReservationInfo> reservations = new ArrayList<>();
                         while (resultSet.next()) {
-                            int reservationId = resultSet.getInt("reservationid");
+                            int reservationId = resultSet.getInt(RESERVATION_ID_COLUMN);
                             String userName = resultSet.getString("username");
                             String hallName = resultSet.getString("hallname");
                             String serviceName = resultSet.getString("servicename");
@@ -2086,7 +2089,7 @@ logger.severe(CHECKING_AVAILABLE);
                             String state = resultSet.getString("state");
                             reservations.add(new ReservationInfo(reservationId, userName, hallName, serviceName, date, startTime, endTime, totalPrice, state));
                         }
-                        col1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
+                        col1.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
                         col2.setCellValueFactory(new PropertyValueFactory<>("userName"));
                         col3.setCellValueFactory(new PropertyValueFactory<>("hallName"));
                         col4.setCellValueFactory(new PropertyValueFactory<>("serviceName"));
@@ -2148,7 +2151,7 @@ logger.severe(CHECKING_AVAILABLE);
 
     private int getHallId(String hallName, Connection conn) throws SQLException {
         int hallId = -1;
-        String query = "SELECT hallid FROM software.halls WHERE hallname = ?";
+        String query = SELECT_HALL_ID_QUERY;
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, hallName);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -2263,7 +2266,7 @@ logger.severe(CHECKING_AVAILABLE);
 
     private int getHallIdFromHallName(String hallName, Connection conn) throws SQLException {
         int hallId = -1;
-        String query = "SELECT hallid FROM software.halls WHERE hallname = ?";
+        String query = SELECT_HALL_ID_QUERY;
 
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, hallName);
@@ -2608,7 +2611,7 @@ logger.severe("Error while checking availability:");
     }
 
     private int getUserIdd(String email, String password, Connection connection) throws SQLException {
-        String sql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
+        String sql = SELECT_USER_ID_QUERY;
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, email);
             statement.setString(2, password);
@@ -3426,7 +3429,7 @@ void viewevents(ActionEvent event) {
                 try (ResultSet resultSet = statement.executeQuery()) {
                     while (resultSet.next()) {
                         Reservation reservation = new Reservation.ReservationBuilder(
-                                resultSet.getInt("reservationid"),
+                                resultSet.getInt(RESERVATION_ID_COLUMN),
                                 resultSet.getInt(USER_ID_COLUMN),
                                 resultSet.getInt("hallid"),
                                 resultSet.getDate("date"),
@@ -3441,7 +3444,7 @@ void viewevents(ActionEvent event) {
                     }
                 }
 
-                e1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
+                e1.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
                 e2.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
                 e3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
                 e4.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -3575,7 +3578,7 @@ void viewevents(ActionEvent event) {
              ResultSet resultSet = statement.executeQuery()) {
             
             // Setup cell value factories and clear existing items from TableView
-            cc11.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
+            cc11.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
             cc22.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
             cc33.setCellValueFactory(new PropertyValueFactory<>("hallId"));
             cc44.setCellValueFactory(new PropertyValueFactory<>("date"));
@@ -3589,7 +3592,7 @@ void viewevents(ActionEvent event) {
             // Iterate over the result set
             while (resultSet.next()) {
                 Reservation reservation = new Reservation.ReservationBuilder(
-                        resultSet.getInt("reservationid"),
+                        resultSet.getInt(RESERVATION_ID_COLUMN),
                         resultSet.getInt(USER_ID_COLUMN),
                         resultSet.getInt("hallid"),
                         resultSet.getDate("date"),
