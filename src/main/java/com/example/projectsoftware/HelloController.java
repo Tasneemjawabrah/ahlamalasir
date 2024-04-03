@@ -84,7 +84,7 @@ public class HelloController {
  private static final String HELLO_VIEW_FXML ="hello-view.fxml";
  private static final String USER_PRINT ="User not found!";
     private static final String LOCATION_1= "location";
-   private static final String CHECKING_AVAILABLE= CHECKING_AVAILABLE;
+   private static final String CHECKING_AVAILABLE= "Error while checking availability:";
    private static final String INVALID_CREDENTIALS_MESSAGE ="Invalid email or password." ;
    private static final String CAPACITY_COLUMN = "capacity";
     private static final String START_TIME_COLUMN = "starttime";
