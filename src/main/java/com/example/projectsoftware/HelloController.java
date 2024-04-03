@@ -106,6 +106,12 @@ private static final String HALL_NAME_COLUMN = "hallname";
    private static final String END_TIME_COLUMN ="endtime" ;
    private static final String TOTAL_PRICE_COLUMN = "totalprice";
    private static final String STATE_COLUMN ="state" ;
+   private static final String UPDATE_RESERVATION_SQL = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
+   private static final String ACCEPTED_STATE ="accepted" ;
+   private static final String GET_SERVICE_ID_SQL ="SELECT serviceid FROM software.services WHERE servicename = ?";
+   private static final String SERVICE_ID_COLUMN =  "serviceid";
+   
+
  
    
    
@@ -1949,9 +1955,9 @@ logger.severe(CHECKING_AVAILABLE);
         ObservableList<NewReservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            String sql = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
+            String sql = UPDATE_RESERVATION_SQL;
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
-                statement.setString(1, "accepted");
+                statement.setString(1, ACCEPTED_STATE );
                 for (NewReservation reservation : selectedReservations) {
                     statement.setInt(2, reservation.getReservationId());
 
@@ -1973,7 +1979,7 @@ logger.severe(CHECKING_AVAILABLE);
         ObservableList<NewReservation> selectedReservations = tabelnotification.getSelectionModel().getSelectedItems();
 
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            String sql = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
+            String sql = UPDATE_RESERVATION_SQL;
             try (PreparedStatement statement = conn.prepareStatement(sql)) {
                 statement.setString(1, "rejected");
                 for (NewReservation reservation : selectedReservations) {
@@ -2086,7 +2092,7 @@ logger.severe(CHECKING_AVAILABLE);
     void confirnation(ActionEvent event) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
             ReservationInfo selectedReservation = confirmtabel.getSelectionModel().getSelectedItem();
-            if (selectedReservation != null && selectedReservation.getState().equals("accepted")) {
+            if (selectedReservation != null && selectedReservation.getState().equals(ACCEPTED_STATE )) {
                 int hallId = getHallId(selectedReservation.getHallName(), conn);
                 if (hallId != -1) {
                     String query = "INSERT INTO software.reservations (reservationid,userid, hallid, date, starttime, endtime, totalprice, serviceid, state) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)";
@@ -2133,7 +2139,7 @@ logger.severe(CHECKING_AVAILABLE);
 
     private int getServiceId(String serviceName, Connection conn) throws SQLException {
         int serviceId = -1;
-        String query = "SELECT serviceid FROM software.services WHERE servicename = ?";
+        String query = GET_SERVICE_ID_SQL ;
         try (PreparedStatement statement = conn.prepareStatement(query)) {
             statement.setString(1, serviceName);
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -2165,7 +2171,7 @@ logger.severe(CHECKING_AVAILABLE);
                             showAlert("No reservation found with ID: " + selectedReservation.getReservationId());
                         }
                     }
-                } else if (selectedReservation.getState().equals("accepted")) {
+                } else if (selectedReservation.getState().equals(ACCEPTED_STATE )) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                     alert.setTitle("Confirm Delete");
                     alert.setHeaderText(null);
@@ -2458,7 +2464,7 @@ logger.severe(CHECKING_AVAILABLE);
      String hallName = lb9.getText();
     int hallId = 0;
     try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-         PreparedStatement statement =  connectionDB.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
+         PreparedStatement statement =  connectionDB.prepareStatement(GET_SERVICE_ID_SQL )) {
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
@@ -2565,7 +2571,7 @@ logger.severe(CHECKING_AVAILABLE);
 
     private int gettHallIdd(String hallName, Connection  connectionDB) {
        int hallId = 0;
-    try (PreparedStatement statement = connectionDB.prepareStatement("SELECT serviceid FROM software.services WHERE servicename = ?")) {
+    try (PreparedStatement statement = connectionDB.prepareStatement(GET_SERVICE_ID_SQL )) {
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
@@ -3293,7 +3299,7 @@ logger.severe(CHECKING_AVAILABLE);
                     return;
                 }
                 int reservationId = selectedReservation.getReservationId();
-                if (selectedReservation.getState().equals("accepted")) {
+                if (selectedReservation.getState().equals(ACCEPTED_STATE )) {
                     String updateQuery = "UPDATE software.reservations SET state = 'deleted', totalprice = 0 WHERE reservationid = ?";
                     try (PreparedStatement updateStatement = conn.prepareStatement(updateQuery)) {
                         updateStatement.setInt(1, reservationId);
@@ -3328,7 +3334,7 @@ logger.severe(CHECKING_AVAILABLE);
     }
 
     private void updateStateInNewTableName(Connection conn, int reservationId, String state) throws SQLException {
-        String updateQuery = "UPDATE software.new_table_name SET state = ? WHERE reservationid = ?";
+        String updateQuery = UPDATE_RESERVATION_SQL;
         try (PreparedStatement updateStatement = conn.prepareStatement(updateQuery)) {
             updateStatement.setString(1, state);
             updateStatement.setInt(2, reservationId);
@@ -3957,7 +3963,7 @@ String eventName = r1.getText();
                     reservationStatement.setTime(4, Time.valueOf(r9.getValue()));
                     reservationStatement.setTime(5, Time.valueOf(r10.getValue()));
                     reservationStatement.setBigDecimal(6, BigDecimal.valueOf(0));
-                    reservationStatement.setString(7, "accepted");
+                    reservationStatement.setString(7, ACCEPTED_STATE );
                     reservationStatement.setInt(8, eventId);
                     int reservationRowsInserted = reservationStatement.executeUpdate();
                     if (reservationRowsInserted > 0) {
