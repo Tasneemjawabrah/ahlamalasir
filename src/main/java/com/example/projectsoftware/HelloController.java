@@ -499,7 +499,7 @@ void backktoallhalls(ActionEvent event) {
 
     @FXML
     private void select(ActionEvent event) {
-    final String PRICE_PER_HOUR_COLUMN = "priceperhour";
+    
 
         String query = "SELECT capacity, location, priceperhour FROM software.halls WHERE hallname = 'Rose'";
 
@@ -4371,7 +4371,7 @@ logger.severe("Error while checking availability:");
     private TableColumn<packge, String> pnameecolumn;
 
     @FXML
-    private TextField price;
+  final String PRICE_PER_HOUR_COLUMN = "priceperhour";
 
     @FXML
     private TableColumn<packge, Double> priceColumn;
