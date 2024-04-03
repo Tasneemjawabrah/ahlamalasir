@@ -115,6 +115,8 @@ private static final String HALL_NAME_COLUMN = "hallname";
    private static final String DESCRIPTION_COLUMN = "description";
    private static final String IMAGE_COLUMN ="image" ;
    private static final String SERVICE_ID_COLUMNNN = "serviceId";
+   private static final String PNG_EXTENSION = "*.png" ;
+   private static final String JPG_EXTENSION = "*.jpg";
 
 
    
@@ -1349,7 +1351,7 @@ logger.severe(CHECKING_AVAILABLE);
     try {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION , "*.png", "*.jpg", "*.jpeg")
+                new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION ,PNG_EXTENSION, JPG_EXTENSION, "*.jpeg")
         );
         File selectedFile = fileChooser.showOpenDialog(saveadmiv.getScene().getWindow());
         if (selectedFile != null) {
@@ -1391,7 +1393,7 @@ logger.severe(CHECKING_AVAILABLE);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Image File");
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION , "*.png", "*.jpg", "*.gif")
+                new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION ,PNG_EXTENSION, JPG_EXTENSION, "*.gif")
         );
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
@@ -2161,81 +2163,91 @@ logger.severe(CHECKING_AVAILABLE);
 
     @FXML
     void deletestate(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            ReservationInfo selectedReservation = confirmtabel.getSelectionModel().getSelectedItem();
-            if (selectedReservation != null) {
-                if (selectedReservation.getState().equals(DELETED_STATE)) {
-                    showAlert("This reservation is already deleted.");
-                    return;
-                }
-                if (selectedReservation.getState().equals("wait")) {
-                    String query = "DELETE FROM software.new_table_name WHERE reservationid = ?";
-                    try (PreparedStatement statement = conn.prepareStatement(query)) {
-                        statement.setInt(1, selectedReservation.getReservationId());
-                        int rowsAffected = statement.executeUpdate();
-                        if (rowsAffected > 0) {
-                            showAlert("Data deleted successfully");
-                        } else {
-                            showAlert("No reservation found with ID: " + selectedReservation.getReservationId());
-                        }
-                    }
-                } else if (selectedReservation.getState().equals(ACCEPTED_STATE )) {
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                    alert.setTitle("Confirm Delete");
-                    alert.setHeaderText(null);
-                    alert.setContentText("Are you sure you want to delete this reservation? 10% will be deducted from the price.");
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        ReservationInfo selectedReservation = confirmtabel.getSelectionModel().getSelectedItem();
 
-                    ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-                    ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        if (selectedReservation == null) {
+            showAlert("No reservation selected.");
+            return;
+        }
 
-                    alert.getButtonTypes().setAll(okButton, cancelButton);
+        if (selectedReservation.getState().equals(DELETED_STATE)) {
+            showAlert("This reservation is already deleted.");
+            return;
+        }
 
-                    Optional<ButtonType> result = alert.showAndWait();
-                    if (result.isPresent() && result.get() == okButton) {
-                        double newPrice = selectedReservation.getTotalPrice() * 0.1;
-                        String insertQuery = "INSERT INTO software.reservations (reservationid, userid, hallid, date, starttime, endtime, totalprice, serviceid, state) " +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                        try (PreparedStatement insertStatement = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+        if (selectedReservation.getState().equals("wait")) {
+            deleteWaitReservation(selectedReservation, conn);
+        } else if (selectedReservation.getState().equals(ACCEPTED_STATE)) {
+            confirmDeleteReservation(selectedReservation, conn);
+        }
+    } catch (SQLException e) {
+        logger.severe(CHECKING_AVAILABLE);
+        showAlert("An error occurred while connecting to the database.");
+    }
+}
 
-                            int userId = getUserIdFromUserName(selectedReservation.getUserName(), conn);
+private void deleteWaitReservation(ReservationInfo selectedReservation, Connection conn) throws SQLException {
+    String query = "DELETE FROM software.new_table_name WHERE reservationid = ?";
+    try (PreparedStatement statement = conn.prepareStatement(query)) {
+        statement.setInt(1, selectedReservation.getReservationId());
+        int rowsAffected = statement.executeUpdate();
 
-                            int hallId = getHallIdFromHallName(selectedReservation.getHallName(), conn);
-                            int reservationId = selectedReservation.getReservationId();
-                            insertStatement.setInt(1, reservationId);
-                            insertStatement.setInt(2, userId);
-                            insertStatement.setInt(3, hallId);
-                            insertStatement.setDate(4, (Date) selectedReservation.getDate());
-                            insertStatement.setTime(5, selectedReservation.getStartTime());
-                            insertStatement.setTime(6, selectedReservation.getEndTime());
-                            insertStatement.setDouble(7, newPrice);
-                            insertStatement.setInt(8, selectedReservation.getServiceId());
-                            insertStatement.setString(9, DELETED_STATE);
-
-                            int rowsInserted = insertStatement.executeUpdate();
-                            if (rowsInserted > 0) {
-                                showAlert("Reservation deleted. New price: " + newPrice);
-                                String updateQuery = "UPDATE software.new_table_name SET state = 'deleted' WHERE reservationid = ?";
-                                try (PreparedStatement updateStatement = conn.prepareStatement(updateQuery)) {
-                                    updateStatement.setInt(1, reservationId);
-                                    updateStatement.executeUpdate();
-                                }
-                            } else {
-                                showAlert("Failed to insert reservation into the database.");
-                            }
-                        } catch (SQLException e) {
-                 logger.severe(CHECKING_AVAILABLE);
-                            showAlert("An error occurred while deleting reservation.");
-                        }
-                    }
-                }
-            } else {
-                showAlert("No reservation selected.");
-            }
-        } catch (SQLException e) {
-   logger.severe(CHECKING_AVAILABLE);
-            showAlert("An error occurred while connecting to the database.");
+        if (rowsAffected > 0) {
+            showAlert("Data deleted successfully");
+        } else {
+            showAlert("No reservation found with ID: " + selectedReservation.getReservationId());
         }
     }
+}
+
+private void confirmDeleteReservation(ReservationInfo selectedReservation, Connection conn) {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setTitle("Confirm Delete");
+    alert.setHeaderText(null);
+    alert.setContentText("Are you sure you want to delete this reservation? 10% will be deducted from the price.");
+    ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+    ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+    alert.getButtonTypes().setAll(okButton, cancelButton);
+    Optional<ButtonType> result = alert.showAndWait();
+
+    if (result.isPresent() && result.get() == okButton) {
+        double newPrice = selectedReservation.getTotalPrice() * 0.1;
+        try {
+            int userId = getUserIdFromUserName(selectedReservation.getUserName(), conn);
+            int hallId = getHallIdFromHallName(selectedReservation.getHallName(), conn);
+            int reservationId = selectedReservation.getReservationId();
+            String insertQuery = "INSERT INTO software.reservations (reservationid, userid, hallid, date, starttime, endtime, totalprice, serviceid, state) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement insertStatement = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)) {
+                insertStatement.setInt(1, reservationId);
+                insertStatement.setInt(2, userId);
+                insertStatement.setInt(3, hallId);
+                insertStatement.setDate(4, (Date) selectedReservation.getDate());
+                insertStatement.setTime(5, selectedReservation.getStartTime());
+                insertStatement.setTime(6, selectedReservation.getEndTime());
+                insertStatement.setDouble(7, newPrice);
+                insertStatement.setInt(8, selectedReservation.getServiceId());
+                insertStatement.setString(9, DELETED_STATE);
+                int rowsInserted = insertStatement.executeUpdate();
+
+                if (rowsInserted > 0) {
+                    showAlert("Reservation deleted. New price: " + newPrice);
+                    String updateQuery = "UPDATE software.new_table_name SET state = 'deleted' WHERE reservationid = ?";
+                    try (PreparedStatement updateStatement = conn.prepareStatement(updateQuery)) {
+                        updateStatement.setInt(1, reservationId);
+                        updateStatement.executeUpdate();
+                    }
+                } else {
+                    showAlert("Failed to insert reservation into the database.");
+                }
+            }
+        } catch (SQLException e) {
+            logger.severe(CHECKING_AVAILABLE);
+            showAlert("An error occurred while deleting reservation.");
+        }
+    }
+}
 
     private int getUserIdFromUserName(String userName, Connection  connectionDB) throws SQLException {
         String sql = "SELECT userid FROM software.users WHERE username = ?";
@@ -2313,7 +2325,7 @@ logger.severe(CHECKING_AVAILABLE);
 
     @FXML
     void cancleservice(javafx.event.ActionEvent event) {
-
+ logger.severe(CHECKING_AVAILABLE);
     }
 
 
@@ -3136,47 +3148,52 @@ logger.severe(CHECKING_AVAILABLE);
     }
 
     @FXML
-    void editserr(ActionEvent event) {
-        String serviceName = sernametxt.getText();
+   void editserr(ActionEvent event) {
+    String serviceName = sernametxt.getText();
     String description = serdes.getText();
     String price = serpricetxt.getText();
     String location = seridtxt.getText();
-    String query;
-    if (!serviceName.isEmpty() && !description.isEmpty() && !price.isEmpty() && !location.isEmpty()) {
-        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            int id = getSelectedItemId();
-            if (id != -1) {
-                if (description.equalsIgnoreCase("hall")) {
-                    query = "UPDATE software.halls SET hallname = ?, priceperhour = ? WHERE hallid = ?";
-                } else if (description.equalsIgnoreCase("service")) {
-                    query = "UPDATE software.services SET servicename = ?, price = ? WHERE serviceid = ?";
-                } else {
-                    showAlert("Invalid description");
-                    return;
-                }
-                try (PreparedStatement statement = connection.prepareStatement(query)) {
-                    statement.setString(1, serviceName);
-                    statement.setBigDecimal(2, new BigDecimal(price));
-                    statement.setInt(3, id);
-                    int rowsAffected = statement.executeUpdate();
-                    if (rowsAffected > 0) {
-                        showAlert("Data updated successfully");
-                    } else {
-                        showAlert("Failed to update data");
-                    }
-                }
-            } else {
-                showAlert("Please select a row");
-            }
-        } catch (SQLException e) {
- logger.severe(CHECKING_AVAILABLE);
-            showAlert("Error: " + e.getMessage());
-        }
-    } else {
+
+    if (serviceName.isEmpty() || description.isEmpty() || price.isEmpty() || location.isEmpty()) {
         showAlert("Please fill in all fields");
-    }
+        return;
     }
 
+    try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        int id = getSelectedItemId();
+
+        if (id == -1) {
+            showAlert("Please select a row");
+            return;
+        }
+
+        String query;
+        if (description.equalsIgnoreCase("hall")) {
+            query = "UPDATE software.halls SET hallname = ?, priceperhour = ? WHERE hallid = ?";
+        } else if (description.equalsIgnoreCase("service")) {
+            query = "UPDATE software.services SET servicename = ?, price = ? WHERE serviceid = ?";
+        } else {
+            showAlert("Invalid description");
+            return;
+        }
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, serviceName);
+            statement.setBigDecimal(2, new BigDecimal(price));
+            statement.setInt(3, id);
+            int rowsAffected = statement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                showAlert("Data updated successfully");
+            } else {
+                showAlert("Failed to update data");
+            }
+        }
+    } catch (SQLException e) {
+        logger.severe(CHECKING_AVAILABLE);
+        showAlert("Error: " + e.getMessage());
+    }
+}
     private int getSelectedItemId() {
         int selectedIndex = serviceviewtable.getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
@@ -3219,7 +3236,7 @@ logger.severe(CHECKING_AVAILABLE);
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Choose Image File");
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION , "*.png", "*.jpg", "*.jpeg");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(IMAGE_DESCRIPTION ,PNG_EXTENSION, JPG_EXTENSION, "*.jpeg");
         fileChooser.getExtensionFilters().add(extFilter);
 
         File selectedFile = fileChooser.showOpenDialog(s1.getScene().getWindow());
@@ -3302,48 +3319,64 @@ logger.severe(CHECKING_AVAILABLE);
 
 
     @FXML
-    void deleteevents(ActionEvent event) {
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
-            Reservation selectedReservation = eventtable.getSelectionModel().getSelectedItem();
-            if (selectedReservation != null) {
-                if (selectedReservation.getState().equals(DELETED_STATE)) {
-                    showAlert("This reservation is already deleted.");
-                    return;
-                }
-                int reservationId = selectedReservation.getReservationId();
-                if (selectedReservation.getState().equals(ACCEPTED_STATE )) {
-                    String updateQuery = "UPDATE software.reservations SET state = 'deleted', totalprice = 0 WHERE reservationid = ?";
-                    try (PreparedStatement updateStatement = conn.prepareStatement(updateQuery)) {
-                        updateStatement.setInt(1, reservationId);
-                        int rowsUpdated = updateStatement.executeUpdate();
-                        if (rowsUpdated > 0) {
-                            showAlert("Reservation successfully deleted.");
-                            updateStateInNewTableName(conn, reservationId, DELETED_STATE);
-                        } else {
-                            showAlert("Failed to update reservation state.");
-                        }
-                    }
-                } else if (selectedReservation.getState().equals("wait")) {
-                    String deleteQuery = "DELETE FROM software.reservations WHERE reservationid = ?";
-                    try (PreparedStatement deleteStatement = conn.prepareStatement(deleteQuery)) {
-                        deleteStatement.setInt(1, reservationId);
-                        int rowsDeleted = deleteStatement.executeUpdate();
-                        if (rowsDeleted > 0) {
-                            showAlert("Reservation successfully deleted.");
-                            updateStateInNewTableName(conn, reservationId, DELETED_STATE);
-                        } else {
-                            showAlert("Failed to delete reservation.");
-                        }
-                    }
-                }
-            } else {
-                showAlert("No reservation selected.");
-            }
-        } catch (SQLException e) {
-   logger.severe(CHECKING_AVAILABLE);
-            showAlert("An error occurred while connecting to the database.");
+void deleteevents(ActionEvent event) {
+    try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment())) {
+        Reservation selectedReservation = eventtable.getSelectionModel().getSelectedItem();
+
+        if (selectedReservation == null) {
+            showAlert("No reservation selected.");
+            return;
+        }
+
+        if (selectedReservation.getState().equals(DELETED_STATE)) {
+            showAlert("This reservation is already deleted.");
+            return;
+        }
+
+        int reservationId = selectedReservation.getReservationId();
+
+        if (selectedReservation.getState().equals(ACCEPTED_STATE)) {
+            updateReservationState(conn, reservationId, "deleted", 0);
+        } else if (selectedReservation.getState().equals("wait")) {
+            deleteReservation(conn, reservationId);
+        }
+    } catch (SQLException e) {
+        logger.severe(CHECKING_AVAILABLE);
+        showAlert("An error occurred while connecting to the database.");
+    }
+}
+
+private void updateReservationState(Connection conn, int reservationId, String state, double totalPrice) throws SQLException {
+    String updateQuery = "UPDATE software.reservations SET state = ?, totalprice = ? WHERE reservationid = ?";
+    try (PreparedStatement updateStatement = conn.prepareStatement(updateQuery)) {
+        updateStatement.setString(1, state);
+        updateStatement.setDouble(2, totalPrice);
+        updateStatement.setInt(3, reservationId);
+        int rowsUpdated = updateStatement.executeUpdate();
+
+        if (rowsUpdated > 0) {
+            showAlert("Reservation successfully deleted.");
+            updateStateInNewTableName(conn, reservationId, state);
+        } else {
+            showAlert("Failed to update reservation state.");
         }
     }
+}
+
+private void deleteReservation(Connection conn, int reservationId) throws SQLException {
+    String deleteQuery = "DELETE FROM software.reservations WHERE reservationid = ?";
+    try (PreparedStatement deleteStatement = conn.prepareStatement(deleteQuery)) {
+        deleteStatement.setInt(1, reservationId);
+        int rowsDeleted = deleteStatement.executeUpdate();
+
+        if (rowsDeleted > 0) {
+            showAlert("Reservation successfully deleted.");
+            updateStateInNewTableName(conn, reservationId, DELETED_STATE);
+        } else {
+            showAlert("Failed to delete reservation.");
+        }
+    }
+}
 
     private void updateStateInNewTableName(Connection conn, int reservationId, String state) throws SQLException {
         String updateQuery = UPDATE_RESERVATION_SQL;
