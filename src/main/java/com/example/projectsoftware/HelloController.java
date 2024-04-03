@@ -85,13 +85,14 @@ public class HelloController {
  private static final String USER_PRINT ="User not found!";
     private static final String LOCATION_1= "location";
    private static final String CHECKING_AVAILABLE= "Error while checking availability:";
-   private static final String INVALID_CREDENTIALS_MESSAGE = "Invalid email or password.";
+   private static final String INVALID_CREDENTIALS_MESSAGE ="Invalid email or password." ;
    private static final String CAPACITY_COLUMN = "capacity";
     private static final String START_TIME_COLUMN = "starttime";
    private static final String SELECT_HALL_ID_QUERY = "SELECT hallid FROM software.halls WHERE hallname = ?";
    private static final String SELECT_USER_ID_QUERY = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
   private static final String RESERVATION_ID_COLUMN = "reservationid";
- 
+   private static final String BOOKING_FAILED_MESSAGE ="Failed to book the hall. Please try again later.";
+private static final String HALL_NAME_COLUMN = "hallname";
 @FXML
 public TextField gmailLogIn;
 private static final Button service = new Button();
@@ -558,7 +559,7 @@ final String WAIT_ACCEPT_MESSAGE = "Wait owner to accept your reservation.";
             int userId = getUserId(UserCredentials.getEmail(), UserCredentials.getPassword(),  connectionDB);
 
             if (userId == -1) {
-                showAlert("Invalid email or password.");
+                showAlert(INVALID_CREDENTIALS_MESSAGE);
                 return;
             }
             int hallId = gettHallId(hallName,  connectionDB);
@@ -581,7 +582,7 @@ final String WAIT_ACCEPT_MESSAGE = "Wait owner to accept your reservation.";
             showAlert(WAIT_ACCEPT_MESSAGE);
         } catch (SQLException e) {
   logger.severe(CHECKING_AVAILABLE);
-            showAlert("Failed to book the hall. Please try again later.");
+            showAlert(BOOKING_FAILED_MESSAGE);
         }
     }
     
@@ -593,7 +594,7 @@ private static final String HALL_ID_COLUMN = "hallid";
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
-                hallId = resultSet.getInt("hallid");
+                hallId = resultSet.getInt(HALL_ID_COLUMN);
             }
         }
     } catch (SQLException e) {
@@ -959,7 +960,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             statement.setDouble(1, budget * hallPercentage / 100);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                halls.add(resultSet.getString("hallname"));
+                halls.add(resultSet.getString(HALL_NAME_COLUMN));
             }
         }
         return halls;
@@ -1171,8 +1172,8 @@ private static final String HALL_ID_COLUMN = "hallid";
 
     @FXML
     void deletehalls(ActionEvent event) {
-        hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
-    hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
+        hallidd.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
+    hallnamee.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
     capacityyy.setCellValueFactory(new PropertyValueFactory<>( CAPACITY_COLUMN));
     priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
     locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
@@ -1203,8 +1204,8 @@ private static final String HALL_ID_COLUMN = "hallid";
         return;
     }
     
-    hallidd.setCellValueFactory(new PropertyValueFactory<>("hallId"));
-    hallnamee.setCellValueFactory(new PropertyValueFactory<>("hallName"));
+    hallidd.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
+    hallnamee.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
     capacityyy.setCellValueFactory(new PropertyValueFactory<>( CAPACITY_COLUMN));
     priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
     locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
@@ -1219,8 +1220,8 @@ private static final String HALL_ID_COLUMN = "hallid";
         ObservableList<Hall> halls = FXCollections.observableArrayList();
         
         while (resultSet.next()) {
-            int hallId = resultSet.getInt("hallid");
-            String hallName = resultSet.getString("hallname");
+            int hallId = resultSet.getInt(HALL_ID_COLUMN);
+            String hallName = resultSet.getString(HALL_NAME_COLUMN);
             int capacity = resultSet.getInt( CAPACITY_COLUMN);
             double pricePerHour = resultSet.getDouble(PRICE_PER_HOUR_COLUMN );
             String location = resultSet.getString(LOCATION_1);
@@ -1797,7 +1798,7 @@ logger.severe(CHECKING_AVAILABLE);
         statement.setString(1, hallName);
         try (ResultSet resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
-                hallId = resultSet.getInt("hallid");
+                hallId = resultSet.getInt(HALL_ID_COLUMN);
             }
         }
         
@@ -1938,7 +1939,7 @@ void logoutserviceprovider(ActionEvent event) {
                     while (resultSet.next()) {
                         int reservationId = resultSet.getInt(RESERVATION_ID_COLUMN);
                         int userIdd = resultSet.getInt(USER_ID_COLUMN);
-                        int hallId = resultSet.getInt("hallid");
+                        int hallId = resultSet.getInt(HALL_ID_COLUMN);
                         Date date = resultSet.getDate("date");
                         Time startTime = resultSet.getTime(START_TIME_COLUMN);
                         Time endTime = resultSet.getTime("endtime");
@@ -1955,7 +1956,7 @@ void logoutserviceprovider(ActionEvent event) {
 
                     cc1.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
                     cc2.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
-                    cc3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
+                    cc3.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
                     cc4.setCellValueFactory(new PropertyValueFactory<>("date"));
                     cc5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
                     cc6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
@@ -2080,7 +2081,7 @@ logger.severe(CHECKING_AVAILABLE);
                         while (resultSet.next()) {
                             int reservationId = resultSet.getInt(RESERVATION_ID_COLUMN);
                             String userName = resultSet.getString("username");
-                            String hallName = resultSet.getString("hallname");
+                            String hallName = resultSet.getString(HALL_NAME_COLUMN);
                             String serviceName = resultSet.getString("servicename");
                             Date date = resultSet.getDate("date");
                             Time startTime = resultSet.getTime(START_TIME_COLUMN);
@@ -2091,7 +2092,7 @@ logger.severe(CHECKING_AVAILABLE);
                         }
                         col1.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
                         col2.setCellValueFactory(new PropertyValueFactory<>("userName"));
-                        col3.setCellValueFactory(new PropertyValueFactory<>("hallName"));
+                        col3.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
                         col4.setCellValueFactory(new PropertyValueFactory<>("serviceName"));
                         col5.setCellValueFactory(new PropertyValueFactory<>("date"));
                         col6.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
@@ -2156,7 +2157,7 @@ logger.severe(CHECKING_AVAILABLE);
             statement.setString(1, hallName);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    hallId = resultSet.getInt("hallid");
+                    hallId = resultSet.getInt(HALL_ID_COLUMN);
                 }
             }
         }
@@ -2273,7 +2274,7 @@ logger.severe(CHECKING_AVAILABLE);
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    hallId = resultSet.getInt("hallid");
+                    hallId = resultSet.getInt(HALL_ID_COLUMN);
                 }
             }
         }
@@ -2429,7 +2430,7 @@ logger.severe(CHECKING_AVAILABLE);
             int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(),  connectionDB);
 
             if (userId == -1) {
-                showAlert("Invalid email or password.");
+                showAlert(INVALID_CREDENTIALS_MESSAGE);
                 return;
             }
             int hallId = getHallIdd();
@@ -2452,7 +2453,7 @@ logger.severe(CHECKING_AVAILABLE);
             showAlert(WAIT_ACCEPT_MESSAGE);
         } catch (SQLException e) {
      logger.severe(CHECKING_AVAILABLE);
-            showAlert("Failed to book the hall. Please try again later.");
+            showAlert(BOOKING_FAILED_MESSAGE);
         }
 
     }
@@ -2568,7 +2569,7 @@ logger.severe("Error while checking availability:");
             int userId = getUserIdd(UserCredentials.getEmail(), UserCredentials.getPassword(), connectionDB);
 
             if (userId == -1) {
-                showAlert("Invalid email or password.");
+                showAlert(INVALID_CREDENTIALS_MESSAGE);
                 return;
             }
             int hallId = gettHallIdd(hallName,  connectionDB);
@@ -2591,7 +2592,7 @@ logger.severe("Error while checking availability:");
             showAlert(WAIT_ACCEPT_MESSAGE);
         } catch (SQLException e) {
   logger.severe(CHECKING_AVAILABLE);
-            showAlert("Failed to book the hall. Please try again later.");
+            showAlert(BOOKING_FAILED_MESSAGE);
         }
     }
 
@@ -2969,8 +2970,8 @@ logger.severe("Error while checking availability:");
                     Services hall;
                     int capacity = hallsResultSet.getInt( CAPACITY_COLUMN);
                     hall = new Services(
-                            hallsResultSet.getInt("hallid"),
-                            hallsResultSet.getString("hallname"),
+                            hallsResultSet.getInt(HALL_ID_COLUMN),
+                            hallsResultSet.getString(HALL_NAME_COLUMN),
                             String.valueOf(capacity),
                             hallsResultSet.getDouble(PRICE_PER_HOUR_COLUMN ),
                             hallsResultSet.getInt(USER_ID_COLUMN),
@@ -3431,7 +3432,7 @@ void viewevents(ActionEvent event) {
                         Reservation reservation = new Reservation.ReservationBuilder(
                                 resultSet.getInt(RESERVATION_ID_COLUMN),
                                 resultSet.getInt(USER_ID_COLUMN),
-                                resultSet.getInt("hallid"),
+                                resultSet.getInt(HALL_ID_COLUMN),
                                 resultSet.getDate("date"),
                                 resultSet.getTime(START_TIME_COLUMN),
                                 resultSet.getTime("endtime")
@@ -3446,7 +3447,7 @@ void viewevents(ActionEvent event) {
 
                 e1.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
                 e2.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
-                e3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
+                e3.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
                 e4.setCellValueFactory(new PropertyValueFactory<>("date"));
                 e5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
                 e6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
@@ -3580,7 +3581,7 @@ void viewevents(ActionEvent event) {
             // Setup cell value factories and clear existing items from TableView
             cc11.setCellValueFactory(new PropertyValueFactory<>(RESERVATION_ID_COLUMN));
             cc22.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
-            cc33.setCellValueFactory(new PropertyValueFactory<>("hallId"));
+            cc33.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
             cc44.setCellValueFactory(new PropertyValueFactory<>("date"));
             cc55.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
             cc66.setCellValueFactory(new PropertyValueFactory<>("endTime"));
@@ -3594,7 +3595,7 @@ void viewevents(ActionEvent event) {
                 Reservation reservation = new Reservation.ReservationBuilder(
                         resultSet.getInt(RESERVATION_ID_COLUMN),
                         resultSet.getInt(USER_ID_COLUMN),
-                        resultSet.getInt("hallid"),
+                        resultSet.getInt(HALL_ID_COLUMN),
                         resultSet.getDate("date"),
                         resultSet.getTime(START_TIME_COLUMN),
                         resultSet.getTime("endtime")
@@ -3715,14 +3716,14 @@ void viewevents(ActionEvent event) {
                         ObservableList<HallReportData> hallData = FXCollections.observableArrayList();
 
                         while (resultSet.next()) {
-                            String hallName = resultSet.getString("hallname");
+                            String hallName = resultSet.getString(HALL_NAME_COLUMN);
                             double pricePerHour = resultSet.getDouble(PRICE_PER_HOUR_COLUMN );
                             int numberOfReservations = resultSet.getInt("num_reservations");
                             double totalPrice = resultSet.getDouble("total_price");
                             hallData.add(new HallReportData(hallName, pricePerHour, numberOfReservations, totalPrice));
                         }
 
-                        hnr.setCellValueFactory(new PropertyValueFactory<>("hallName"));
+                        hnr.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
                         phr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
                         tphr.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         numberhr.setCellValueFactory(new PropertyValueFactory<>("numberOfReservations"));
@@ -3764,7 +3765,7 @@ void viewevents(ActionEvent event) {
                             serviceData.add(new HallReportData(serviceName, price, numberOfReservations, totalPrice));
                         }
 
-                        snr.setCellValueFactory(new PropertyValueFactory<>("hallName"));
+                        snr.setCellValueFactory(new PropertyValueFactory<>(HALL_NAME_COLUMN));
                         psr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
                         tpsr.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         numbersrr.setCellValueFactory(new PropertyValueFactory<>("numberOfReservations"));
@@ -3933,8 +3934,8 @@ void viewevents(ActionEvent event) {
         try (ResultSet resultSet = statement.executeQuery()) {
             List<String> hallList = new ArrayList<>();
             while (resultSet.next()) {
-                int hallId = resultSet.getInt("hallid");
-                String hallName = resultSet.getString("hallname");
+                int hallId = resultSet.getInt(HALL_ID_COLUMN);
+                String hallName = resultSet.getString(HALL_NAME_COLUMN);
                 hallList.add(hallId + "-" + hallName);
             }
             r8.getItems().addAll(hallList);
@@ -4165,7 +4166,7 @@ logger.severe("Error while checking availability:");
                             int organizerId = resultSet.getInt("organizer_id");
                             Timestamp creationDate = resultSet.getTimestamp("creation_date");
 
-                            int hallId = resultSet.getInt("hallid");
+                            int hallId = resultSet.getInt(HALL_ID_COLUMN);
 
 
                             reservations.add(new Event(eventId, eventName, eventDate, location, description, organizerId, creationDate, hallId));
@@ -4179,7 +4180,7 @@ logger.severe("Error while checking availability:");
                         eventorgid.setCellValueFactory(new PropertyValueFactory<>("organizerId"));
                         creationdate.setCellValueFactory(new PropertyValueFactory<>("creationDate"));
 
-                        eventhallid.setCellValueFactory(new PropertyValueFactory<>("hallId"));
+                        eventhallid.setCellValueFactory(new PropertyValueFactory<>(HALL_ID_COLUMN));
 
 
 
