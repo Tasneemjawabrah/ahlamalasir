@@ -1624,134 +1624,85 @@ logger.severe(CHECKING_AVAILABLE);
     private PreparedStatement checkReservationStatementtt;
 
 
-    public void initialize() {
+  public void initialize() {
+    setupTableOnClick();
+    populateHallChoiceBox();
+    populateEventChoiceBox();
+    setupTimeItems();
+    prepareCheckReservationStatements();
+    setupDateCellFactories();
+}
 
-        tableeee.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {
-
-                packge selectedPackage = tableeee.getSelectionModel().getSelectedItem();
-
-
-                if (selectedPackage != null) {
-                    pid.setText(String.valueOf(selectedPackage.getPackageId()));
-                    pname.setText(selectedPackage.getPackageName());
-                    des.setText(selectedPackage.getDescription());
-                    price.setText(String.valueOf(selectedPackage.getPrice()));
-                    mguest.setText(String.valueOf(selectedPackage.getMaxGuests()));
-
-                    innc.setText(String.join(",", selectedPackage.getIncludes()));
-                }
+private void setupTableOnClick() {
+    tableeee.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 1) {
+            packge selectedPackage = tableeee.getSelectionModel().getSelectedItem();
+            if (selectedPackage != null) {
+                setPackageInfo(selectedPackage);
             }
-        });
-
-
-        populateHallChoiceBox();
-        populateEventChoiceBox();
-        r9.setItems(FXCollections.observableArrayList("16:00:00", "20:00:00", "18:00:00", "22:00:00", "24:00:00"));
-
-        r9.getSelectionModel().selectFirst();
-
-        r10.setItems(FXCollections.observableArrayList("16:00:00", "20:00:00", "18:00:00", "22:00:00", "24:00:00"));
-
-        r10.getSelectionModel().selectFirst();
-
-
-        choicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
-
-        try {
-             connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            checkReservationStatement =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND hallid = ?");
-        } catch (SQLException e) {
-  logger.severe(CHECKING_AVAILABLE);
         }
+    });
+}
 
-        dat.setDayCellFactory(dp -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
+private void setPackageInfo(packge selectedPackage) {
+    pid.setText(String.valueOf(selectedPackage.getPackageId()));
+    pname.setText(selectedPackage.getPackageName());
+    des.setText(selectedPackage.getDescription());
+    price.setText(String.valueOf(selectedPackage.getPrice()));
+    mguest.setText(String.valueOf(selectedPackage.getMaxGuests()));
+    innc.setText(String.join(",", selectedPackage.getIncludes()));
+}
 
-                if (item.isBefore(LocalDate.now())) {
-                    setDisable(true);
-                    setStyle("-fx-background-color: #ffc0cb;");
-                } else {
-                    setDisable(false);
-                    int reservedCount = getReservedCount(item);
-                    if (reservedCount == 3) {
-                        setStyle("-fx-background-color: #ff0000;");
-                        setOnMouseClicked(event -> showAlert("All time slots are reserved for this day."));
-                    } else if (reservedCount > 0) {
-                        setStyle("-fx-background-color: #ffff00;");
-                    } else {
-                        setStyle("-fx-background-color: #00ff00;");
-                    }
-                }
-            }
-        });
+private void setupTimeItems() {
+    r9.setItems(FXCollections.observableArrayList("16:00:00", "20:00:00", "18:00:00", "22:00:00", "24:00:00"));
+    r9.getSelectionModel().selectFirst();
+    r10.setItems(FXCollections.observableArrayList("16:00:00", "20:00:00", "18:00:00", "22:00:00", "24:00:00"));
+    r10.getSelectionModel().selectFirst();
+    choicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
+    servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
+    packagetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
+}
 
-
-        servicetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
-
-        try {
-           connectionDB= DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            checkReservationStatementt =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
-        } catch (SQLException e) {
-logger.severe(CHECKING_AVAILABLE);
-        }
-
-        datereservation.setDayCellFactory(dp -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item.isBefore(LocalDate.now())) {
-                    setDisable(true);
-                    setStyle("-fx-background-color: #ffc0cb;");
-                } else {
-                    setDisable(false);
-                    int reservedCountt = getReservedCountt(item);
-                    if (reservedCountt == 3) {
-                        setStyle("-fx-background-color: #ff0000;");
-                        setOnMouseClicked(event -> showAlert("All time slots are reserved for this day."));
-                    } else if (reservedCountt > 0) {
-                        setStyle("-fx-background-color: #ffff00;");
-                    } else {
-                        setStyle("-fx-background-color: #00ff00;");
-                    }
-                }
-            }
-        });
-        packagetime.getItems().addAll("16:00:00", "18:00:00", "20:00:00");
-
-        try {
-           connectionDB= DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-            checkReservationStatementtt =  connectionDB.prepareStatement("SELECT COUNT(*) FROM software.wedding_packages WHERE date = ? AND starttime = ? AND package_id = ?");
-        } catch (SQLException e) {
- logger.severe(CHECKING_AVAILABLE);
-        }
-
-        datereservatiooon.setDayCellFactory(dp -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (item.isBefore(LocalDate.now())) {
-                    setDisable(true);
-                    setStyle("-fx-background-color: #ffc0cb;");
-                } else {
-                    setDisable(false);
-                    int reservedCountt = getReservedCounttt(item);
-                    if (reservedCountt == 3) {
-                        setStyle("-fx-background-color: #ff0000;");
-                        setOnMouseClicked(event -> showAlert("All time slots are reserved for this day."));
-                    } else if (reservedCountt > 0) {
-                        setStyle("-fx-background-color: #ffff00;");
-                    } else {
-                        setStyle("-fx-background-color: #00ff00;");
-                    }
-                }
-            }
-        });
+private void prepareCheckReservationStatements() {
+    try {
+        connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+        checkReservationStatement = connectionDB.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND hallid = ?");
+        checkReservationStatementt = connectionDB.prepareStatement("SELECT COUNT(*) FROM software.reservations WHERE date = ? AND starttime = ? AND serviceid = ?");
+        checkReservationStatementtt = connectionDB.prepareStatement("SELECT COUNT(*) FROM software.wedding_packages WHERE date = ? AND starttime = ? AND package_id = ?");
+    } catch (SQLException e) {
+        logger.severe(CHECKING_AVAILABLE);
     }
+}
+
+private void setupDateCellFactories() {
+    dat.setDayCellFactory(createDateCellFactory());
+    datereservation.setDayCellFactory(createDateCellFactory());
+    datereservatiooon.setDayCellFactory(createDateCellFactory());
+}
+
+private Callback<DatePicker, DateCell> createDateCellFactory() {
+    return dp -> new DateCell() {
+        @Override
+        public void updateItem(LocalDate item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item.isBefore(LocalDate.now())) {
+                setDisable(true);
+                setStyle("-fx-background-color: #ffc0cb;");
+            } else {
+                setDisable(false);
+                int reservedCount = getReservedCount(item);
+                if (reservedCount == 3) {
+                    setStyle("-fx-background-color: #ff0000;");
+                    setOnMouseClicked(event -> showAlert("All time slots are reserved for this day."));
+                } else if (reservedCount > 0) {
+                    setStyle("-fx-background-color: #ffff00;");
+                } else {
+                    setStyle("-fx-background-color: #00ff00;");
+                }
+            }
+        }
+    };
+}
 
     private int getReservedCount(LocalDate date) {
         int reservedCount = 0;
