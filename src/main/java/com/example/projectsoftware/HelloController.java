@@ -690,47 +690,46 @@ private static final String HALL_ID_COLUMN = "hallid";
     }
 
 
-    private void updateTotalPrice(String email, String password, double additionalPrice) {
+   private void updateTotalPrice(String email, String password, double additionalPrice) {
+    String getUserSql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
+    String getReservationsSql = "SELECT reservationid FROM software.reservations WHERE userid = ?";
+    String updateReservationSql = "UPDATE software.reservations SET totalprice = totalprice + ? WHERE reservationid = ?";
+    
+    try (Connection connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
+         PreparedStatement getUserStatement = connectionDB.prepareStatement(getUserSql);
+         PreparedStatement getReservationsStatement = connectionDB.prepareStatement(getReservationsSql);
+         PreparedStatement updateReservationStatement = connectionDB.prepareStatement(updateReservationSql)) {
+        
+        getUserStatement.setString(1, email);
+        getUserStatement.setString(2, password);
+        ResultSet userResultSet = getUserStatement.executeQuery();
+        
+        if (userResultSet.next()) {
+            int userId = userResultSet.getInt("userid");
+            getReservationsStatement.setInt(1, userId);
+            ResultSet reservationsResultSet = getReservationsStatement.executeQuery();
 
-        String getUserSql = "SELECT userid FROM software.users WHERE email = ? AND password = ?";
-        String getReservationsSql = "SELECT reservationid FROM software.reservations WHERE userid = ?";
-        String updateReservationSql = "UPDATE software.reservations SET totalprice = totalprice + ? WHERE reservationid = ?";
-
-        try (Connection  connectionDB = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
-             PreparedStatement getUserStatement =  connectionDB.prepareStatement(getUserSql);
-             PreparedStatement getReservationsStatement =  connectionDB.prepareStatement(getReservationsSql);
-             PreparedStatement updateReservationStatement =  connectionDB.prepareStatement(updateReservationSql)) {
-
-            getUserStatement.setString(1, email);
-            getUserStatement.setString(2, password);
-            ResultSet userResultSet = getUserStatement.executeQuery();
-
-            if (userResultSet.next()) {
-                int userId = userResultSet.getInt("userid");
-
-                getReservationsStatement.setInt(1, userId);
-                ResultSet reservationsResultSet = getReservationsStatement.executeQuery();
-
-                while (reservationsResultSet.next()) {
-                    int reservationId = reservationsResultSet.getInt("reservationid");
-
-                    updateReservationStatement.setDouble(1, additionalPrice);
-                    updateReservationStatement.setInt(2, reservationId);
-
-                    int rowsAffected = updateReservationStatement.executeUpdate();
-                    if (rowsAffected > 0) {
-                        showAlert("Total price updated successfully.");
-                    } else {
-                        showAlert("Failed to update total price for reservation ID: " + reservationId);
-                    }
+            // Move this setter invocation out of the loop
+            updateReservationStatement.setDouble(1, additionalPrice);
+            
+            while (reservationsResultSet.next()) {
+                int reservationId = reservationsResultSet.getInt("reservationid");
+                updateReservationStatement.setInt(2, reservationId);
+                int rowsAffected = updateReservationStatement.executeUpdate();
+                
+                if (rowsAffected > 0) {
+                    showAlert("Total price updated successfully.");
+                } else {
+                    showAlert("Failed to update total price for reservation ID: " + reservationId);
                 }
-            } else {
-                    showAlert(INVALID_CREDENTIALS_MESSAGE);
             }
-        } catch (SQLException e) {
-logger.severe(CHECKING_AVAILABLE);
+        } else {
+            showAlert(INVALID_CREDENTIALS_MESSAGE);
         }
+    } catch (SQLException e) {
+        logger.severe(CHECKING_AVAILABLE);
     }
+}
  private static String getPasswordFromEnvironment() {
         String password = System.getenv("1482003");
         if (password == null) {
@@ -1842,7 +1841,7 @@ logger.severe(CHECKING_AVAILABLE);
             ResultSet resultSet = checkReservationStatement.executeQuery();
 
             while (resultSet.next()) {
-                availableTimes.add(resultSet.getString("starttime"));
+                availableTimes.add(resultSet.getString(START_TIME_COLUMN));
             }
 
          connectionDB.close();
@@ -1861,6 +1860,7 @@ logger.severe(CHECKING_AVAILABLE);
 
     @FXML
     private Button notifi;
+   final String START_TIME_COLUMN = START_TIME_COLUMN;
 
     @FXML
     void notificbutton(ActionEvent event) {
@@ -1935,7 +1935,7 @@ void logoutserviceprovider(ActionEvent event) {
                         int userIdd = resultSet.getInt("userid");
                         int hallId = resultSet.getInt("hallid");
                         Date date = resultSet.getDate("date");
-                        Time startTime = resultSet.getTime("starttime");
+                        Time startTime = resultSet.getTime(START_TIME_COLUMN);
                         Time endTime = resultSet.getTime("endtime");
                         double totalPrice = resultSet.getDouble("totalprice");
                         String state = resultSet.getString("state");
@@ -1952,7 +1952,7 @@ void logoutserviceprovider(ActionEvent event) {
                     cc2.setCellValueFactory(new PropertyValueFactory<>("userId"));
                     cc3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
                     cc4.setCellValueFactory(new PropertyValueFactory<>("date"));
-                    cc5.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+                    cc5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
                     cc6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
                     cc7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                     cc8.setCellValueFactory(new PropertyValueFactory<>("state"));
@@ -2078,7 +2078,7 @@ logger.severe(CHECKING_AVAILABLE);
                             String hallName = resultSet.getString("hallname");
                             String serviceName = resultSet.getString("servicename");
                             Date date = resultSet.getDate("date");
-                            Time startTime = resultSet.getTime("starttime");
+                            Time startTime = resultSet.getTime(START_TIME_COLUMN);
                             Time endTime = resultSet.getTime("endtime");
                             double totalPrice = resultSet.getDouble("totalprice");
                             String state = resultSet.getString("state");
@@ -2089,7 +2089,7 @@ logger.severe(CHECKING_AVAILABLE);
                         col3.setCellValueFactory(new PropertyValueFactory<>("hallName"));
                         col4.setCellValueFactory(new PropertyValueFactory<>("serviceName"));
                         col5.setCellValueFactory(new PropertyValueFactory<>("date"));
-                        col6.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+                        col6.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
                         col7.setCellValueFactory(new PropertyValueFactory<>("endTime"));
                         col8.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                         col9.setCellValueFactory(new PropertyValueFactory<>("state"));
@@ -2380,7 +2380,7 @@ logger.severe(CHECKING_AVAILABLE);
             ResultSet resultSet = checkReservationStatementtt.executeQuery();
 
             while (resultSet.next()) {
-                availableTimes.add(resultSet.getString("starttime"));
+                availableTimes.add(resultSet.getString(START_TIME_COLUMN));
             }
 
              connectionDB.close();
@@ -2520,7 +2520,7 @@ logger.severe("Error while checking availability:");
             ResultSet resultSet = checkReservationStatementt.executeQuery();
 
             while (resultSet.next()) {
-                availableTimes.add(resultSet.getString("starttime"));
+                availableTimes.add(resultSet.getString(START_TIME_COLUMN));
             }
 
        connectionDB.close();
@@ -3428,7 +3428,7 @@ void viewevents(ActionEvent event) {
                                 resultSet.getInt("userid"),
                                 resultSet.getInt("hallid"),
                                 resultSet.getDate("date"),
-                                resultSet.getTime("starttime"),
+                                resultSet.getTime(START_TIME_COLUMN),
                                 resultSet.getTime("endtime")
                             )
                             .totalPrice(resultSet.getDouble("totalprice"))
@@ -3443,7 +3443,7 @@ void viewevents(ActionEvent event) {
                 e2.setCellValueFactory(new PropertyValueFactory<>("userId"));
                 e3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
                 e4.setCellValueFactory(new PropertyValueFactory<>("date"));
-                e5.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+                e5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
                 e6.setCellValueFactory(new PropertyValueFactory<>("endTime"));
                 e7.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
                 e8.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
@@ -3577,7 +3577,7 @@ void viewevents(ActionEvent event) {
             cc22.setCellValueFactory(new PropertyValueFactory<>("userId"));
             cc33.setCellValueFactory(new PropertyValueFactory<>("hallId"));
             cc44.setCellValueFactory(new PropertyValueFactory<>("date"));
-            cc55.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+            cc55.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
             cc66.setCellValueFactory(new PropertyValueFactory<>("endTime"));
             cc77.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
             cc88.setCellValueFactory(new PropertyValueFactory<>("serviceId"));
@@ -3591,7 +3591,7 @@ void viewevents(ActionEvent event) {
                         resultSet.getInt("userid"),
                         resultSet.getInt("hallid"),
                         resultSet.getDate("date"),
-                        resultSet.getTime("starttime"),
+                        resultSet.getTime(START_TIME_COLUMN),
                         resultSet.getTime("endtime")
                     )
                     .totalPrice(resultSet.getDouble("totalprice"))
