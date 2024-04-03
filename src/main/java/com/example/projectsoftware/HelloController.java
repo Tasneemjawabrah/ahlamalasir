@@ -496,7 +496,7 @@ void backktoallhalls(ActionEvent event) {
 
 
     }
-
+final String WAIT_ACCEPT_MESSAGE = "Wait owner to accept your reservation.";
 
     @FXML
     private void select(ActionEvent event) {
@@ -525,14 +525,15 @@ void backktoallhalls(ActionEvent event) {
        logger.severe(CHECKING_AVAILABLE);
         }
     }
-
+   final String USER_ID_COLUMN = "userid";
+ final String SELECT_DATE_AND_TIME_MESSAGE ="Please select date and start time.";
     @FXML
     void bookHall(ActionEvent event) {
         LocalDate chosenDate = dat.getValue();
         String startTimeStr = choicetime.getValue();
 
         if (chosenDate == null || startTimeStr == null) {
-            showAlert("Please select date and start time.");
+            showAlert(SELECT_DATE_AND_TIME_MESSAGE);
             return;
 
 
@@ -564,7 +565,7 @@ void backktoallhalls(ActionEvent event) {
             }
 
             if (!isHallAvailable(chosenDate, startTime, endTime, hallId,  connectionDB)) {
-                showAlert("Wait owner to accept your reservation.");
+                showAlert(WAIT_ACCEPT_MESSAGE);
                 return;
             }
 
@@ -574,7 +575,7 @@ void backktoallhalls(ActionEvent event) {
             BigDecimal totalPrice = pricePerHour.multiply(BigDecimal.valueOf(durationHours));
             insertReservation(userId, hallId, chosenDate, startTime, endTime, totalPrice, connectionDB);
 
-            showAlert("Wait owner to accept your reservation.");
+            showAlert(WAIT_ACCEPT_MESSAGE);
         } catch (SQLException e) {
   logger.severe(CHECKING_AVAILABLE);
             showAlert("Failed to book the hall. Please try again later.");
@@ -604,7 +605,7 @@ private static final String HALL_ID_COLUMN = "hallid";
         statement.setString(1, email);
         statement.setString(2, password);
         try (ResultSet resultSet = statement.executeQuery()) {
-            return resultSet.next() ? resultSet.getInt("userid") : -1;
+            return resultSet.next() ? resultSet.getInt(USER_ID_COLUMN) : -1;
         }
     }
     }
@@ -706,7 +707,7 @@ private static final String HALL_ID_COLUMN = "hallid";
         ResultSet userResultSet = getUserStatement.executeQuery();
         
         if (userResultSet.next()) {
-            int userId = userResultSet.getInt("userid");
+            int userId = userResultSet.getInt(USER_ID_COLUMN);
             getReservationsStatement.setInt(1, userId);
             ResultSet reservationsResultSet = getReservationsStatement.executeQuery();
 
@@ -1172,7 +1173,7 @@ private static final String HALL_ID_COLUMN = "hallid";
     capacityyy.setCellValueFactory(new PropertyValueFactory<>( CAPACITY_COLUMN));
     priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
     locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
-    USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
+    USERID.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
     Hall selectedHall = hallTableView.getSelectionModel().getSelectedItem();
     if (selectedHall != null) {
         try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
@@ -1204,7 +1205,7 @@ private static final String HALL_ID_COLUMN = "hallid";
     capacityyy.setCellValueFactory(new PropertyValueFactory<>( CAPACITY_COLUMN));
     priceperhourr.setCellValueFactory(new PropertyValueFactory<>("pricePerHour"));
     locationnn.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
-    USERID.setCellValueFactory(new PropertyValueFactory<>("userId"));
+    USERID.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
     
     hallTableView.getItems().clear();
 
@@ -1220,7 +1221,7 @@ private static final String HALL_ID_COLUMN = "hallid";
             int capacity = resultSet.getInt( CAPACITY_COLUMN);
             double pricePerHour = resultSet.getDouble(PRICE_PER_HOUR_COLUMN );
             String location = resultSet.getString(LOCATION_1);
-            int userId = resultSet.getInt("userid");
+            int userId = resultSet.getInt(USER_ID_COLUMN);
             Hall hall = new Hall(hallId, hallName, capacity, pricePerHour, location, userId);
             halls.add(hall);
         }
@@ -1382,7 +1383,7 @@ logger.severe("Error while checking availability:");
             statement.setString(2, password);
             try (ResultSet result = statement.executeQuery()) {
                 if (result.next()) {
-                    int userId = result.getInt("userid");
+                    int userId = result.getInt(USER_ID_COLUMN);
                     String firstName = result.getString("firstname");
                     String lastName = result.getString("lastname");
                     String username = result.getString("username");
@@ -1933,7 +1934,7 @@ void logoutserviceprovider(ActionEvent event) {
                     ArrayList<NewReservation> reservations = new ArrayList<>();
                     while (resultSet.next()) {
                         int reservationId = resultSet.getInt("reservationid");
-                        int userIdd = resultSet.getInt("userid");
+                        int userIdd = resultSet.getInt(USER_ID_COLUMN);
                         int hallId = resultSet.getInt("hallid");
                         Date date = resultSet.getDate("date");
                         Time startTime = resultSet.getTime(START_TIME_COLUMN);
@@ -1950,7 +1951,7 @@ void logoutserviceprovider(ActionEvent event) {
                     }
 
                     cc1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
-                    cc2.setCellValueFactory(new PropertyValueFactory<>("userId"));
+                    cc2.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
                     cc3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
                     cc4.setCellValueFactory(new PropertyValueFactory<>("date"));
                     cc5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
@@ -2256,7 +2257,7 @@ logger.severe(CHECKING_AVAILABLE);
         try (PreparedStatement statement =  connectionDB.prepareStatement(sql)) {
             statement.setString(1, userName);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? resultSet.getInt("userid") : -1;
+            return resultSet.next() ? resultSet.getInt(USER_ID_COLUMN) : -1;
         }
     }
 
@@ -2405,7 +2406,7 @@ logger.severe(CHECKING_AVAILABLE);
         String startTimeStr = packagetime.getValue();
 
         if (chosenDate == null || startTimeStr == null) {
-            showAlert("Please select date and start time.");
+            showAlert(SELECT_DATE_AND_TIME_MESSAGE);
             return;
         }
         String hallName = mn1.getText();
@@ -2435,7 +2436,7 @@ logger.severe(CHECKING_AVAILABLE);
             }
 
             if (!isHallAvailablee(chosenDate, startTime, endTime, hallId,  connectionDB)) {
-                showAlert("Wait owner to accept your reservation.");
+                showAlert(WAIT_ACCEPT_MESSAGE);
                 return;
             }
 
@@ -2445,7 +2446,7 @@ logger.severe(CHECKING_AVAILABLE);
 
             insertReservationn(userId, hallId, chosenDate, startTime, endTime, totalPrice,  connectionDB);
 
-            showAlert("Wait owner to accept your reservation.");
+            showAlert(WAIT_ACCEPT_MESSAGE);
         } catch (SQLException e) {
      logger.severe(CHECKING_AVAILABLE);
             showAlert("Failed to book the hall. Please try again later.");
@@ -2544,7 +2545,7 @@ logger.severe("Error while checking availability:");
         LocalDate chosenDate = datereservation.getValue();
         String startTimeStr = servicetime.getValue();
         if (chosenDate == null || startTimeStr == null) {
-            showAlert("Please select date and start time.");
+            showAlert(SELECT_DATE_AND_TIME_MESSAGE);
             return;
         }
         String hallName = lb9.getText();
@@ -2574,7 +2575,7 @@ logger.severe("Error while checking availability:");
             }
 
             if (!isHallAvailablee(chosenDate, startTime, endTime, hallId,  connectionDB)) {
-                showAlert("Wait owner to accept your reservation.");
+                showAlert(WAIT_ACCEPT_MESSAGE);
                 return;
             }
 
@@ -2584,7 +2585,7 @@ logger.severe("Error while checking availability:");
 
             insertReservationn(userId, hallId, chosenDate, startTime, endTime, totalPrice,  connectionDB);
 
-            showAlert("Wait owner to accept your reservation.");
+            showAlert(WAIT_ACCEPT_MESSAGE);
         } catch (SQLException e) {
   logger.severe(CHECKING_AVAILABLE);
             showAlert("Failed to book the hall. Please try again later.");
@@ -2612,7 +2613,7 @@ logger.severe("Error while checking availability:");
             statement.setString(1, email);
             statement.setString(2, password);
             ResultSet resultSet = statement.executeQuery();
-            return resultSet.next() ? resultSet.getInt("userid") : -1;
+            return resultSet.next() ? resultSet.getInt(USER_ID_COLUMN) : -1;
         }
     }
 
@@ -2772,7 +2773,7 @@ logger.severe("Error while checking availability:");
         return;
     }
     FeedbackColumn.setCellValueFactory(new PropertyValueFactory<>("feedback"));
-    Userid.setCellValueFactory(new PropertyValueFactory<>("userId"));
+    Userid.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
     feedbacktable.getItems().clear();
     try (Connection conn = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
          PreparedStatement statement = conn.prepareStatement("SELECT userid, feedback FROM software.new_table_name WHERE feedback IS NOT NULL");
@@ -2781,7 +2782,7 @@ logger.severe("Error while checking availability:");
         ObservableList<FeedbackEntry> feedbackList = FXCollections.observableArrayList();
         while (resultSet.next()) {
             String feedback = resultSet.getString("feedback");
-            int userId = resultSet.getInt("userid");
+            int userId = resultSet.getInt(USER_ID_COLUMN);
             if (feedback != null) {
                 FeedbackEntry feedbackEntry = new FeedbackEntry(userId, feedback);
                 feedbackList.add(feedbackEntry);
@@ -2936,7 +2937,7 @@ logger.severe("Error while checking availability:");
                                 servicesResultSet.getString("servicename"),
                                 description,
                                 servicesResultSet.getDouble("price"),
-                                servicesResultSet.getInt("userid"),
+                                servicesResultSet.getInt(USER_ID_COLUMN),
                                 servicesResultSet.getBytes("image"),
                                 servicesResultSet.getString(LOCATION_1)
                         );
@@ -2947,7 +2948,7 @@ logger.severe("Error while checking availability:");
                                 servicesResultSet.getString("servicename"),
                                 String.valueOf(descriptionn),
                                 servicesResultSet.getDouble("price"),
-                                servicesResultSet.getInt("userid"),
+                                servicesResultSet.getInt(USER_ID_COLUMN),
                                 servicesResultSet.getBytes("image"),
                                 servicesResultSet.getString(LOCATION_1)
                         );
@@ -2969,7 +2970,7 @@ logger.severe("Error while checking availability:");
                             hallsResultSet.getString("hallname"),
                             String.valueOf(capacity),
                             hallsResultSet.getDouble(PRICE_PER_HOUR_COLUMN ),
-                            hallsResultSet.getInt("userid"),
+                            hallsResultSet.getInt(USER_ID_COLUMN),
                             hallsResultSet.getBytes("image"),
                             hallsResultSet.getString(LOCATION_1)
                     );
@@ -2982,7 +2983,7 @@ logger.severe("Error while checking availability:");
             colm4.setCellValueFactory(new PropertyValueFactory<>("price"));
             colm5.setCellValueFactory(new PropertyValueFactory<>("imageBytes"));
             colm6.setCellValueFactory(new PropertyValueFactory<>(LOCATION_1));
-            colm7.setCellValueFactory(new PropertyValueFactory<>("userId"));
+            colm7.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
             serviceviewtable.getItems().clear();
             serviceviewtable.getItems().addAll(servicesList);
             serviceviewtable.getItems().addAll(hallsList);
@@ -3426,7 +3427,7 @@ void viewevents(ActionEvent event) {
                     while (resultSet.next()) {
                         Reservation reservation = new Reservation.ReservationBuilder(
                                 resultSet.getInt("reservationid"),
-                                resultSet.getInt("userid"),
+                                resultSet.getInt(USER_ID_COLUMN),
                                 resultSet.getInt("hallid"),
                                 resultSet.getDate("date"),
                                 resultSet.getTime(START_TIME_COLUMN),
@@ -3441,7 +3442,7 @@ void viewevents(ActionEvent event) {
                 }
 
                 e1.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
-                e2.setCellValueFactory(new PropertyValueFactory<>("userId"));
+                e2.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
                 e3.setCellValueFactory(new PropertyValueFactory<>("hallId"));
                 e4.setCellValueFactory(new PropertyValueFactory<>("date"));
                 e5.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
@@ -3575,7 +3576,7 @@ void viewevents(ActionEvent event) {
             
             // Setup cell value factories and clear existing items from TableView
             cc11.setCellValueFactory(new PropertyValueFactory<>("reservationId"));
-            cc22.setCellValueFactory(new PropertyValueFactory<>("userId"));
+            cc22.setCellValueFactory(new PropertyValueFactory<>(USER_ID_COLUMN));
             cc33.setCellValueFactory(new PropertyValueFactory<>("hallId"));
             cc44.setCellValueFactory(new PropertyValueFactory<>("date"));
             cc55.setCellValueFactory(new PropertyValueFactory<>(START_TIME_COLUMN));
@@ -3589,7 +3590,7 @@ void viewevents(ActionEvent event) {
             while (resultSet.next()) {
                 Reservation reservation = new Reservation.ReservationBuilder(
                         resultSet.getInt("reservationid"),
-                        resultSet.getInt("userid"),
+                        resultSet.getInt(USER_ID_COLUMN),
                         resultSet.getInt("hallid"),
                         resultSet.getDate("date"),
                         resultSet.getTime(START_TIME_COLUMN),
