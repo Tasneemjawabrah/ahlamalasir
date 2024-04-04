@@ -25,7 +25,7 @@ public class HelloController2 {
                 }
             }
         } catch (SQLException e) {
-              logger.severe("error .");
+              logger.severe( ERROR_MESSAGE );
         }
         return false;
     }
@@ -50,7 +50,7 @@ public class HelloController2 {
                 return false;
             }
         } catch (SQLException e) {
-              logger.severe("error.");
+              logger.severe( ERROR_MESSAGE );
             return false;
         }
     }
@@ -67,7 +67,7 @@ public class HelloController2 {
                 }
             }
         } catch (SQLException e) {
-                 logger.severe("error.");
+                 logger.severe( ERROR_MESSAGE );
          
         }
         return userIdValid;
@@ -75,7 +75,7 @@ public class HelloController2 {
     private static String getPasswordFromEnvironment() {
         String password = System.getenv("1482003");
         if (password == null) {
-                logger.severe("error.");
+                logger.severe( ERROR_MESSAGE );
         }
         return password;
     }
