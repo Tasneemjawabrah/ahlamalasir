@@ -63,19 +63,20 @@ String query = "SELECT serviceid, servicename, description, price FROM software.
         return services;
     }
 
-   private static final String DEFAULT_PASSWORD = "1482003";
-
-private void searchServices(String query) {
-    ObservableList<Services> filteredServices = FXCollections.observableArrayList();
-    for (Services service : allServices) {
-        if (service.getServiceName().toLowerCase().contains(query.toLowerCase()) ||
-                String.valueOf(service.getPrice()).equals(query)) {
-            filteredServices.add(service);
+  private void searchServices(String query) {
+        ObservableList<Services> filteredServices = FXCollections.observableArrayList();
+        for (Services service : allServices) {
+            if (service.getServiceName().toLowerCase().contains(query.toLowerCase()) ||
+                    String.valueOf(service.getPrice()).equals(query)) {
+                filteredServices.add(service);
+            }
         }
+        servicelist.setItems(filteredServices);
     }
-    servicelist.setItems(filteredServices);
-}
-
+   private static String getPasswordFromEnvironment() {
+   
+    return "1482003";
+ }
 
     @FXML
     private Button addser;
