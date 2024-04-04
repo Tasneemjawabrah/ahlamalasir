@@ -6,6 +6,7 @@ import javafx.scene.image.Image;
 import java.io.ByteArrayInputStream;
 import java.sql.*;
 import java.util.Base64;
+import java.util.logging.Logger;
 
 public  class Halls implements HallService {
 
@@ -19,7 +20,7 @@ public  class Halls implements HallService {
     private String state;
 
 
-
+ private static final Logger logger = Logger.getLogger( HallService.class.getName());
 
 
         public Halls(){}
@@ -104,7 +105,7 @@ public  class Halls implements HallService {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Error while checking availability:");
+            logger.severe("Error while checking availability:");
         }
         return hallExists;
     }
@@ -112,7 +113,7 @@ public  class Halls implements HallService {
     private static String getPasswordFromEnvironment() {
         String password = System.getenv("1482003");
         if (password == null) {
-            throw new IllegalStateException("Database password not found in environment variables.");
+         logger.severe("Error while checking availability:");
         }
         return password;
     }
