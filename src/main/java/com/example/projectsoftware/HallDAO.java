@@ -7,12 +7,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class HallDAO {
 
 private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
 private static final String USERNAME = "postgres";
 private static final String PASSWORD = getPasswordFromEnvironment();
+ private static final Logger logger = Logger.getLogger(HallDAO.class.getName());
+
 
 public static String[] getHallsBasedOnBudget(double budget) {
    List<String> hallsList = new ArrayList<>();
@@ -27,7 +30,7 @@ public static String[] getHallsBasedOnBudget(double budget) {
             }
         }
     } catch (SQLException e) {
-         System.err.println("Error while checking availability:");
+ logger.severe("Error while checking availability:");
     }
     
     return hallsList.toArray(new String[0]);
