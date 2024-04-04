@@ -5,6 +5,7 @@ public class HelloController2 {
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String DB_USER = "postgres";
      private static final Logger logger = Logger.getLogger(HelloController2.class.getName());
+        private static final String ERROR_MESSAGE =  "error.";
     public boolean login1Clicked(String eemail, String passw) {
         String query = "SELECT email, password, role FROM software.users WHERE email = ? AND password = ?";
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, getPasswordFromEnvironment());
