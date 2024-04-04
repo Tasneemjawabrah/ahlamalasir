@@ -45,7 +45,7 @@ public class HelloController2 {
                  logger.severe("Email and code are correct.");
                 return true;
             } else {
-           =     logger.severe("Email and code are correct.");
+            logger.severe("Email and code are correct.");
                 return false;
             }
         } catch (SQLException e) {
