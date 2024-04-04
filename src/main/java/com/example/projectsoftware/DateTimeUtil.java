@@ -8,6 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.logging.Logger;
 public class DateTimeUtil {
+ private DateTimeUtil() {
+       
+    }
  private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/postgres";
     private static final String USERNAME = "postgres";
     private static final String PASSWORD = getPasswordFromEnvironment();
