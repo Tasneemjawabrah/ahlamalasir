@@ -8,12 +8,13 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class Hall {
-    public int hallId;
-    public String hallName;
-    public int capacity;
-    public double pricePerHour;
-    public String location;
-    public int userId;
+   private int hallId;
+    private String hallName;
+    private int capacity;
+    private double pricePerHour;
+    private String location;
+    private int userId;
+
     public Hall(int hallId, String hallName, int capacity, double pricePerHour, String location, int userId) {
         this.hallId = hallId;
         this.hallName = hallName;
