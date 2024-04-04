@@ -22,7 +22,16 @@ public class Data {
         this.description = new SimpleStringProperty(description);
         this.image = new SimpleObjectProperty<>(image);
     }
-
+   public Data() {
+        this.idserorhall = new SimpleIntegerProperty();
+        this.name = new SimpleStringProperty();
+        this.userid = new SimpleIntegerProperty();
+        this.price = new SimpleDoubleProperty();
+        this.location = new SimpleStringProperty();
+        this.capacity = new SimpleIntegerProperty();
+        this.description = new SimpleStringProperty();
+        this.image = new SimpleObjectProperty<>();
+    }
     public int getIdserorhall() {
         return idserorhall.get();
     }
